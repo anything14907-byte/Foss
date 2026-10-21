@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StackDoc - Layout-Aware AI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header & Branding -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">StackDoc</h1>
+          <p class="brand-subtitle">Layout-Aware Document AI</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <span class="status-indicator" id="statusIndicator"></span>
+        <span class="sponsor-pill">Build with Stack</span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content-body">
+      
+      <!-- Upload & Capture Section -->
+      <section id="inputSection" class="input-section">
+        <!-- Tab Capture Card -->
+        <button id="captureTabBtn" class="btn-capture">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+          Capture Currently Viewed PDF/Tab
+        </button>
+
+        <div class="divider">
+          <span>OR UPLOAD FILE</span>
+        </div>
+
+        <!-- Drag & Drop Zone -->
+        <div id="dropZone" class="drop-zone">
+          <svg class="upload-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <p class="drop-text">Drag & drop document or <strong>browse</strong></p>
+          <p class="drop-subtext">Supports PDF, PNG, JPG, JPEG (Receipts & Invoices)</p>
+          <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.webp" class="file-input">
+        </div>
+
+        <!-- Backend notice -->
+        <div class="info-banner">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Processes directly with Donut VLM (No basic plain-text OCR)</span>
+        </div>
+      </section>
+
+      <!-- Loading State -->
+      <section id="loadingSection" class="loading-section hidden">
+        <div class="spinner"></div>
+        <h3 id="loadingTitle">Analyzing 2D Layout & Text...</h3>
+        <p id="loadingSubtitle">Running Donut Vision-Language Transformer</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+      </section>
+
+      <!-- Error State -->
+      <section id="errorSection" class="error-section hidden">
+        <div class="error-icon">!</div>
+        <h3 id="errorTitle">Parsing Failed</h3>
+        <p id="errorMessage">Unable to connect to backend.</p>
+        <button id="retryBtn" class="btn-secondary">Try Again</button>
+      </section>
+
+      <!-- Results Display Section -->
+      <section id="resultSection" class="result-section hidden">
+        <!-- Quick Summary Bar -->
+        <div class="summary-grid">
+          <div class="metric-card">
+            <span class="metric-label">Vendor</span>
+            <span class="metric-value" id="resVendor">-</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Date</span>
+            <span class="metric-value" id="resDate">-</span>
+          </div>
+          <div class="metric-card highlight">
+            <span class="metric-label">Total Amount</span>
+            <span class="metric-value total" id="resTotal">$0.00</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Confidence</span>
+            <span class="metric-value" id="resConfidence">95%</span>
+          </div>
+        </div>
+
+        <!-- Line Items Table -->
+        <div class="section-block">
+          <div class="block-header">
+            <h3>Line Items</h3>
+            <span class="items-badge" id="itemsCountBadge">0 items</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="lineItemsTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Description</th>
+                  <th>Qty</th>
+                  <th>Unit</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="lineItemsBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Breakdown Meta -->
+        <div class="section-block metadata-grid">
+          <div class="meta-item">
+            <span>Subtotal:</span>
+            <strong id="resSubtotal">-</strong>
+          </div>
+          <div class="meta-item">
+            <span>Tax:</span>
+            <strong id="resTax">-</strong>
+          </div>
+          <div class="meta-item">
+            <span>Payment:</span>
+            <strong id="resPayment">-</strong>
+          </div>
+          <div class="meta-item">
+            <span>Time:</span>
+            <strong id="resTime">-</strong>
+          </div>
+        </div>
+
+        <!-- JSON Viewer Accordion -->
+        <details class="json-accordion">
+          <summary>
+            <span>View Cleaned JSON Structure</span>
+            <span class="accordion-arrow">▼</span>
+          </summary>
+          <div class="json-content-wrapper">
+            <button id="copyJsonBtn" class="btn-copy">Copy JSON</button>
+            <pre id="jsonPreview">{}</pre>
+          </div>
+        </details>
+
+        <!-- Actions -->
+        <div class="actions-row">
+          <button id="parseAnotherBtn" class="btn-primary">Parse Another Document</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer with Sponsor Attribution -->
+    <footer class="app-footer">
+      <span>Built with <strong>Stack</strong></span>
+      <span class="footer-dot">•</span>
+      <a href="https://github.com/anything14907-byte" target="_blank" class="footer-link">GitHub Repo</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

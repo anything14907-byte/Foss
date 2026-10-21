@@ -1,0 +1,38 @@
+{
+  "receipt_faded_ink.png": {
+    "expected_vendor": "BLUE BOTTLE COFFEE",
+    "expected_date": "2026-10-18",
+    "expected_total": 17.75,
+    "min_line_items": 2
+  },
+  "receipt_crumpled_cafe.png": {
+    "expected_vendor": "STACK BISTRO & ESPRESSO",
+    "expected_date": "2026-10-20",
+    "expected_total": 16.0,
+    "min_line_items": 2
+  },
+  "receipt_grocery_market.png": {
+    "expected_vendor": "ORGANIC WHOLE FOODS",
+    "expected_date": "2026-10-19",
+    "expected_total": 25.46,
+    "min_line_items": 3
+  },
+  "receipt_tech_supplies.png": {
+    "expected_vendor": "MICRO CENTER ELECTRONICS",
+    "expected_date": "2026-10-15",
+    "expected_total": 54.97,
+    "min_line_items": 2
+  },
+  "invoice_enterprise_stack.pdf": {
+    "expected_vendor": "Build with Stack Inc.",
+    "expected_date": "2026-10-21",
+    "expected_total": 1182.6,
+    "min_line_items": 3
+  },
+  "invoice_consulting_services.pdf": {
+    "expected_vendor": "Global Systems Consulting",
+    "expected_date": "2026-10-14",
+    "expected_total": 2450.0,
+    "min_line_items": 2
+  }
+}

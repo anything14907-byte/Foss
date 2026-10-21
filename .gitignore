@@ -1,0 +1,38 @@
+# Python & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Model Weights & Hugging Face Cache
+.cache/
+hf_cache/
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# IDE & OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs & Temp files
+*.log
+tmp/
+scratch/
+.system_generated/
+
+# Environment Variables
+.env
+.env.local
