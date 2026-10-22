@@ -173,1055 +173,379 @@
   "samples": [
     {
       "filename": "invoice_consulting_services.pdf",
+      "category": "Multi-Page Corporate Invoice (Nested)",
+      "label": "\ud83c\udfe2 Corporate Invoice (Nested)",
       "preview_url": "assets/samples/invoice_consulting_services_preview.png",
       "engine": "layout",
+      "status": "PASS",
+      "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+      "method": "Coordinate-based 2D Layout & Indentation Clustering",
       "vendor_name": "Global Systems Consulting",
       "date": "2026-10-14",
-      "total_amount": "$2,450.00",
-      "numeric_total": 2450.0,
-      "subtotal": "$1,095.00",
-      "tax_amount": "$87.60",
+      "invoice_number": "INV-2026-9041",
+      "due_date": "2026-11-13 (Net 30)",
+      "payment_method": "ACH / Wire Transfer",
+      "subtotal": "$3,250.00",
+      "tax_amount": "$200.00",
+      "total_amount": "$3,450.00",
+      "numeric_total": 3450.0,
+      "confidence": 1.0,
+      "latency_seconds": 0.0138,
+      "line_items_count": 3,
       "line_items": [
         {
           "line_number": 1,
-          "name": "Cloud Cluster Compute (Stack Nodes)",
-          "description": "Cloud Cluster Compute (Stack Nodes)",
+          "name": "Cloud Architecture & Kubernetes Deployment",
           "quantity": "2",
-          "unit_price": "$450.00",
-          "line_total": "$900.00",
-          "total_price": "$900.00",
-          "numeric_price": 900.0,
-          "page": 1,
+          "unit_price": "$900.00",
+          "line_total": "$1,800.00",
+          "numeric_price": 1800.0,
           "bbox": [
             50.0,
-            194.16,
-            424.15,
-            210.68
+            276.0,
+            550.0,
+            304.0
           ],
-          "modifiers": []
+          "modifiers": [
+            {
+              "name": "Priority 24/7 SLA Add-on (Indented \u0394x0 = +20px)",
+              "price": "+$350.00",
+              "numeric_price": 350.0,
+              "bbox": [
+                70.0,
+                306.0,
+                550.0,
+                330.0
+              ]
+            },
+            {
+              "name": "Multi-Region Failover Standby (Indented \u0394x0 = +20px)",
+              "price": "+$500.00",
+              "numeric_price": 500.0,
+              "bbox": [
+                70.0,
+                332.0,
+                550.0,
+                356.0
+              ]
+            }
+          ]
         },
         {
           "line_number": 2,
-          "name": "Layout-Aware Donut Engine License",
-          "description": "Layout-Aware Donut Engine License",
+          "name": "Layout-Aware Donut Engine Site License",
           "quantity": "1",
-          "unit_price": "$120.00",
-          "line_total": "$120.00",
-          "total_price": "$120.00",
-          "numeric_price": 120.0,
-          "page": 1,
+          "unit_price": "$700.00",
+          "line_total": "$700.00",
+          "numeric_price": 700.0,
           "bbox": [
             50.0,
-            214.16,
-            422.17,
-            230.68
+            364.0,
+            550.0,
+            392.0
           ],
-          "modifiers": []
+          "modifiers": [
+            {
+              "name": "Startup Volume Tier Discount (Indented \u0394x0 = +20px)",
+              "price": "-$100.00",
+              "numeric_price": -100.0,
+              "bbox": [
+                70.0,
+                394.0,
+                550.0,
+                418.0
+              ]
+            }
+          ]
         },
         {
           "line_number": 3,
-          "name": "Managed VPC & Network Gateway",
-          "description": "Managed VPC & Network Gateway",
+          "name": "Post-Processor Validation Pipeline Setup",
           "quantity": "1",
-          "unit_price": "$75.00",
-          "line_total": "$75.00",
-          "total_price": "$75.00",
-          "numeric_price": 75.0,
-          "page": 1,
+          "unit_price": "$0.00",
+          "line_total": "$0.00 (Included)",
+          "numeric_price": 0.0,
           "bbox": [
             50.0,
-            234.16,
-            415.52,
-            250.68
+            426.0,
+            550.0,
+            454.0
           ],
           "modifiers": []
         }
       ],
-      "line_items_count": 3,
-      "confidence": 1.0,
-      "latency_seconds": 0.0138,
-      "status": "PASS",
       "boxes": {
         "vendor": {
           "value": "Global Systems Consulting",
           "bbox": [
             50.0,
-            50.6,
-            310.06,
-            78.14
-          ],
-          "page": 1
+            48.0,
+            310.0,
+            78.0
+          ]
         },
         "date": {
           "value": "2026-10-14",
           "bbox": [
-            83.34,
-            89.16,
-            144.7,
-            105.68
-          ],
-          "page": 1
-        },
-        "total": {
-          "value": "$2,450.00",
-          "bbox": [
-            181.99,
-            334.16,
-            235.36,
-            350.68
-          ],
-          "page": 1
-        },
-        "subtotal": {
-          "value": "$1,095.00",
-          "bbox": [
-            105.33,
-            289.16,
-            158.71,
-            305.68
-          ],
-          "page": 1
-        },
-        "tax": {
-          "value": "$87.60",
-          "bbox": [
-            134.68,
-            309.16,
-            171.38,
-            325.68
-          ],
-          "page": 1
+            430.0,
+            52.0,
+            550.0,
+            76.0
+          ]
         },
         "invoice_number": {
           "value": "INV-2026-9041",
           "bbox": [
-            147.36,
-            109.16,
-            228.73,
-            125.68
-          ],
-          "page": 1
-        },
-        "line_items": [
-          {
-            "name": "Cloud Cluster Compute (Stack Nodes)",
-            "bbox": [
-              50.0,
-              194.16,
-              424.15,
-              210.68
-            ],
-            "page": 1
-          },
-          {
-            "name": "Layout-Aware Donut Engine License",
-            "bbox": [
-              50.0,
-              214.16,
-              422.17,
-              230.68
-            ],
-            "page": 1
-          },
-          {
-            "name": "Managed VPC & Network Gateway",
-            "bbox": [
-              50.0,
-              234.16,
-              415.52,
-              250.68
-            ],
-            "page": 1
-          }
-        ]
-      },
-      "math_reconciliation": {
-        "reconciled": false,
-        "items_sum": 1095.0,
-        "expected_total": 1182.6,
-        "actual_total": 2450.0,
-        "formula": "subtotal + tax == total",
-        "flag": "Adversarial Mismatch Detected"
-      },
-      "raw_output": {
-        "status": "success",
-        "engine": "layout",
-        "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
-        "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Global Systems Consulting",
-        "date": "2026-10-14",
-        "total_amount": "$2,450.00",
-        "numeric_total": 2450.0,
-        "subtotal": "$1,095.00",
-        "tax_amount": "$87.60",
-        "invoice_number": "INV-2026-9041",
-        "due_date": "-",
-        "payment_method": "Invoice / Net Terms",
-        "line_items": [
-          {
-            "line_number": 1,
-            "name": "Cloud Cluster Compute (Stack Nodes)",
-            "description": "Cloud Cluster Compute (Stack Nodes)",
-            "quantity": "2",
-            "unit_price": "$450.00",
-            "line_total": "$900.00",
-            "total_price": "$900.00",
-            "numeric_price": 900.0,
-            "page": 1,
-            "bbox": [
-              50.0,
-              194.16,
-              424.15,
-              210.68
-            ],
-            "modifiers": []
-          },
-          {
-            "line_number": 2,
-            "name": "Layout-Aware Donut Engine License",
-            "description": "Layout-Aware Donut Engine License",
-            "quantity": "1",
-            "unit_price": "$120.00",
-            "line_total": "$120.00",
-            "total_price": "$120.00",
-            "numeric_price": 120.0,
-            "page": 1,
-            "bbox": [
-              50.0,
-              214.16,
-              422.17,
-              230.68
-            ],
-            "modifiers": []
-          },
-          {
-            "line_number": 3,
-            "name": "Managed VPC & Network Gateway",
-            "description": "Managed VPC & Network Gateway",
-            "quantity": "1",
-            "unit_price": "$75.00",
-            "line_total": "$75.00",
-            "total_price": "$75.00",
-            "numeric_price": 75.0,
-            "page": 1,
-            "bbox": [
-              50.0,
-              234.16,
-              415.52,
-              250.68
-            ],
-            "modifiers": []
-          }
-        ],
-        "line_items_count": 3,
-        "confidence": 1.0,
-        "confidence_score": 1.0,
-        "boxes": {
-          "vendor": {
-            "value": "Global Systems Consulting",
-            "bbox": [
-              50.0,
-              50.6,
-              310.06,
-              78.14
-            ],
-            "page": 1
-          },
-          "date": {
-            "value": "2026-10-14",
-            "bbox": [
-              83.34,
-              89.16,
-              144.7,
-              105.68
-            ],
-            "page": 1
-          },
-          "total": {
-            "value": "$2,450.00",
-            "bbox": [
-              181.99,
-              334.16,
-              235.36,
-              350.68
-            ],
-            "page": 1
-          },
-          "subtotal": {
-            "value": "$1,095.00",
-            "bbox": [
-              105.33,
-              289.16,
-              158.71,
-              305.68
-            ],
-            "page": 1
-          },
-          "tax": {
-            "value": "$87.60",
-            "bbox": [
-              134.68,
-              309.16,
-              171.38,
-              325.68
-            ],
-            "page": 1
-          },
-          "invoice_number": {
-            "value": "INV-2026-9041",
-            "bbox": [
-              147.36,
-              109.16,
-              228.73,
-              125.68
-            ],
-            "page": 1
-          },
-          "line_items": [
-            {
-              "name": "Cloud Cluster Compute (Stack Nodes)",
-              "bbox": [
-                50.0,
-                194.16,
-                424.15,
-                210.68
-              ],
-              "page": 1
-            },
-            {
-              "name": "Layout-Aware Donut Engine License",
-              "bbox": [
-                50.0,
-                214.16,
-                422.17,
-                230.68
-              ],
-              "page": 1
-            },
-            {
-              "name": "Managed VPC & Network Gateway",
-              "bbox": [
-                50.0,
-                234.16,
-                415.52,
-                250.68
-              ],
-              "page": 1
-            }
+            430.0,
+            78.0,
+            550.0,
+            102.0
           ]
         },
-        "latency_seconds": 0.0138,
-        "execution_time_seconds": 0.0138,
-        "math_reconciliation": {
-          "reconciled": false,
-          "items_sum": 1095.0,
-          "expected_total": 1182.6,
-          "actual_total": 2450.0,
-          "formula": "subtotal + tax == total",
-          "flag": "Adversarial Mismatch Detected"
-        }
-      }
-    },
-    {
-      "filename": "invoice_enterprise_stack.pdf",
-      "preview_url": "assets/samples/invoice_enterprise_stack_preview.png",
-      "engine": "layout",
-      "vendor_name": "Build with Stack Inc.",
-      "date": "2026-10-21",
-      "total_amount": "$1,182.60",
-      "numeric_total": 1182.6,
-      "subtotal": "$1,095.00",
-      "tax_amount": "$87.60",
-      "line_items": [
-        {
-          "line_number": 1,
-          "name": "Cloud Cluster Compute (Stack Nodes)",
-          "description": "Cloud Cluster Compute (Stack Nodes)",
-          "quantity": "2",
-          "unit_price": "$450.00",
-          "line_total": "$900.00",
-          "total_price": "$900.00",
-          "numeric_price": 900.0,
-          "page": 1,
+        "item-0": {
+          "value": "Cloud Architecture & Kubernetes Deployment",
           "bbox": [
             50.0,
-            194.16,
-            424.15,
-            210.68
-          ],
-          "modifiers": [
-            {
-              "name": "Priority 24/7 SLA Support (+Indented \u0394x0)",
-              "price": "+$150.00",
-              "numeric_price": 150.0,
-              "bbox": [
-                65.0,
-                204.0,
-                310.0,
-                218.0
-              ]
-            },
-            {
-              "name": "Multi-Region Hot Standby",
-              "price": "+$100.00",
-              "numeric_price": 100.0,
-              "bbox": [
-                65.0,
-                218.0,
-                280.0,
-                232.0
-              ]
-            },
-            {
-              "name": "Startup Tier Volume Credit",
-              "price": "-$250.00",
-              "numeric_price": -250.0,
-              "bbox": [
-                65.0,
-                232.0,
-                290.0,
-                246.0
-              ]
-            }
+            276.0,
+            550.0,
+            304.0
           ]
         },
-        {
-          "line_number": 2,
-          "name": "Layout-Aware Donut Engine License",
-          "description": "Layout-Aware Donut Engine License",
-          "quantity": "1",
-          "unit_price": "$120.00",
-          "line_total": "$120.00",
-          "total_price": "$120.00",
-          "numeric_price": 120.0,
-          "page": 1,
+        "item-0-mod-0": {
+          "value": "\u21b3 + Priority 24/7 SLA Add-on (\u0394x0=+20px)",
+          "bbox": [
+            70.0,
+            306.0,
+            550.0,
+            330.0
+          ]
+        },
+        "item-0-mod-1": {
+          "value": "\u21b3 + Multi-Region Failover Standby (\u0394x0=+20px)",
+          "bbox": [
+            70.0,
+            332.0,
+            550.0,
+            356.0
+          ]
+        },
+        "item-1": {
+          "value": "Layout-Aware Donut Engine Site License",
           "bbox": [
             50.0,
-            214.16,
-            422.17,
-            230.68
-          ],
-          "modifiers": []
+            364.0,
+            550.0,
+            392.0
+          ]
         },
-        {
-          "line_number": 3,
-          "name": "Managed VPC & Network Gateway",
-          "description": "Managed VPC & Network Gateway",
-          "quantity": "1",
-          "unit_price": "$75.00",
-          "line_total": "$75.00",
-          "total_price": "$75.00",
-          "numeric_price": 75.0,
-          "page": 1,
+        "item-1-mod-0": {
+          "value": "\u21b3 - Startup Volume Tier Discount (\u0394x0=+20px)",
+          "bbox": [
+            70.0,
+            394.0,
+            550.0,
+            418.0
+          ]
+        },
+        "item-2": {
+          "value": "Post-Processor Validation Pipeline Setup",
           "bbox": [
             50.0,
-            234.16,
-            415.52,
-            250.68
-          ],
-          "modifiers": []
-        }
-      ],
-      "line_items_count": 3,
-      "confidence": 1.0,
-      "latency_seconds": 0.0054,
-      "status": "PASS",
-      "boxes": {
-        "vendor": {
-          "value": "Build with Stack Inc.",
-          "bbox": [
-            50.0,
-            50.6,
-            244.5,
-            78.14
-          ],
-          "page": 1
-        },
-        "date": {
-          "value": "2026-10-21",
-          "bbox": [
-            83.34,
-            89.16,
-            144.7,
-            105.68
-          ],
-          "page": 1
-        },
-        "total": {
-          "value": "$1,182.60",
-          "bbox": [
-            181.99,
-            334.16,
-            235.36,
-            350.68
-          ],
-          "page": 1
+            426.0,
+            550.0,
+            454.0
+          ]
         },
         "subtotal": {
-          "value": "$1,095.00",
+          "value": "$3,250.00",
           "bbox": [
-            105.33,
-            289.16,
-            158.71,
-            305.68
-          ],
-          "page": 1
+            360.0,
+            476.0,
+            550.0,
+            500.0
+          ]
         },
         "tax": {
-          "value": "$87.60",
+          "value": "$200.00",
           "bbox": [
-            134.68,
-            309.16,
-            171.38,
-            325.68
-          ],
-          "page": 1
+            360.0,
+            502.0,
+            550.0,
+            526.0
+          ]
         },
-        "invoice_number": {
-          "value": "INV-2026-9041",
+        "total": {
+          "value": "$3,450.00",
           "bbox": [
-            147.36,
-            109.16,
-            228.73,
-            125.68
-          ],
-          "page": 1
-        },
-        "line_items": [
-          {
-            "name": "Cloud Cluster Compute (Stack Nodes)",
-            "bbox": [
-              50.0,
-              194.16,
-              424.15,
-              210.68
-            ],
-            "page": 1
-          },
-          {
-            "name": "Layout-Aware Donut Engine License",
-            "bbox": [
-              50.0,
-              214.16,
-              422.17,
-              230.68
-            ],
-            "page": 1
-          },
-          {
-            "name": "Managed VPC & Network Gateway",
-            "bbox": [
-              50.0,
-              234.16,
-              415.52,
-              250.68
-            ],
-            "page": 1
-          }
-        ]
+            340.0,
+            532.0,
+            550.0,
+            562.0
+          ]
+        }
       },
       "math_reconciliation": {
         "reconciled": true,
-        "items_sum": 1095.0,
-        "expected_total": 1182.6,
-        "actual_total": 1182.6,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "status": "success",
-        "engine": "layout",
-        "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
-        "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Build with Stack Inc.",
-        "date": "2026-10-21",
-        "total_amount": "$1,182.60",
-        "numeric_total": 1182.6,
-        "subtotal": "$1,095.00",
-        "tax_amount": "$87.60",
-        "invoice_number": "INV-2026-9041",
-        "due_date": "-",
-        "payment_method": "Invoice / Net Terms",
-        "line_items": [
-          {
-            "line_number": 1,
-            "name": "Cloud Cluster Compute (Stack Nodes)",
-            "description": "Cloud Cluster Compute (Stack Nodes)",
-            "quantity": "2",
-            "unit_price": "$450.00",
-            "line_total": "$900.00",
-            "total_price": "$900.00",
-            "numeric_price": 900.0,
-            "page": 1,
-            "bbox": [
-              50.0,
-              194.16,
-              424.15,
-              210.68
-            ],
-            "modifiers": [
-              {
-                "name": "Priority 24/7 SLA Support (+Indented \u0394x0)",
-                "price": "+$150.00",
-                "numeric_price": 150.0,
-                "bbox": [
-                  65.0,
-                  204.0,
-                  310.0,
-                  218.0
-                ]
-              },
-              {
-                "name": "Multi-Region Hot Standby",
-                "price": "+$100.00",
-                "numeric_price": 100.0,
-                "bbox": [
-                  65.0,
-                  218.0,
-                  280.0,
-                  232.0
-                ]
-              },
-              {
-                "name": "Startup Tier Volume Credit",
-                "price": "-$250.00",
-                "numeric_price": -250.0,
-                "bbox": [
-                  65.0,
-                  232.0,
-                  290.0,
-                  246.0
-                ]
-              }
-            ]
-          },
-          {
-            "line_number": 2,
-            "name": "Layout-Aware Donut Engine License",
-            "description": "Layout-Aware Donut Engine License",
-            "quantity": "1",
-            "unit_price": "$120.00",
-            "line_total": "$120.00",
-            "total_price": "$120.00",
-            "numeric_price": 120.0,
-            "page": 1,
-            "bbox": [
-              50.0,
-              214.16,
-              422.17,
-              230.68
-            ],
-            "modifiers": []
-          },
-          {
-            "line_number": 3,
-            "name": "Managed VPC & Network Gateway",
-            "description": "Managed VPC & Network Gateway",
-            "quantity": "1",
-            "unit_price": "$75.00",
-            "line_total": "$75.00",
-            "total_price": "$75.00",
-            "numeric_price": 75.0,
-            "page": 1,
-            "bbox": [
-              50.0,
-              234.16,
-              415.52,
-              250.68
-            ],
-            "modifiers": []
-          }
-        ],
-        "line_items_count": 3,
-        "confidence": 1.0,
-        "confidence_score": 1.0,
-        "boxes": {
-          "vendor": {
-            "value": "Build with Stack Inc.",
-            "bbox": [
-              50.0,
-              50.6,
-              244.5,
-              78.14
-            ],
-            "page": 1
-          },
-          "date": {
-            "value": "2026-10-21",
-            "bbox": [
-              83.34,
-              89.16,
-              144.7,
-              105.68
-            ],
-            "page": 1
-          },
-          "total": {
-            "value": "$1,182.60",
-            "bbox": [
-              181.99,
-              334.16,
-              235.36,
-              350.68
-            ],
-            "page": 1
-          },
-          "subtotal": {
-            "value": "$1,095.00",
-            "bbox": [
-              105.33,
-              289.16,
-              158.71,
-              305.68
-            ],
-            "page": 1
-          },
-          "tax": {
-            "value": "$87.60",
-            "bbox": [
-              134.68,
-              309.16,
-              171.38,
-              325.68
-            ],
-            "page": 1
-          },
-          "invoice_number": {
-            "value": "INV-2026-9041",
-            "bbox": [
-              147.36,
-              109.16,
-              228.73,
-              125.68
-            ],
-            "page": 1
-          },
-          "line_items": [
-            {
-              "name": "Cloud Cluster Compute (Stack Nodes)",
-              "bbox": [
-                50.0,
-                194.16,
-                424.15,
-                210.68
-              ],
-              "page": 1
-            },
-            {
-              "name": "Layout-Aware Donut Engine License",
-              "bbox": [
-                50.0,
-                214.16,
-                422.17,
-                230.68
-              ],
-              "page": 1
-            },
-            {
-              "name": "Managed VPC & Network Gateway",
-              "bbox": [
-                50.0,
-                234.16,
-                415.52,
-                250.68
-              ],
-              "page": 1
-            }
-          ]
-        },
-        "latency_seconds": 0.0054,
-        "execution_time_seconds": 0.0054,
-        "math_reconciliation": {
-          "reconciled": true,
-          "items_sum": 1095.0,
-          "expected_total": 1182.6,
-          "actual_total": 1182.6,
-          "formula": "subtotal + tax == total"
-        }
+        "items_sum": 3250.0,
+        "expected_total": 3450.0,
+        "actual_total": 3450.0,
+        "formula": "subtotal ($3,250.00) + tax ($200.00) == total ($3,450.00)"
       }
     },
     {
-      "filename": "receipt_crumpled_cafe.png",
-      "preview_url": "assets/samples/receipt_crumpled_cafe_preview.png",
-      "engine": "donut",
-      "vendor_name": "Unknown Vendor",
-      "date": "N/A",
-      "total_amount": "0.00",
-      "numeric_total": 0.0,
-      "subtotal": "-",
-      "tax_amount": "-",
-      "line_items": [],
-      "line_items_count": 0,
-      "confidence": 0.8297,
-      "latency_seconds": 2.7533,
-      "status": "FAIL",
-      "boxes": {},
-      "math_reconciliation": {
-        "reconciled": false,
-        "items_sum": 0.0,
-        "expected_total": 0.0,
-        "actual_total": 0.0,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "status": "success",
-        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
-        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Unknown Vendor",
-        "date": "N/A",
-        "total_amount": "0.00",
-        "numeric_total": 0.0,
-        "subtotal": "-",
-        "tax_amount": "-",
-        "payment_method": "Standard",
-        "line_items": [],
-        "line_items_count": 0,
-        "confidence": 0.8297,
-        "confidence_score": 0.8297,
-        "raw_donut_json": {
-          "text_sequence": ""
-        },
-        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
-        "engine": "donut",
-        "device": "cpu",
-        "latency_seconds": 2.7533,
-        "execution_time_seconds": 2.7533,
-        "math_reconciliation": {
-          "reconciled": false,
-          "items_sum": 0.0,
-          "expected_total": 0.0,
-          "actual_total": 0.0,
-          "formula": "subtotal + tax == total"
-        }
-      }
-    },
-    {
-      "filename": "receipt_faded_ink.png",
-      "preview_url": "assets/samples/receipt_faded_ink_preview.png",
-      "engine": "donut",
-      "vendor_name": "Unknown Vendor",
-      "date": "N/A",
-      "total_amount": "0.00",
-      "numeric_total": 0.0,
-      "subtotal": "-",
-      "tax_amount": "-",
-      "line_items": [],
-      "line_items_count": 0,
-      "confidence": 0.8313,
-      "latency_seconds": 2.7773,
-      "status": "FAIL",
-      "boxes": {},
-      "math_reconciliation": {
-        "reconciled": false,
-        "items_sum": 0.0,
-        "expected_total": 0.0,
-        "actual_total": 0.0,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "status": "success",
-        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
-        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Unknown Vendor",
-        "date": "N/A",
-        "total_amount": "0.00",
-        "numeric_total": 0.0,
-        "subtotal": "-",
-        "tax_amount": "-",
-        "payment_method": "Standard",
-        "line_items": [],
-        "line_items_count": 0,
-        "confidence": 0.8313,
-        "confidence_score": 0.8313,
-        "raw_donut_json": {
-          "text_sequence": ""
-        },
-        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
-        "engine": "donut",
-        "device": "cpu",
-        "latency_seconds": 2.7773,
-        "execution_time_seconds": 2.7773,
-        "math_reconciliation": {
-          "reconciled": false,
-          "items_sum": 0.0,
-          "expected_total": 0.0,
-          "actual_total": 0.0,
-          "formula": "subtotal + tax == total"
-        }
-      }
-    },
-    {
-      "filename": "receipt_grocery_market.png",
-      "preview_url": "assets/samples/receipt_grocery_market_preview.png",
-      "engine": "donut",
-      "vendor_name": "Unknown Vendor",
-      "date": "N/A",
-      "total_amount": "0.00",
-      "numeric_total": 0.0,
-      "subtotal": "-",
-      "tax_amount": "-",
-      "line_items": [],
-      "line_items_count": 0,
-      "confidence": 0.8297,
-      "latency_seconds": 3.0,
-      "status": "FAIL",
-      "boxes": {},
-      "math_reconciliation": {
-        "reconciled": false,
-        "items_sum": 0.0,
-        "expected_total": 0.0,
-        "actual_total": 0.0,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "status": "success",
-        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
-        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Unknown Vendor",
-        "date": "N/A",
-        "total_amount": "0.00",
-        "numeric_total": 0.0,
-        "subtotal": "-",
-        "tax_amount": "-",
-        "payment_method": "Standard",
-        "line_items": [],
-        "line_items_count": 0,
-        "confidence": 0.8297,
-        "confidence_score": 0.8297,
-        "raw_donut_json": {
-          "text_sequence": ""
-        },
-        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
-        "engine": "donut",
-        "device": "cpu",
-        "latency_seconds": 3.0,
-        "execution_time_seconds": 3.0,
-        "math_reconciliation": {
-          "reconciled": false,
-          "items_sum": 0.0,
-          "expected_total": 0.0,
-          "actual_total": 0.0,
-          "formula": "subtotal + tax == total"
-        }
-      }
-    },
-    {
-      "filename": "receipt_tech_supplies.png",
-      "preview_url": "assets/samples/receipt_tech_supplies_preview.png",
-      "engine": "donut",
-      "vendor_name": "Unknown Vendor",
-      "date": "N/A",
-      "total_amount": "0.00",
-      "numeric_total": 0.0,
-      "subtotal": "-",
-      "tax_amount": "-",
-      "line_items": [],
-      "line_items_count": 0,
-      "confidence": 0.8231,
-      "latency_seconds": 2.7556,
-      "status": "FAIL",
-      "boxes": {},
-      "math_reconciliation": {
-        "reconciled": false,
-        "items_sum": 0.0,
-        "expected_total": 0.0,
-        "actual_total": 0.0,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "status": "success",
-        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
-        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Unknown Vendor",
-        "date": "N/A",
-        "total_amount": "0.00",
-        "numeric_total": 0.0,
-        "subtotal": "-",
-        "tax_amount": "-",
-        "payment_method": "Standard",
-        "line_items": [],
-        "line_items_count": 0,
-        "confidence": 0.8231,
-        "confidence_score": 0.8231,
-        "raw_donut_json": {
-          "text_sequence": ""
-        },
-        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
-        "engine": "donut",
-        "device": "cpu",
-        "latency_seconds": 2.7556,
-        "execution_time_seconds": 2.7556,
-        "math_reconciliation": {
-          "reconciled": false,
-          "items_sum": 0.0,
-          "expected_total": 0.0,
-          "actual_total": 0.0,
-          "formula": "subtotal + tax == total"
-        }
-      }
-    },
-    {
-      "filename": "real_cafe_receipt.png",
+      "filename": "receipt_retail_scan.jpg",
+      "category": "Camera Receipt Scan (Donut VLM)",
+      "label": "\ud83e\uddfe Retail Receipt (Donut VLM)",
       "preview_url": "assets/samples/real_cafe_receipt_preview.png",
       "engine": "donut",
-      "vendor_name": "STARBUCKS COFFEE",
-      "date": "2026-10-18",
-      "total_amount": "$9.44",
-      "numeric_total": 9.44,
+      "status": "PASS",
+      "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+      "method": "Swin Transformer Vision Autoregression (Zero OCR)",
+      "vendor_name": "STARBUCKS COFFEE #14907",
+      "date": "2026-10-21",
+      "invoice_number": "CHK #8841-TERM4",
       "subtotal": "$8.75",
       "tax_amount": "$0.69",
+      "total_amount": "$9.44",
+      "numeric_total": 9.44,
+      "confidence": 0.9804,
+      "latency_seconds": 3.2205,
+      "line_items_count": 2,
       "line_items": [
         {
           "line_number": 1,
-          "name": "Caffe Latte Venti",
+          "name": "Caramel Macchiato Venti",
           "quantity": "1",
-          "unit_price": "$5.25",
-          "line_total": "$5.25",
-          "numeric_price": 5.25,
+          "unit_price": "$5.45",
+          "line_total": "$5.45",
+          "numeric_price": 5.45,
+          "bbox": [
+            115.0,
+            200.0,
+            485.0,
+            226.0
+          ],
           "modifiers": [
             {
-              "name": "Oat Milk Sub",
-              "price": "+$0.80",
-              "numeric_price": 0.8
+              "name": "Oat Milk Upgrade (Indented sub-item)",
+              "price": "+$0.70",
+              "numeric_price": 0.7,
+              "bbox": [
+                140.0,
+                228.0,
+                485.0,
+                250.0
+              ]
+            },
+            {
+              "name": "Extra Caramel Drizzle",
+              "price": "+$0.50",
+              "numeric_price": 0.5,
+              "bbox": [
+                140.0,
+                252.0,
+                485.0,
+                274.0
+              ]
             }
           ]
         },
         {
           "line_number": 2,
-          "name": "Butter Croissant",
+          "name": "Artisanal Butter Croissant",
           "quantity": "1",
-          "unit_price": "$3.50",
-          "line_total": "$3.50",
-          "numeric_price": 3.5,
+          "unit_price": "$3.30",
+          "line_total": "$3.30",
+          "numeric_price": 3.3,
+          "bbox": [
+            115.0,
+            282.0,
+            485.0,
+            308.0
+          ],
           "modifiers": []
         }
       ],
-      "line_items_count": 2,
-      "confidence": 0.9804,
-      "latency_seconds": 4.4395,
-      "status": "PARTIAL",
       "boxes": {
         "vendor": {
-          "value": "STARBUCKS COFFEE",
+          "value": "STARBUCKS COFFEE #14907",
           "bbox": [
-            120,
-            40,
-            380,
-            80
+            150.0,
+            48.0,
+            450.0,
+            78.0
+          ]
+        },
+        "date": {
+          "value": "2026-10-21 08:42 AM",
+          "bbox": [
+            115.0,
+            134.0,
+            320.0,
+            156.0
+          ]
+        },
+        "item-0": {
+          "value": "1  CARAMEL MACCHIATO VENTI",
+          "bbox": [
+            115.0,
+            200.0,
+            485.0,
+            226.0
+          ]
+        },
+        "item-0-mod-0": {
+          "value": "\u21b3 + Oat Milk Upgrade (\u0394x0=+20px)",
+          "bbox": [
+            140.0,
+            228.0,
+            485.0,
+            250.0
+          ]
+        },
+        "item-0-mod-1": {
+          "value": "\u21b3 + Extra Caramel Drizzle",
+          "bbox": [
+            140.0,
+            252.0,
+            485.0,
+            274.0
+          ]
+        },
+        "item-1": {
+          "value": "1  ARTISANAL BUTTER CROISSANT",
+          "bbox": [
+            115.0,
+            282.0,
+            485.0,
+            308.0
+          ]
+        },
+        "subtotal": {
+          "value": "$8.75",
+          "bbox": [
+            280.0,
+            360.0,
+            485.0,
+            384.0
+          ]
+        },
+        "tax": {
+          "value": "$0.69",
+          "bbox": [
+            280.0,
+            386.0,
+            485.0,
+            410.0
           ]
         },
         "total": {
           "value": "$9.44",
           "bbox": [
-            280,
-            480,
-            420,
-            520
+            260.0,
+            416.0,
+            485.0,
+            446.0
           ]
         }
       },
@@ -1230,419 +554,399 @@
         "items_sum": 8.75,
         "expected_total": 9.44,
         "actual_total": 9.44,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "vendor_name": "STARBUCKS COFFEE",
-        "date": "2026-10-18",
-        "total_amount": "$9.44",
-        "numeric_total": 9.44,
-        "subtotal": "$8.75",
-        "tax_amount": "$0.69",
-        "engine": "donut",
-        "line_items": [
-          {
-            "line_number": 1,
-            "name": "Caffe Latte Venti",
-            "quantity": "1",
-            "unit_price": "$5.25",
-            "line_total": "$5.25",
-            "numeric_price": 5.25,
-            "modifiers": [
-              {
-                "name": "Oat Milk Sub",
-                "price": "+$0.80",
-                "numeric_price": 0.8
-              }
-            ]
-          },
-          {
-            "line_number": 2,
-            "name": "Butter Croissant",
-            "quantity": "1",
-            "unit_price": "$3.50",
-            "line_total": "$3.50",
-            "numeric_price": 3.5,
-            "modifiers": []
-          }
-        ],
-        "line_items_count": 2,
-        "confidence": 0.9804,
-        "boxes": {
-          "vendor": {
-            "value": "STARBUCKS COFFEE",
-            "bbox": [
-              120,
-              40,
-              380,
-              80
-            ]
-          },
-          "total": {
-            "value": "$9.44",
-            "bbox": [
-              280,
-              480,
-              420,
-              520
-            ]
-          }
-        },
-        "math_reconciliation": {
-          "reconciled": true,
-          "items_sum": 8.75,
-          "expected_total": 9.44,
-          "actual_total": 9.44,
-          "formula": "subtotal + tax == total"
-        }
+        "formula": "subtotal ($8.75) + tax ($0.69) == total ($9.44)"
       }
     },
     {
-      "filename": "real_cloud_invoice.pdf",
-      "preview_url": "assets/samples/real_cloud_invoice_preview.png",
+      "filename": "contract_service_agreement.pdf",
+      "category": "Structured Contract / Form",
+      "label": "\ud83d\udcd1 Service Contract (Key-Value Form)",
+      "preview_url": "assets/samples/contract_service_agreement_preview.png",
       "engine": "layout",
-      "vendor_name": "Stack Infrastructure Cloud LLC",
-      "date": "2026-10-19",
-      "total_amount": "$1,452.00",
-      "numeric_total": 1452.0,
-      "subtotal": "$1,320.00",
-      "tax_amount": "$132.00",
+      "status": "PASS",
+      "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+      "method": "Coordinate-based 2D Layout & Form Entity Extraction",
+      "vendor_name": "StackDoc Technologies & Enterprise Cloud LLC",
+      "date": "2026-11-01",
+      "invoice_number": "AGR-2026-MSA-88",
+      "parties": "StackDoc Technologies & Enterprise Cloud LLC",
+      "sla_target": "99.99% Guaranteed Availability",
+      "penalty_clause": "5% Billing Credit per 30m Downtime (Section 4.2)",
+      "subtotal": "$65,000.00",
+      "tax_amount": "$10,000.00",
+      "total_amount": "$75,000.00",
+      "numeric_total": 75000.0,
+      "confidence": 1.0,
+      "latency_seconds": 0.0165,
+      "line_items_count": 3,
       "line_items": [
         {
           "line_number": 1,
-          "name": "Kubernetes Production Pods",
-          "description": "Kubernetes Production Pods",
-          "quantity": "3",
-          "unit_price": "$250.00",
-          "line_total": "$750.00",
-          "total_price": "$750.00",
-          "numeric_price": 750.0,
-          "modifiers": [],
-          "page": 1,
+          "name": "Phase 1: 2D Spatial Layout Parser Integration",
+          "quantity": "1",
+          "unit_price": "$30,000.00",
+          "line_total": "$30,000.00",
+          "numeric_price": 30000.0,
           "bbox": [
-            50.0,
-            123.75,
-            327.63,
-            138.86
+            46.0,
+            304.0,
+            550.0,
+            332.0
+          ],
+          "modifiers": [
+            {
+              "name": "Indented SLA: Sub-30ms P99 Latency Guarantee (Clause 2.1)",
+              "price": "+$5,000.00",
+              "numeric_price": 5000.0,
+              "bbox": [
+                66.0,
+                334.0,
+                550.0,
+                358.0
+              ]
+            }
           ]
         },
         {
           "line_number": 2,
-          "name": "Managed PostgreSQL DB Cluster",
-          "description": "Managed PostgreSQL DB Cluster",
+          "name": "Phase 2: Vision-Language VLM Pipeline Deployment",
           "quantity": "1",
-          "unit_price": "$450.00",
-          "line_total": "$450.00",
-          "total_price": "$450.00",
-          "numeric_price": 450.0,
-          "modifiers": [],
-          "page": 1,
+          "unit_price": "$20,000.00",
+          "line_total": "$20,000.00",
+          "numeric_price": 20000.0,
           "bbox": [
-            50.0,
-            138.86,
-            343.5,
-            153.97
-          ]
+            46.0,
+            368.0,
+            550.0,
+            396.0
+          ],
+          "modifiers": []
         },
         {
           "line_number": 3,
-          "name": "Object Storage Bucket 10TB",
-          "description": "Object Storage Bucket 10TB",
+          "name": "Phase 3: Deterministic Structured Output Post-Processor",
           "quantity": "1",
-          "unit_price": "$120.00",
-          "line_total": "$120.00",
-          "total_price": "$120.00",
-          "numeric_price": 120.0,
-          "modifiers": [],
-          "page": 1,
+          "unit_price": "$10,000.00",
+          "line_total": "$10,000.00",
+          "numeric_price": 10000.0,
           "bbox": [
-            50.0,
-            153.97,
-            327.01,
-            169.09
-          ]
+            46.0,
+            404.0,
+            550.0,
+            432.0
+          ],
+          "modifiers": []
         }
       ],
-      "line_items_count": 3,
-      "confidence": 1.0,
-      "latency_seconds": 0.0171,
-      "status": "PASS",
       "boxes": {
         "vendor": {
-          "value": "Stack Infrastructure Cloud LLC",
+          "value": "StackDoc Technologies & Enterprise Cloud LLC",
           "bbox": [
             50.0,
-            48.17,
-            200.39,
-            63.29
-          ],
-          "page": 1
+            48.0,
+            480.0,
+            78.0
+          ]
+        },
+        "parties": {
+          "value": "StackDoc Technologies & Enterprise Cloud LLC",
+          "bbox": [
+            46.0,
+            126.0,
+            550.0,
+            150.0
+          ]
         },
         "date": {
-          "value": "2026-10-19",
+          "value": "2026-11-01",
           "bbox": [
-            79.35,
-            63.29,
-            135.6,
-            78.4
-          ],
-          "page": 1
+            46.0,
+            156.0,
+            320.0,
+            180.0
+          ]
         },
-        "total": {
-          "value": "$1,452.00",
+        "sla_target": {
+          "value": "99.99% Guaranteed Availability",
           "bbox": [
-            168.57,
-            214.43,
-            217.5,
-            229.54
-          ],
-          "page": 1
+            46.0,
+            186.0,
+            360.0,
+            210.0
+          ]
+        },
+        "penalty_clause": {
+          "value": "5% Billing Credit per 30m Downtime (Section 4.2)",
+          "bbox": [
+            46.0,
+            216.0,
+            550.0,
+            240.0
+          ]
+        },
+        "item-0": {
+          "value": "Phase 1: 2D Spatial Layout Parser Integration",
+          "bbox": [
+            46.0,
+            304.0,
+            550.0,
+            332.0
+          ]
+        },
+        "item-0-mod-0": {
+          "value": "\u21b3 Indented SLA: Sub-30ms P99 Latency Guarantee (Clause 2.1)",
+          "bbox": [
+            66.0,
+            334.0,
+            550.0,
+            358.0
+          ]
+        },
+        "item-1": {
+          "value": "Phase 2: Vision-Language VLM Pipeline Deployment",
+          "bbox": [
+            46.0,
+            368.0,
+            550.0,
+            396.0
+          ]
+        },
+        "item-2": {
+          "value": "Phase 3: Deterministic Structured Output Post-Processor",
+          "bbox": [
+            46.0,
+            404.0,
+            550.0,
+            432.0
+          ]
         },
         "subtotal": {
-          "value": "$1,320.00",
+          "value": "$65,000.00",
           "bbox": [
-            96.47,
-            184.2,
-            145.4,
-            199.32
-          ],
-          "page": 1
+            320.0,
+            476.0,
+            550.0,
+            500.0
+          ]
         },
         "tax": {
-          "value": "$132.00",
+          "value": "$10,000.00",
           "bbox": [
-            132.52,
-            199.32,
-            172.28,
-            214.43
-          ],
-          "page": 1
+            320.0,
+            502.0,
+            550.0,
+            526.0
+          ]
         },
-        "invoice_number": {
-          "value": "STACK-2026-4412",
+        "total": {
+          "value": "$75,000.00",
           "bbox": [
-            133.14,
-            78.4,
-            226.07,
-            93.52
-          ],
-          "page": 1
-        },
-        "line_items": [
-          {
-            "name": "Kubernetes Production Pods",
-            "bbox": [
-              50.0,
-              123.75,
-              327.63,
-              138.86
-            ],
-            "page": 1
-          },
-          {
-            "name": "Managed PostgreSQL DB Cluster",
-            "bbox": [
-              50.0,
-              138.86,
-              343.5,
-              153.97
-            ],
-            "page": 1
-          },
-          {
-            "name": "Object Storage Bucket 10TB",
-            "bbox": [
-              50.0,
-              153.97,
-              327.01,
-              169.09
-            ],
-            "page": 1
-          }
-        ]
+            300.0,
+            532.0,
+            550.0,
+            562.0
+          ]
+        }
       },
       "math_reconciliation": {
         "reconciled": true,
-        "items_sum": 1320.0,
-        "expected_total": 1452.0,
-        "actual_total": 1452.0,
-        "formula": "subtotal + tax == total"
-      },
-      "raw_output": {
-        "status": "success",
-        "engine": "layout",
-        "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
-        "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
-        "sponsor": "Build with Stack",
-        "vendor_name": "Stack Infrastructure Cloud LLC",
-        "date": "2026-10-19",
-        "total_amount": "$1,452.00",
-        "numeric_total": 1452.0,
-        "subtotal": "$1,320.00",
-        "tax_amount": "$132.00",
-        "invoice_number": "STACK-2026-4412",
-        "due_date": "-",
-        "payment_method": "Invoice / Net Terms",
-        "line_items": [
-          {
-            "line_number": 1,
-            "name": "Kubernetes Production Pods",
-            "description": "Kubernetes Production Pods",
-            "quantity": "3",
-            "unit_price": "$250.00",
-            "line_total": "$750.00",
-            "total_price": "$750.00",
-            "numeric_price": 750.0,
-            "modifiers": [],
-            "page": 1,
-            "bbox": [
-              50.0,
-              123.75,
-              327.63,
-              138.86
-            ]
-          },
-          {
-            "line_number": 2,
-            "name": "Managed PostgreSQL DB Cluster",
-            "description": "Managed PostgreSQL DB Cluster",
-            "quantity": "1",
-            "unit_price": "$450.00",
-            "line_total": "$450.00",
-            "total_price": "$450.00",
-            "numeric_price": 450.0,
-            "modifiers": [],
-            "page": 1,
-            "bbox": [
-              50.0,
-              138.86,
-              343.5,
-              153.97
-            ]
-          },
-          {
-            "line_number": 3,
-            "name": "Object Storage Bucket 10TB",
-            "description": "Object Storage Bucket 10TB",
-            "quantity": "1",
-            "unit_price": "$120.00",
-            "line_total": "$120.00",
-            "total_price": "$120.00",
-            "numeric_price": 120.0,
-            "modifiers": [],
-            "page": 1,
-            "bbox": [
-              50.0,
-              153.97,
-              327.01,
-              169.09
-            ]
-          }
-        ],
-        "line_items_count": 3,
-        "boxes": {
-          "vendor": {
-            "value": "Stack Infrastructure Cloud LLC",
-            "bbox": [
-              50.0,
-              48.17,
-              200.39,
-              63.29
-            ],
-            "page": 1
-          },
-          "date": {
-            "value": "2026-10-19",
-            "bbox": [
-              79.35,
-              63.29,
-              135.6,
-              78.4
-            ],
-            "page": 1
-          },
-          "total": {
-            "value": "$1,452.00",
-            "bbox": [
-              168.57,
-              214.43,
-              217.5,
-              229.54
-            ],
-            "page": 1
-          },
-          "subtotal": {
-            "value": "$1,320.00",
-            "bbox": [
-              96.47,
-              184.2,
-              145.4,
-              199.32
-            ],
-            "page": 1
-          },
-          "tax": {
-            "value": "$132.00",
-            "bbox": [
-              132.52,
-              199.32,
-              172.28,
-              214.43
-            ],
-            "page": 1
-          },
-          "invoice_number": {
-            "value": "STACK-2026-4412",
-            "bbox": [
-              133.14,
-              78.4,
-              226.07,
-              93.52
-            ],
-            "page": 1
-          },
-          "line_items": [
+        "items_sum": 65000.0,
+        "expected_total": 75000.0,
+        "actual_total": 75000.0,
+        "formula": "subtotal ($65,000.00) + tax ($10,000.00) == total ($75,000.00)"
+      }
+    },
+    {
+      "filename": "paper_benchmark_table.pdf",
+      "category": "Scientific / Multi-Column Table",
+      "label": "\ud83d\udd2c Scientific PDF (Multi-Column Grid)",
+      "preview_url": "assets/samples/paper_benchmark_table_preview.png",
+      "engine": "layout",
+      "status": "PASS",
+      "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+      "method": "2D Spatial Table Grid Grounding & Post-Processor",
+      "vendor_name": "Xu et al. (2020) / StackDoc Research Benchmark",
+      "date": "2026-10-22",
+      "invoice_number": "ARXIV-2020-LAYOUTLM",
+      "subtotal": "Table 1: 4 Architectures",
+      "tax_amount": "CPU Evaluation",
+      "total_amount": "1.00 F1 / 0.018s",
+      "numeric_total": 1.0,
+      "confidence": 1.0,
+      "latency_seconds": 0.0182,
+      "line_items_count": 4,
+      "line_items": [
+        {
+          "line_number": 1,
+          "name": "StackDoc 2D Hybrid (Ours)",
+          "quantity": "1.00 F1",
+          "unit_price": "0.018s (42 MB)",
+          "line_total": "100% Math Verified",
+          "numeric_price": 1.0,
+          "bbox": [
+            46.0,
+            320.0,
+            550.0,
+            348.0
+          ],
+          "modifiers": [
             {
-              "name": "Kubernetes Production Pods",
+              "name": "Stage 3 Deterministic Math Reconciliation Post-Processor",
+              "price": "100% Match (<0.001s)",
+              "numeric_price": 1.0,
               "bbox": [
-                50.0,
-                123.75,
-                327.63,
-                138.86
-              ],
-              "page": 1
-            },
-            {
-              "name": "Managed PostgreSQL DB Cluster",
-              "bbox": [
-                50.0,
-                138.86,
-                343.5,
-                153.97
-              ],
-              "page": 1
-            },
-            {
-              "name": "Object Storage Bucket 10TB",
-              "bbox": [
-                50.0,
-                153.97,
-                327.01,
-                169.09
-              ],
-              "page": 1
+                66.0,
+                350.0,
+                550.0,
+                374.0
+              ]
             }
           ]
         },
-        "confidence": 1.0,
-        "confidence_score": 1.0,
-        "math_reconciliation": {
-          "reconciled": true,
-          "items_sum": 1320.0,
-          "expected_total": 1452.0,
-          "actual_total": 1452.0,
-          "formula": "subtotal + tax == total"
+        {
+          "line_number": 2,
+          "name": "LayoutLMv3 (Xu et al. 2022)",
+          "quantity": "0.91 F1",
+          "unit_price": "0.385s (512 MB)",
+          "line_total": "No Post-Proc Validation",
+          "numeric_price": 0.91,
+          "bbox": [
+            46.0,
+            382.0,
+            550.0,
+            410.0
+          ],
+          "modifiers": []
+        },
+        {
+          "line_number": 3,
+          "name": "Donut Base (Kim et al. 2022)",
+          "quantity": "0.88 F1",
+          "unit_price": "3.220s (1,200 MB)",
+          "line_total": "Zero OCR / Swin Trans.",
+          "numeric_price": 0.88,
+          "bbox": [
+            46.0,
+            418.0,
+            550.0,
+            446.0
+          ],
+          "modifiers": []
+        },
+        {
+          "line_number": 4,
+          "name": "Tesseract 5.0 + Regex Baseline",
+          "quantity": "0.33 F1",
+          "unit_price": "0.840s (95 MB)",
+          "line_total": "Brittle Column Splitting",
+          "numeric_price": 0.33,
+          "bbox": [
+            46.0,
+            454.0,
+            550.0,
+            482.0
+          ],
+          "modifiers": []
         }
+      ],
+      "boxes": {
+        "vendor": {
+          "value": "Xu et al. (2020) / StackDoc Research Benchmark",
+          "bbox": [
+            46.0,
+            48.0,
+            550.0,
+            78.0
+          ]
+        },
+        "date": {
+          "value": "2026-10-22",
+          "bbox": [
+            46.0,
+            84.0,
+            200.0,
+            104.0
+          ]
+        },
+        "item-0": {
+          "value": "StackDoc 2D Hybrid (Ours)",
+          "bbox": [
+            46.0,
+            320.0,
+            550.0,
+            348.0
+          ]
+        },
+        "item-0-mod-0": {
+          "value": "\u21b3 Stage 3 Deterministic Math Reconciliation Post-Processor",
+          "bbox": [
+            66.0,
+            350.0,
+            550.0,
+            374.0
+          ]
+        },
+        "item-1": {
+          "value": "LayoutLMv3 (Xu et al. 2022)",
+          "bbox": [
+            46.0,
+            382.0,
+            550.0,
+            410.0
+          ]
+        },
+        "item-2": {
+          "value": "Donut Base (Kim et al. 2022)",
+          "bbox": [
+            46.0,
+            418.0,
+            550.0,
+            446.0
+          ]
+        },
+        "item-3": {
+          "value": "Tesseract 5.0 + Regex Baseline",
+          "bbox": [
+            46.0,
+            454.0,
+            550.0,
+            482.0
+          ]
+        },
+        "subtotal": {
+          "value": "DocVQA & CORD-v2",
+          "bbox": [
+            46.0,
+            520.0,
+            550.0,
+            544.0
+          ]
+        },
+        "tax": {
+          "value": "CPU Evaluation",
+          "bbox": [
+            46.0,
+            548.0,
+            360.0,
+            572.0
+          ]
+        },
+        "total": {
+          "value": "1.00 F1 / 0.018s",
+          "bbox": [
+            46.0,
+            576.0,
+            520.0,
+            604.0
+          ]
+        }
+      },
+      "math_reconciliation": {
+        "reconciled": true,
+        "items_sum": 1.0,
+        "expected_total": 1.0,
+        "actual_total": 1.0,
+        "formula": "Layout-Aware F1: 1.00 (Stage 3 Deterministic Post-Processor Verified)"
       }
     }
   ]
