@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StackDoc - Layout-Aware Document Understanding</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --code-bg: #090d16;
+      --radius: 8px;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --surface-border: #e2e8f0;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --code-bg: #f1f5f9;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header Nav */
+    header.site-header {
+      border-bottom: 1px solid var(--surface-border);
+      background: var(--surface);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .brand-pill {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    /* Hero Section */
+    section.hero {
+      padding: 60px 0 40px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+      color: #818cf8;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .hero p.problem-statement {
+      max-width: 820px;
+      margin: 0 auto 24px;
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--surface-border);
+    }
+    .btn-outline:hover { background: var(--surface); }
+
+    /* Section Headers */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    /* Diagram */
+    .diagram-container {
+      width: 100%;
+      overflow-x: auto;
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .diagram-svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Gallery */
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .sample-card {
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sample-preview {
+      height: 200px;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--surface-border);
+      position: relative;
+    }
+
+    .sample-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .sample-tag {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--surface-border);
+    }
+
+    .sample-tag.donut { color: #38bdf8; border-color: #0284c7; }
+    .sample-tag.layout { color: #a855f7; border-color: #7c3aed; }
+
+    .sample-info {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sample-title {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .meta-row span { color: var(--text-muted); }
+    .meta-row strong { color: var(--text); }
+
+    .sample-items-summary {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--surface-border);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Tables */
+    .table-responsive {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    table.data-table th, table.data-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    table.data-table th {
+      background: rgba(0, 0, 0, 0.15);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 10px;
+    }
+
+    .status-badge.pass { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .status-badge.partial { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .status-badge.fail { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+    /* Comparison Table */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .comp-col {
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .comp-col h3 {
+      font-size: 15px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .comp-item {
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+
+    .comp-item strong {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    /* Code Block */
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      overflow-x: auto;
+      color: #38bdf8;
+      margin-bottom: 16px;
+    }
+
+    /* Roadmap */
+    .roadmap-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .roadmap-item {
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 13px;
+    }
+
+    .roadmap-item h4 {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #818cf8;
+    }
+
+    /* Footer */
+    footer.site-footer {
+      border-top: 1px solid var(--surface-border);
+      padding: 24px 0;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    footer.site-footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer.site-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="site-header">
+    <div class="container nav-row">
+      <a href="#" class="brand-logo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+        </svg>
+        StackDoc
+        <span class="brand-pill">Layout-Aware AI</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#pipeline">Architecture</a></li>
+        <li><a href="#evaluation">Evaluation</a></li>
+        <li><a href="#gallery">Samples</a></li>
+        <li><a href="#comparison">Donut vs LayoutLMv3</a></li>
+        <li><a href="#quickstart">Quickstart</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span>FOSS Forge Hackathon • Sponsored by Build with Stack</span>
+      </div>
+      <h1>Layout-Aware Document Understanding</h1>
+      <p class="problem-statement">
+        Extract structured data from messy real documents using text, 2D layout, and visual signals.
+        Handles multi-page tables, key-value pairs, and nested structures with zero brittle plain-text OCR dependencies.
+      </p>
+      <div class="hero-cta">
+        <a href="#gallery" class="btn btn-primary">Inspect Extraction Gallery</a>
+        <a href="#quickstart" class="btn btn-outline">Run Locally</a>
+        <a href="https://github.com/anything14907-byte/Foss" target="_blank" class="btn btn-outline">GitHub Repository</a>
+      </div>
+    </section>
+
+    <!-- Pipeline Architecture -->
+    <section id="pipeline" class="section-card">
+      <h2 class="section-title">Dual-Engine Layout-Aware Architecture</h2>
+      <p class="section-desc">
+        StackDoc dynamically routes inputs: Digital PDFs utilize coordinate-based 2D geometric clustering via PyMuPDF; scanned receipts and images route through the Donut Vision-Language Transformer.
+      </p>
+      <div class="diagram-container">
+        <svg class="diagram-svg" viewBox="0 0 960 280" width="960" height="280" xmlns="http://www.w3.org/2000/svg">
+          <!-- Input Document -->
+          <rect x="20" y="90" width="160" height="90" rx="8" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
+          <text x="100" y="125" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Input Document</text>
+          <text x="100" y="145" fill="#94a3b8" font-size="11" text-anchor="middle">PDF or Image File</text>
+          <text x="100" y="162" fill="#818cf8" font-size="10" text-anchor="middle">POST /parse-document</text>
+
+          <!-- Branch arrows -->
+          <path d="M 180 120 L 250 65" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+          <path d="M 180 150 L 250 205" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+
+          <!-- Top Branch: Layout Engine (Digital PDF) -->
+          <rect x="260" y="20" width="220" height="90" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+          <text x="370" y="48" fill="#c084fc" font-size="12" font-weight="700" text-anchor="middle">Engine 1: Layout Extractor</text>
+          <text x="370" y="68" fill="#f8fafc" font-size="11" text-anchor="middle">PyMuPDF 2D Coordinate Engine</text>
+          <text x="370" y="86" fill="#94a3b8" font-size="10" text-anchor="middle">Multi-page Tables & Word Bboxes</text>
+
+          <!-- Bottom Branch: Donut VLM (Images/Scans) -->
+          <rect x="260" y="160" width="220" height="90" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+          <text x="370" y="188" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">Engine 2: Donut VLM</text>
+          <text x="370" y="208" fill="#f8fafc" font-size="11" text-anchor="middle">Swin Encoder + mBART Decoder</text>
+          <text x="370" y="226" fill="#94a3b8" font-size="10" text-anchor="middle">Token Probability Confidence</text>
+
+          <!-- Converge arrows -->
+          <path d="M 480 65 L 550 120" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+          <path d="M 480 205 L 550 150" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+
+          <!-- Post Processor -->
+          <rect x="560" y="90" width="180" height="90" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+          <text x="650" y="125" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">Schema Normalizer</text>
+          <text x="650" y="145" fill="#f8fafc" font-size="11" text-anchor="middle">Post-Processor & Validation</text>
+          <text x="650" y="162" fill="#94a3b8" font-size="10" text-anchor="middle">Vendor, Date, Total, Items</text>
+
+          <path d="M 740 135 L 790 135" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+
+          <!-- Outputs -->
+          <rect x="800" y="90" width="140" height="90" rx="8" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
+          <text x="870" y="125" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle">Structured Output</text>
+          <text x="870" y="145" fill="#818cf8" font-size="10" text-anchor="middle">Clean JSON & Badges</text>
+          <text x="870" y="162" fill="#a855f7" font-size="10" text-anchor="middle">Canvas Bounding Boxes</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Evaluation Benchmark Scorecard -->
+    <section id="evaluation" class="section-card">
+      <h2 class="section-title">Real Evaluation Scorecard</h2>
+      <p class="section-desc">
+        Metrics computed directly by <code>evaluation/evaluate.py</code>. Warm-up inferences are excluded; confidence values reflect true token transition probabilities; table line items are evaluated via difflib fuzzy matching.
+      </p>
+
+      <div class="table-responsive">
+        <table class="data-table" id="evalScorecardTable">
+          <thead>
+            <tr>
+              <th>Document</th>
+              <th>Engine</th>
+              <th>Vendor Match</th>
+              <th>Date Match</th>
+              <th>Total Match</th>
+              <th>Line Items F1</th>
+              <th>Confidence</th>
+              <th>Latency</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="evalTableBody">
+            <tr><td colspan="9" style="text-align:center; padding: 20px;">Loading evaluation results...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Extraction Gallery -->
+    <section id="gallery" class="section-card">
+      <h2 class="section-title">Document Extraction Gallery</h2>
+      <p class="section-desc">
+        Sample document inputs rendered beside their real extracted key-values and itemized table data.
+      </p>
+      <div class="gallery-grid" id="galleryGrid">
+        <!-- Rendered by client script from embedded JSON -->
+      </div>
+    </section>
+
+    <!-- Donut vs LayoutLMv3 Comparison -->
+    <section id="comparison" class="section-card">
+      <h2 class="section-title">Architectural Analysis: Donut vs LayoutLMv3</h2>
+      <p class="section-desc">
+        An honest technical breakdown of trade-offs between Vision-Language Transformers and OCR-reliant multi-modal architectures.
+      </p>
+      <div class="comparison-grid">
+        <div class="comp-col">
+          <h3 style="color: #38bdf8;">Donut (Document Understanding Transformer)</h3>
+          <div class="comp-item">
+            <strong>Architecture</strong>
+            End-to-end Vision-Language Model (Swin Transformer + mBART). Takes raw image pixels directly.
+          </div>
+          <div class="comp-item">
+            <strong>OCR Pipeline</strong>
+            <span>Zero OCR dependency. No external binaries (Tesseract/EasyOCR) or bounding-box generators needed.</span>
+          </div>
+          <div class="comp-item">
+            <strong>Strengths</strong>
+            Immune to OCR word-splitting bugs; fast single-pass inference on receipts; compact deployment footprint.
+          </div>
+          <div class="comp-item">
+            <strong>Limitations & Hallucination Risk</strong>
+            Autoregressive decoder can hallucinate repeated or fabricated tokens on out-of-distribution layouts; pretrained CORD checkpoint is tailored for receipts rather than full-page complex tax forms.
+          </div>
+        </div>
+
+        <div class="comp-col">
+          <h3 style="color: #a855f7;">LayoutLMv3 (Multi-Modal Transformer)</h3>
+          <div class="comp-item">
+            <strong>Architecture</strong>
+            Multi-modal text + 2D coordinate embeddings + visual patch tokens.
+          </div>
+          <div class="comp-item">
+            <strong>OCR Pipeline</strong>
+            <span>Strict dependency on external OCR pipeline to compute word-level coordinates <code>(x0, y0, x1, y1)</code> prior to forward pass.</span>
+          </div>
+          <div class="comp-item">
+            <strong>Strengths</strong>
+            Grounds extraction directly in OCR word boxes; strong token classification accuracy on complex dense forms.
+          </div>
+          <div class="comp-item">
+            <strong>Limitations & Vulnerability</strong>
+            Pipeline fails catastrophically if OCR produces errors or misses words; heavy environment setup; coordinate preprocessing overhead.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Limitations & Roadmap -->
+    <section class="section-card">
+      <h2 class="section-title">Known Limitations & Engineering Roadmap</h2>
+      <p class="section-desc">
+        Engineering transparency regarding current scope and upcoming releases.
+      </p>
+      <div class="roadmap-list">
+        <div class="roadmap-item">
+          <h4>Receipt-Trained Weights</h4>
+          <p>The CORD checkpoint specializes in receipt semantics. Digital invoices with complex corporate headers require fine-tuning or the coordinate layout path.</p>
+        </div>
+        <div class="roadmap-item">
+          <h4>Multi-Page Tables</h4>
+          <p>Digital PDF tables continuing across pages are supported via coordinate alignment; extending autoregressive VLM attention across multi-page scans is in progress.</p>
+        </div>
+        <div class="roadmap-item">
+          <h4>Nested Item Structures</h4>
+          <p>Modifiers (e.g. customized toppings or nested SKU discounts) are currently flattened into primary item lines.</p>
+        </div>
+        <div class="roadmap-item">
+          <h4>Handwriting Recognition</h4>
+          <p>Faded handwriting and handwritten totals are outside the scope of current digital & receipt models.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quickstart & Run Locally -->
+    <section id="quickstart" class="section-card">
+      <h2 class="section-title">Run It Locally</h2>
+      <p class="section-desc">
+        Complete reproducible instructions to run the FastAPI backend, evaluation suite, and Chrome extension.
+      </p>
+
+      <pre class="code-block"><code># 1. Clone repository and set up virtual environment
+git clone https://github.com/anything14907-byte/Foss.git
+cd Foss
+python3 -m venv venv
+source venv/bin/activate
+
+# 2. Install pinned dependencies (including dev pytest)
+pip install -r requirements.txt
+
+# 3. Pre-cache model weights for 100% offline hackathon execution
+python scripts/download_model.py
+
+# 4. Start local FastAPI backend (runs on http://localhost:8000)
+bash scripts/start_server.sh
+
+# 5. Run evaluation benchmark & pytest
+python evaluate.py
+pytest tests/</code></pre>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>
+        <strong>StackDoc</strong> • Sponsored by <a href="https://buildwithstack.com" target="_blank">Build with Stack</a> for FOSS Forge.
+      </p>
+      <p style="margin-top: 4px;">
+        Repository: <a href="https://github.com/anything14907-byte/Foss" target="_blank">github.com/anything14907-byte/Foss</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- EMBEDDED_DATA_START -->
+  <script id="siteData" type="application/json">
+{
+  "timestamp": "2026-10-22T02:53:54Z",
+  "summary": {
+    "directory": "data/eval",
+    "total_documents": 6,
+    "pass_count": 2,
+    "vendor_accuracy": 33.3,
+    "date_accuracy": 33.3,
+    "total_accuracy": 33.3,
+    "mean_f1": 0.3333,
+    "mean_confidence": 0.8856,
+    "mean_latency_seconds": 3.2171,
+    "items": [
+      {
+        "filename": "invoice_consulting_services.pdf",
+        "engine": "layout",
+        "vendor_correct": true,
+        "date_correct": true,
+        "total_correct": true,
+        "line_items_f1": 1.0,
+        "confidence": 1.0,
+        "latency_seconds": 0.023,
+        "status": "PASS",
+        "extracted": {
+          "vendor_name": "Global Systems Consulting",
+          "date": "2026-10-14",
+          "total_amount": "$2,450.00",
+          "numeric_total": 2450.0,
+          "line_items_count": 3
+        }
+      },
+      {
+        "filename": "invoice_enterprise_stack.pdf",
+        "engine": "layout",
+        "vendor_correct": true,
+        "date_correct": true,
+        "total_correct": true,
+        "line_items_f1": 1.0,
+        "confidence": 1.0,
+        "latency_seconds": 0.0038,
+        "status": "PASS",
+        "extracted": {
+          "vendor_name": "Build with Stack Inc.",
+          "date": "2026-10-21",
+          "total_amount": "$1,182.60",
+          "numeric_total": 1182.6,
+          "line_items_count": 3
+        }
+      },
+      {
+        "filename": "receipt_crumpled_cafe.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8297,
+        "latency_seconds": 10.5086,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      },
+      {
+        "filename": "receipt_faded_ink.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8313,
+        "latency_seconds": 2.8111,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      },
+      {
+        "filename": "receipt_grocery_market.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8297,
+        "latency_seconds": 3.1875,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      },
+      {
+        "filename": "receipt_tech_supplies.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8231,
+        "latency_seconds": 2.7687,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      }
+    ]
+  },
+  "real_summary": {
+    "directory": "data/eval_real",
+    "total_documents": 2,
+    "pass_count": 1,
+    "vendor_accuracy": 100.0,
+    "date_accuracy": 50.0,
+    "total_accuracy": 100.0,
+    "mean_f1": 0.5,
+    "mean_confidence": 0.9902,
+    "mean_latency_seconds": 2.2283,
+    "items": [
+      {
+        "filename": "real_cafe_receipt.png",
+        "engine": "donut",
+        "vendor_correct": true,
+        "date_correct": false,
+        "total_correct": true,
+        "line_items_f1": 0.0,
+        "confidence": 0.9804,
+        "latency_seconds": 4.4395,
+        "status": "PARTIAL",
+        "extracted": {
+          "vendor_name": "STARBUCKS COFFEE",
+          "date": "N/A",
+          "total_amount": "$9.44",
+          "numeric_total": 9.44,
+          "line_items_count": 2
+        }
+      },
+      {
+        "filename": "real_cloud_invoice.pdf",
+        "engine": "layout",
+        "vendor_correct": true,
+        "date_correct": true,
+        "total_correct": true,
+        "line_items_f1": 1.0,
+        "confidence": 1.0,
+        "latency_seconds": 0.0171,
+        "status": "PASS",
+        "extracted": {
+          "vendor_name": "Stack Infrastructure Cloud LLC",
+          "date": "2026-10-19",
+          "total_amount": "$1,452.00",
+          "numeric_total": 1452.0,
+          "line_items_count": 3
+        }
+      }
+    ]
+  },
+  "samples": [
+    {
+      "filename": "invoice_consulting_services.pdf",
+      "preview_url": "assets/samples/invoice_consulting_services_preview.png",
+      "engine": "layout",
+      "vendor_name": "Global Systems Consulting",
+      "date": "2026-10-14",
+      "total_amount": "$2,450.00",
+      "numeric_total": 2450.0,
+      "subtotal": "$1,095.00",
+      "tax_amount": "$87.60",
+      "line_items": [
+        {
+          "line_number": 1,
+          "name": "Cloud Cluster Compute (Stack Nodes)",
+          "description": "Cloud Cluster Compute (Stack Nodes)",
+          "quantity": "2",
+          "unit_price": "$450.00",
+          "line_total": "$900.00",
+          "total_price": "$900.00",
+          "numeric_price": 900.0,
+          "page": 1,
+          "bbox": [
+            50.0,
+            194.16,
+            424.15,
+            210.68
+          ]
+        },
+        {
+          "line_number": 2,
+          "name": "Layout-Aware Donut Engine License",
+          "description": "Layout-Aware Donut Engine License",
+          "quantity": "1",
+          "unit_price": "$120.00",
+          "line_total": "$120.00",
+          "total_price": "$120.00",
+          "numeric_price": 120.0,
+          "page": 1,
+          "bbox": [
+            50.0,
+            214.16,
+            422.17,
+            230.68
+          ]
+        },
+        {
+          "line_number": 3,
+          "name": "Managed VPC & Network Gateway",
+          "description": "Managed VPC & Network Gateway",
+          "quantity": "1",
+          "unit_price": "$75.00",
+          "line_total": "$75.00",
+          "total_price": "$75.00",
+          "numeric_price": 75.0,
+          "page": 1,
+          "bbox": [
+            50.0,
+            234.16,
+            415.52,
+            250.68
+          ]
+        }
+      ],
+      "line_items_count": 3,
+      "confidence": 1.0,
+      "latency_seconds": 0.0138,
+      "status": "PASS",
+      "raw_output": {
+        "status": "success",
+        "engine": "layout",
+        "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+        "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
+        "sponsor": "Build with Stack",
+        "vendor_name": "Global Systems Consulting",
+        "date": "2026-10-14",
+        "total_amount": "$2,450.00",
+        "numeric_total": 2450.0,
+        "subtotal": "$1,095.00",
+        "tax_amount": "$87.60",
+        "invoice_number": "INV-2026-9041",
+        "due_date": "-",
+        "payment_method": "Invoice / Net Terms",
+        "line_items": [
+          {
+            "line_number": 1,
+            "name": "Cloud Cluster Compute (Stack Nodes)",
+            "description": "Cloud Cluster Compute (Stack Nodes)",
+            "quantity": "2",
+            "unit_price": "$450.00",
+            "line_total": "$900.00",
+            "total_price": "$900.00",
+            "numeric_price": 900.0,
+            "page": 1,
+            "bbox": [
+              50.0,
+              194.16,
+              424.15,
+              210.68
+            ]
+          },
+          {
+            "line_number": 2,
+            "name": "Layout-Aware Donut Engine License",
+            "description": "Layout-Aware Donut Engine License",
+            "quantity": "1",
+            "unit_price": "$120.00",
+            "line_total": "$120.00",
+            "total_price": "$120.00",
+            "numeric_price": 120.0,
+            "page": 1,
+            "bbox": [
+              50.0,
+              214.16,
+              422.17,
+              230.68
+            ]
+          },
+          {
+            "line_number": 3,
+            "name": "Managed VPC & Network Gateway",
+            "description": "Managed VPC & Network Gateway",
+            "quantity": "1",
+            "unit_price": "$75.00",
+            "line_total": "$75.00",
+            "total_price": "$75.00",
+            "numeric_price": 75.0,
+            "page": 1,
+            "bbox": [
+              50.0,
+              234.16,
+              415.52,
+              250.68
+            ]
+          }
+        ],
+        "line_items_count": 3,
+        "confidence": 1.0,
+        "confidence_score": 1.0,
+        "boxes": {
+          "vendor": {
+            "value": "Global Systems Consulting",
+            "bbox": [
+              50.0,
+              50.6,
+              310.06,
+              78.14
+            ],
+            "page": 1
+          },
+          "date": {
+            "value": "2026-10-14",
+            "bbox": [
+              83.34,
+              89.16,
+              144.7,
+              105.68
+            ],
+            "page": 1
+          },
+          "total": {
+            "value": "$2,450.00",
+            "bbox": [
+              181.99,
+              334.16,
+              235.36,
+              350.68
+            ],
+            "page": 1
+          },
+          "subtotal": {
+            "value": "$1,095.00",
+            "bbox": [
+              105.33,
+              289.16,
+              158.71,
+              305.68
+            ],
+            "page": 1
+          },
+          "tax": {
+            "value": "$87.60",
+            "bbox": [
+              134.68,
+              309.16,
+              171.38,
+              325.68
+            ],
+            "page": 1
+          },
+          "invoice_number": {
+            "value": "INV-2026-9041",
+            "bbox": [
+              147.36,
+              109.16,
+              228.73,
+              125.68
+            ],
+            "page": 1
+          },
+          "line_items": [
+            {
+              "name": "Cloud Cluster Compute (Stack Nodes)",
+              "bbox": [
+                50.0,
+                194.16,
+                424.15,
+                210.68
+              ],
+              "page": 1
+            },
+            {
+              "name": "Layout-Aware Donut Engine License",
+              "bbox": [
+                50.0,
+                214.16,
+                422.17,
+                230.68
+              ],
+              "page": 1
+            },
+            {
+              "name": "Managed VPC & Network Gateway",
+              "bbox": [
+                50.0,
+                234.16,
+                415.52,
+                250.68
+              ],
+              "page": 1
+            }
+          ]
+        },
+        "latency_seconds": 0.0138,
+        "execution_time_seconds": 0.0138
+      }
+    },
+    {
+      "filename": "invoice_enterprise_stack.pdf",
+      "preview_url": "assets/samples/invoice_enterprise_stack_preview.png",
+      "engine": "layout",
+      "vendor_name": "Build with Stack Inc.",
+      "date": "2026-10-21",
+      "total_amount": "$1,182.60",
+      "numeric_total": 1182.6,
+      "subtotal": "$1,095.00",
+      "tax_amount": "$87.60",
+      "line_items": [
+        {
+          "line_number": 1,
+          "name": "Cloud Cluster Compute (Stack Nodes)",
+          "description": "Cloud Cluster Compute (Stack Nodes)",
+          "quantity": "2",
+          "unit_price": "$450.00",
+          "line_total": "$900.00",
+          "total_price": "$900.00",
+          "numeric_price": 900.0,
+          "page": 1,
+          "bbox": [
+            50.0,
+            194.16,
+            424.15,
+            210.68
+          ]
+        },
+        {
+          "line_number": 2,
+          "name": "Layout-Aware Donut Engine License",
+          "description": "Layout-Aware Donut Engine License",
+          "quantity": "1",
+          "unit_price": "$120.00",
+          "line_total": "$120.00",
+          "total_price": "$120.00",
+          "numeric_price": 120.0,
+          "page": 1,
+          "bbox": [
+            50.0,
+            214.16,
+            422.17,
+            230.68
+          ]
+        },
+        {
+          "line_number": 3,
+          "name": "Managed VPC & Network Gateway",
+          "description": "Managed VPC & Network Gateway",
+          "quantity": "1",
+          "unit_price": "$75.00",
+          "line_total": "$75.00",
+          "total_price": "$75.00",
+          "numeric_price": 75.0,
+          "page": 1,
+          "bbox": [
+            50.0,
+            234.16,
+            415.52,
+            250.68
+          ]
+        }
+      ],
+      "line_items_count": 3,
+      "confidence": 1.0,
+      "latency_seconds": 0.0054,
+      "status": "PASS",
+      "raw_output": {
+        "status": "success",
+        "engine": "layout",
+        "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+        "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
+        "sponsor": "Build with Stack",
+        "vendor_name": "Build with Stack Inc.",
+        "date": "2026-10-21",
+        "total_amount": "$1,182.60",
+        "numeric_total": 1182.6,
+        "subtotal": "$1,095.00",
+        "tax_amount": "$87.60",
+        "invoice_number": "INV-2026-9041",
+        "due_date": "-",
+        "payment_method": "Invoice / Net Terms",
+        "line_items": [
+          {
+            "line_number": 1,
+            "name": "Cloud Cluster Compute (Stack Nodes)",
+            "description": "Cloud Cluster Compute (Stack Nodes)",
+            "quantity": "2",
+            "unit_price": "$450.00",
+            "line_total": "$900.00",
+            "total_price": "$900.00",
+            "numeric_price": 900.0,
+            "page": 1,
+            "bbox": [
+              50.0,
+              194.16,
+              424.15,
+              210.68
+            ]
+          },
+          {
+            "line_number": 2,
+            "name": "Layout-Aware Donut Engine License",
+            "description": "Layout-Aware Donut Engine License",
+            "quantity": "1",
+            "unit_price": "$120.00",
+            "line_total": "$120.00",
+            "total_price": "$120.00",
+            "numeric_price": 120.0,
+            "page": 1,
+            "bbox": [
+              50.0,
+              214.16,
+              422.17,
+              230.68
+            ]
+          },
+          {
+            "line_number": 3,
+            "name": "Managed VPC & Network Gateway",
+            "description": "Managed VPC & Network Gateway",
+            "quantity": "1",
+            "unit_price": "$75.00",
+            "line_total": "$75.00",
+            "total_price": "$75.00",
+            "numeric_price": 75.0,
+            "page": 1,
+            "bbox": [
+              50.0,
+              234.16,
+              415.52,
+              250.68
+            ]
+          }
+        ],
+        "line_items_count": 3,
+        "confidence": 1.0,
+        "confidence_score": 1.0,
+        "boxes": {
+          "vendor": {
+            "value": "Build with Stack Inc.",
+            "bbox": [
+              50.0,
+              50.6,
+              244.5,
+              78.14
+            ],
+            "page": 1
+          },
+          "date": {
+            "value": "2026-10-21",
+            "bbox": [
+              83.34,
+              89.16,
+              144.7,
+              105.68
+            ],
+            "page": 1
+          },
+          "total": {
+            "value": "$1,182.60",
+            "bbox": [
+              181.99,
+              334.16,
+              235.36,
+              350.68
+            ],
+            "page": 1
+          },
+          "subtotal": {
+            "value": "$1,095.00",
+            "bbox": [
+              105.33,
+              289.16,
+              158.71,
+              305.68
+            ],
+            "page": 1
+          },
+          "tax": {
+            "value": "$87.60",
+            "bbox": [
+              134.68,
+              309.16,
+              171.38,
+              325.68
+            ],
+            "page": 1
+          },
+          "invoice_number": {
+            "value": "INV-2026-9041",
+            "bbox": [
+              147.36,
+              109.16,
+              228.73,
+              125.68
+            ],
+            "page": 1
+          },
+          "line_items": [
+            {
+              "name": "Cloud Cluster Compute (Stack Nodes)",
+              "bbox": [
+                50.0,
+                194.16,
+                424.15,
+                210.68
+              ],
+              "page": 1
+            },
+            {
+              "name": "Layout-Aware Donut Engine License",
+              "bbox": [
+                50.0,
+                214.16,
+                422.17,
+                230.68
+              ],
+              "page": 1
+            },
+            {
+              "name": "Managed VPC & Network Gateway",
+              "bbox": [
+                50.0,
+                234.16,
+                415.52,
+                250.68
+              ],
+              "page": 1
+            }
+          ]
+        },
+        "latency_seconds": 0.0054,
+        "execution_time_seconds": 0.0054
+      }
+    },
+    {
+      "filename": "receipt_crumpled_cafe.png",
+      "preview_url": "assets/samples/receipt_crumpled_cafe_preview.png",
+      "engine": "donut",
+      "vendor_name": "Unknown Vendor",
+      "date": "N/A",
+      "total_amount": "0.00",
+      "numeric_total": 0.0,
+      "subtotal": "-",
+      "tax_amount": "-",
+      "line_items": [],
+      "line_items_count": 0,
+      "confidence": 0.8297,
+      "latency_seconds": 2.7533,
+      "status": "FAIL",
+      "raw_output": {
+        "status": "success",
+        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+        "sponsor": "Build with Stack",
+        "vendor_name": "Unknown Vendor",
+        "date": "N/A",
+        "total_amount": "0.00",
+        "numeric_total": 0.0,
+        "subtotal": "-",
+        "tax_amount": "-",
+        "payment_method": "Standard",
+        "line_items": [],
+        "line_items_count": 0,
+        "confidence": 0.8297,
+        "confidence_score": 0.8297,
+        "raw_donut_json": {
+          "text_sequence": ""
+        },
+        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+        "engine": "donut",
+        "device": "cpu",
+        "latency_seconds": 2.7533,
+        "execution_time_seconds": 2.7533
+      }
+    },
+    {
+      "filename": "receipt_faded_ink.png",
+      "preview_url": "assets/samples/receipt_faded_ink_preview.png",
+      "engine": "donut",
+      "vendor_name": "Unknown Vendor",
+      "date": "N/A",
+      "total_amount": "0.00",
+      "numeric_total": 0.0,
+      "subtotal": "-",
+      "tax_amount": "-",
+      "line_items": [],
+      "line_items_count": 0,
+      "confidence": 0.8313,
+      "latency_seconds": 2.7773,
+      "status": "FAIL",
+      "raw_output": {
+        "status": "success",
+        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+        "sponsor": "Build with Stack",
+        "vendor_name": "Unknown Vendor",
+        "date": "N/A",
+        "total_amount": "0.00",
+        "numeric_total": 0.0,
+        "subtotal": "-",
+        "tax_amount": "-",
+        "payment_method": "Standard",
+        "line_items": [],
+        "line_items_count": 0,
+        "confidence": 0.8313,
+        "confidence_score": 0.8313,
+        "raw_donut_json": {
+          "text_sequence": ""
+        },
+        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+        "engine": "donut",
+        "device": "cpu",
+        "latency_seconds": 2.7773,
+        "execution_time_seconds": 2.7773
+      }
+    },
+    {
+      "filename": "receipt_grocery_market.png",
+      "preview_url": "assets/samples/receipt_grocery_market_preview.png",
+      "engine": "donut",
+      "vendor_name": "Unknown Vendor",
+      "date": "N/A",
+      "total_amount": "0.00",
+      "numeric_total": 0.0,
+      "subtotal": "-",
+      "tax_amount": "-",
+      "line_items": [],
+      "line_items_count": 0,
+      "confidence": 0.8297,
+      "latency_seconds": 3.0,
+      "status": "FAIL",
+      "raw_output": {
+        "status": "success",
+        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+        "sponsor": "Build with Stack",
+        "vendor_name": "Unknown Vendor",
+        "date": "N/A",
+        "total_amount": "0.00",
+        "numeric_total": 0.0,
+        "subtotal": "-",
+        "tax_amount": "-",
+        "payment_method": "Standard",
+        "line_items": [],
+        "line_items_count": 0,
+        "confidence": 0.8297,
+        "confidence_score": 0.8297,
+        "raw_donut_json": {
+          "text_sequence": ""
+        },
+        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+        "engine": "donut",
+        "device": "cpu",
+        "latency_seconds": 3.0,
+        "execution_time_seconds": 3.0
+      }
+    },
+    {
+      "filename": "receipt_tech_supplies.png",
+      "preview_url": "assets/samples/receipt_tech_supplies_preview.png",
+      "engine": "donut",
+      "vendor_name": "Unknown Vendor",
+      "date": "N/A",
+      "total_amount": "0.00",
+      "numeric_total": 0.0,
+      "subtotal": "-",
+      "tax_amount": "-",
+      "line_items": [],
+      "line_items_count": 0,
+      "confidence": 0.8231,
+      "latency_seconds": 2.7556,
+      "status": "FAIL",
+      "raw_output": {
+        "status": "success",
+        "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+        "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+        "sponsor": "Build with Stack",
+        "vendor_name": "Unknown Vendor",
+        "date": "N/A",
+        "total_amount": "0.00",
+        "numeric_total": 0.0,
+        "subtotal": "-",
+        "tax_amount": "-",
+        "payment_method": "Standard",
+        "line_items": [],
+        "line_items_count": 0,
+        "confidence": 0.8231,
+        "confidence_score": 0.8231,
+        "raw_donut_json": {
+          "text_sequence": ""
+        },
+        "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+        "engine": "donut",
+        "device": "cpu",
+        "latency_seconds": 2.7556,
+        "execution_time_seconds": 2.7556
+      }
+    }
+  ]
+}
+  </script>
+  <!-- EMBEDDED_DATA_END -->
+
+  <script>
+    // Client script to render Evaluation Table and Sample Gallery from JSON
+    document.addEventListener("DOMContentLoaded", () => {
+      let data = null;
+
+      // 1. Try reading embedded script tag (works seamlessly when opened via file://)
+      const embeddedTag = document.getElementById("siteData");
+      if (embeddedTag && embeddedTag.textContent.trim()) {
+        try {
+          data = JSON.parse(embeddedTag.textContent);
+        } catch (e) {
+          console.warn("Failed to parse embedded siteData:", e);
+        }
+      }
+
+      // 2. Fallback to fetch assets/results.json if hosted on web server
+      if (!data) {
+        fetch("assets/results.json")
+          .then(res => res.json())
+          .then(json => renderPage(json))
+          .catch(err => {
+            console.warn("Could not fetch assets/results.json:", err);
+          });
+      } else {
+        renderPage(data);
+      }
+    });
+
+    function renderPage(data) {
+      if (!data) return;
+
+      // Render Evaluation Table
+      const evalBody = document.getElementById("evalTableBody");
+      const evalItems = (data.summary && data.summary.items) || [];
+      if (evalBody && evalItems.length > 0) {
+        evalBody.innerHTML = "";
+        evalItems.forEach(item => {
+          const tr = document.createElement("tr");
+          const vOk = item.vendor_correct ? "<span style='color:#10b981;'>YES</span>" : "<span style='color:#ef4444;'>NO</span>";
+          const dOk = item.date_correct ? "<span style='color:#10b981;'>YES</span>" : "<span style='color:#ef4444;'>NO</span>";
+          const tOk = item.total_correct ? "<span style='color:#10b981;'>YES</span>" : "<span style='color:#ef4444;'>NO</span>";
+          const f1Str = item.line_items_f1 !== null && item.line_items_f1 !== undefined ? item.line_items_f1.toFixed(2) : "-";
+          const confStr = item.confidence !== null && item.confidence !== undefined ? Math.round(item.confidence * 100) + "%" : "null";
+          const latStr = item.latency_seconds ? item.latency_seconds.toFixed(4) + "s" : "-";
+          
+          let statusClass = "fail";
+          if (item.status === "PASS") statusClass = "pass";
+          else if (item.status === "PARTIAL") statusClass = "partial";
+
+          tr.innerHTML = `
+            <td><code>${escapeHtml(item.filename)}</code></td>
+            <td><span class="sample-tag ${item.engine}">${escapeHtml(item.engine || 'donut')}</span></td>
+            <td>${vOk}</td>
+            <td>${dOk}</td>
+            <td>${tOk}</td>
+            <td><strong>${f1Str}</strong></td>
+            <td>${confStr}</td>
+            <td>${latStr}</td>
+            <td><span class="status-badge ${statusClass}">${escapeHtml(item.status)}</span></td>
+          `;
+          evalBody.appendChild(tr);
+        });
+      }
+
+      // Render Sample Gallery
+      const galleryGrid = document.getElementById("galleryGrid");
+      const samples = data.samples || [];
+      if (galleryGrid && samples.length > 0) {
+        galleryGrid.innerHTML = "";
+        samples.forEach(s => {
+          const card = document.createElement("div");
+          card.className = "sample-card";
+
+          const totalDisplay = s.total_amount ? (s.total_amount.startsWith("$") ? s.total_amount : "$" + s.total_amount) : "$0.00";
+          const confDisplay = s.confidence !== null && s.confidence !== undefined ? Math.round(s.confidence * 100) + "%" : "N/A";
+          const latDisplay = s.latency_seconds ? s.latency_seconds.toFixed(4) + "s" : "-";
+
+          card.innerHTML = `
+            <div class="sample-preview">
+              <img src="${escapeHtml(s.preview_url)}" alt="${escapeHtml(s.filename)}" loading="lazy" />
+              <span class="sample-tag ${escapeHtml(s.engine)}">${escapeHtml(s.engine.toUpperCase())}</span>
+            </div>
+            <div class="sample-info">
+              <div class="sample-title">${escapeHtml(s.filename)}</div>
+              <div class="meta-row"><span>Vendor:</span> <strong>${escapeHtml(s.vendor_name)}</strong></div>
+              <div class="meta-row"><span>Date:</span> <strong>${escapeHtml(s.date)}</strong></div>
+              <div class="meta-row"><span>Total:</span> <strong style="color:#10b981;">${escapeHtml(totalDisplay)}</strong></div>
+              <div class="meta-row"><span>Confidence:</span> <strong>${escapeHtml(confDisplay)}</strong></div>
+              <div class="meta-row"><span>Latency:</span> <strong>${escapeHtml(latDisplay)}</strong></div>
+              <div class="sample-items-summary">
+                ${s.line_items_count} line item(s) parsed
+              </div>
+            </div>
+          `;
+          galleryGrid.appendChild(card);
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

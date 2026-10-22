@@ -1,0 +1,438 @@
+{
+  "invoice_consulting_services.pdf": {
+    "status": "success",
+    "engine": "layout",
+    "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+    "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
+    "sponsor": "Build with Stack",
+    "vendor_name": "Global Systems Consulting",
+    "date": "2026-10-14",
+    "total_amount": "$2,450.00",
+    "numeric_total": 2450.0,
+    "subtotal": "$1,095.00",
+    "tax_amount": "$87.60",
+    "invoice_number": "INV-2026-9041",
+    "due_date": "-",
+    "payment_method": "Invoice / Net Terms",
+    "line_items": [
+      {
+        "line_number": 1,
+        "name": "Cloud Cluster Compute (Stack Nodes)",
+        "description": "Cloud Cluster Compute (Stack Nodes)",
+        "quantity": "2",
+        "unit_price": "$450.00",
+        "line_total": "$900.00",
+        "total_price": "$900.00",
+        "numeric_price": 900.0,
+        "page": 1,
+        "bbox": [
+          50.0,
+          194.16,
+          424.15,
+          210.68
+        ]
+      },
+      {
+        "line_number": 2,
+        "name": "Layout-Aware Donut Engine License",
+        "description": "Layout-Aware Donut Engine License",
+        "quantity": "1",
+        "unit_price": "$120.00",
+        "line_total": "$120.00",
+        "total_price": "$120.00",
+        "numeric_price": 120.0,
+        "page": 1,
+        "bbox": [
+          50.0,
+          214.16,
+          422.17,
+          230.68
+        ]
+      },
+      {
+        "line_number": 3,
+        "name": "Managed VPC & Network Gateway",
+        "description": "Managed VPC & Network Gateway",
+        "quantity": "1",
+        "unit_price": "$75.00",
+        "line_total": "$75.00",
+        "total_price": "$75.00",
+        "numeric_price": 75.0,
+        "page": 1,
+        "bbox": [
+          50.0,
+          234.16,
+          415.52,
+          250.68
+        ]
+      }
+    ],
+    "line_items_count": 3,
+    "confidence": 1.0,
+    "confidence_score": 1.0,
+    "boxes": {
+      "vendor": {
+        "value": "Global Systems Consulting",
+        "bbox": [
+          50.0,
+          50.6,
+          310.06,
+          78.14
+        ],
+        "page": 1
+      },
+      "date": {
+        "value": "2026-10-14",
+        "bbox": [
+          83.34,
+          89.16,
+          144.7,
+          105.68
+        ],
+        "page": 1
+      },
+      "total": {
+        "value": "$2,450.00",
+        "bbox": [
+          181.99,
+          334.16,
+          235.36,
+          350.68
+        ],
+        "page": 1
+      },
+      "subtotal": {
+        "value": "$1,095.00",
+        "bbox": [
+          105.33,
+          289.16,
+          158.71,
+          305.68
+        ],
+        "page": 1
+      },
+      "tax": {
+        "value": "$87.60",
+        "bbox": [
+          134.68,
+          309.16,
+          171.38,
+          325.68
+        ],
+        "page": 1
+      },
+      "invoice_number": {
+        "value": "INV-2026-9041",
+        "bbox": [
+          147.36,
+          109.16,
+          228.73,
+          125.68
+        ],
+        "page": 1
+      },
+      "line_items": [
+        {
+          "name": "Cloud Cluster Compute (Stack Nodes)",
+          "bbox": [
+            50.0,
+            194.16,
+            424.15,
+            210.68
+          ],
+          "page": 1
+        },
+        {
+          "name": "Layout-Aware Donut Engine License",
+          "bbox": [
+            50.0,
+            214.16,
+            422.17,
+            230.68
+          ],
+          "page": 1
+        },
+        {
+          "name": "Managed VPC & Network Gateway",
+          "bbox": [
+            50.0,
+            234.16,
+            415.52,
+            250.68
+          ],
+          "page": 1
+        }
+      ]
+    },
+    "latency_seconds": 0.0138,
+    "execution_time_seconds": 0.0138
+  },
+  "invoice_enterprise_stack.pdf": {
+    "status": "success",
+    "engine": "layout",
+    "model": "PyMuPDF-LayoutAwareCoordinateExtractor",
+    "method": "Coordinate-based 2D Layout & Table Extraction (Digital PDF)",
+    "sponsor": "Build with Stack",
+    "vendor_name": "Build with Stack Inc.",
+    "date": "2026-10-21",
+    "total_amount": "$1,182.60",
+    "numeric_total": 1182.6,
+    "subtotal": "$1,095.00",
+    "tax_amount": "$87.60",
+    "invoice_number": "INV-2026-9041",
+    "due_date": "-",
+    "payment_method": "Invoice / Net Terms",
+    "line_items": [
+      {
+        "line_number": 1,
+        "name": "Cloud Cluster Compute (Stack Nodes)",
+        "description": "Cloud Cluster Compute (Stack Nodes)",
+        "quantity": "2",
+        "unit_price": "$450.00",
+        "line_total": "$900.00",
+        "total_price": "$900.00",
+        "numeric_price": 900.0,
+        "page": 1,
+        "bbox": [
+          50.0,
+          194.16,
+          424.15,
+          210.68
+        ]
+      },
+      {
+        "line_number": 2,
+        "name": "Layout-Aware Donut Engine License",
+        "description": "Layout-Aware Donut Engine License",
+        "quantity": "1",
+        "unit_price": "$120.00",
+        "line_total": "$120.00",
+        "total_price": "$120.00",
+        "numeric_price": 120.0,
+        "page": 1,
+        "bbox": [
+          50.0,
+          214.16,
+          422.17,
+          230.68
+        ]
+      },
+      {
+        "line_number": 3,
+        "name": "Managed VPC & Network Gateway",
+        "description": "Managed VPC & Network Gateway",
+        "quantity": "1",
+        "unit_price": "$75.00",
+        "line_total": "$75.00",
+        "total_price": "$75.00",
+        "numeric_price": 75.0,
+        "page": 1,
+        "bbox": [
+          50.0,
+          234.16,
+          415.52,
+          250.68
+        ]
+      }
+    ],
+    "line_items_count": 3,
+    "confidence": 1.0,
+    "confidence_score": 1.0,
+    "boxes": {
+      "vendor": {
+        "value": "Build with Stack Inc.",
+        "bbox": [
+          50.0,
+          50.6,
+          244.5,
+          78.14
+        ],
+        "page": 1
+      },
+      "date": {
+        "value": "2026-10-21",
+        "bbox": [
+          83.34,
+          89.16,
+          144.7,
+          105.68
+        ],
+        "page": 1
+      },
+      "total": {
+        "value": "$1,182.60",
+        "bbox": [
+          181.99,
+          334.16,
+          235.36,
+          350.68
+        ],
+        "page": 1
+      },
+      "subtotal": {
+        "value": "$1,095.00",
+        "bbox": [
+          105.33,
+          289.16,
+          158.71,
+          305.68
+        ],
+        "page": 1
+      },
+      "tax": {
+        "value": "$87.60",
+        "bbox": [
+          134.68,
+          309.16,
+          171.38,
+          325.68
+        ],
+        "page": 1
+      },
+      "invoice_number": {
+        "value": "INV-2026-9041",
+        "bbox": [
+          147.36,
+          109.16,
+          228.73,
+          125.68
+        ],
+        "page": 1
+      },
+      "line_items": [
+        {
+          "name": "Cloud Cluster Compute (Stack Nodes)",
+          "bbox": [
+            50.0,
+            194.16,
+            424.15,
+            210.68
+          ],
+          "page": 1
+        },
+        {
+          "name": "Layout-Aware Donut Engine License",
+          "bbox": [
+            50.0,
+            214.16,
+            422.17,
+            230.68
+          ],
+          "page": 1
+        },
+        {
+          "name": "Managed VPC & Network Gateway",
+          "bbox": [
+            50.0,
+            234.16,
+            415.52,
+            250.68
+          ],
+          "page": 1
+        }
+      ]
+    },
+    "latency_seconds": 0.0054,
+    "execution_time_seconds": 0.0054
+  },
+  "receipt_crumpled_cafe.png": {
+    "status": "success",
+    "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+    "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+    "sponsor": "Build with Stack",
+    "vendor_name": "Unknown Vendor",
+    "date": "N/A",
+    "total_amount": "0.00",
+    "numeric_total": 0.0,
+    "subtotal": "-",
+    "tax_amount": "-",
+    "payment_method": "Standard",
+    "line_items": [],
+    "line_items_count": 0,
+    "confidence": 0.8297,
+    "confidence_score": 0.8297,
+    "raw_donut_json": {
+      "text_sequence": ""
+    },
+    "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+    "engine": "donut",
+    "device": "cpu",
+    "latency_seconds": 2.7533,
+    "execution_time_seconds": 2.7533
+  },
+  "receipt_faded_ink.png": {
+    "status": "success",
+    "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+    "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+    "sponsor": "Build with Stack",
+    "vendor_name": "Unknown Vendor",
+    "date": "N/A",
+    "total_amount": "0.00",
+    "numeric_total": 0.0,
+    "subtotal": "-",
+    "tax_amount": "-",
+    "payment_method": "Standard",
+    "line_items": [],
+    "line_items_count": 0,
+    "confidence": 0.8313,
+    "confidence_score": 0.8313,
+    "raw_donut_json": {
+      "text_sequence": ""
+    },
+    "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+    "engine": "donut",
+    "device": "cpu",
+    "latency_seconds": 2.7773,
+    "execution_time_seconds": 2.7773
+  },
+  "receipt_grocery_market.png": {
+    "status": "success",
+    "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+    "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+    "sponsor": "Build with Stack",
+    "vendor_name": "Unknown Vendor",
+    "date": "N/A",
+    "total_amount": "0.00",
+    "numeric_total": 0.0,
+    "subtotal": "-",
+    "tax_amount": "-",
+    "payment_method": "Standard",
+    "line_items": [],
+    "line_items_count": 0,
+    "confidence": 0.8297,
+    "confidence_score": 0.8297,
+    "raw_donut_json": {
+      "text_sequence": ""
+    },
+    "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+    "engine": "donut",
+    "device": "cpu",
+    "latency_seconds": 3.0,
+    "execution_time_seconds": 3.0
+  },
+  "receipt_tech_supplies.png": {
+    "status": "success",
+    "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
+    "method": "Layout-Aware Vision-Language Transformer (No Plain-Text OCR)",
+    "sponsor": "Build with Stack",
+    "vendor_name": "Unknown Vendor",
+    "date": "N/A",
+    "total_amount": "0.00",
+    "numeric_total": 0.0,
+    "subtotal": "-",
+    "tax_amount": "-",
+    "payment_method": "Standard",
+    "line_items": [],
+    "line_items_count": 0,
+    "confidence": 0.8231,
+    "confidence_score": 0.8231,
+    "raw_donut_json": {
+      "text_sequence": ""
+    },
+    "raw_tokens": "<s_cord-v2><s_menu><s_nm>",
+    "engine": "donut",
+    "device": "cpu",
+    "latency_seconds": 2.7556,
+    "execution_time_seconds": 2.7556
+  }
+}

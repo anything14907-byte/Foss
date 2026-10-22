@@ -1,0 +1,36 @@
+{
+  "real_cafe_receipt.png": {
+    "expected_vendor": "STARBUCKS COFFEE",
+    "expected_date": "2026-10-18",
+    "expected_total": 9.44,
+    "expected_items": [
+      {
+        "name": "CAFFE LATTE GRANDE",
+        "price": 4.95
+      },
+      {
+        "name": "BLUEBERRY MUFFIN",
+        "price": 3.75
+      }
+    ]
+  },
+  "real_cloud_invoice.pdf": {
+    "expected_vendor": "Stack Infrastructure Cloud LLC",
+    "expected_date": "2026-10-19",
+    "expected_total": 1452.0,
+    "expected_items": [
+      {
+        "name": "Kubernetes Production Pods",
+        "price": 750.0
+      },
+      {
+        "name": "Managed PostgreSQL DB Cluster",
+        "price": 450.0
+      },
+      {
+        "name": "Object Storage Bucket 10TB",
+        "price": 120.0
+      }
+    ]
+  }
+}

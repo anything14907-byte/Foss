@@ -27,6 +27,8 @@
       </div>
       <div class="header-status">
         <span class="status-indicator" id="statusIndicator"></span>
+        <span class="demo-pill hidden" id="demoBadge">CACHED DEMO</span>
+        <span class="engine-pill hidden" id="engineBadge">Donut</span>
         <span class="sponsor-pill">Build with Stack</span>
       </div>
     </header>
@@ -61,6 +63,16 @@
           <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.webp" class="file-input">
         </div>
 
+        <!-- Mode Selector -->
+        <div class="mode-selector-row">
+          <label for="modeSelect">Engine Mode:</label>
+          <select id="modeSelect" class="mode-select">
+            <option value="auto" selected>Auto (Layout for PDF, Donut for Images)</option>
+            <option value="donut">Donut VLM (Neural Transformer)</option>
+            <option value="layout">Layout Engine (Coordinate-based PDF)</option>
+          </select>
+        </div>
+
         <!-- Backend notice -->
         <div class="info-banner">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -68,7 +80,7 @@
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
-          <span>Processes directly with Donut VLM (No basic plain-text OCR)</span>
+          <span>Extracts with 2D layout semantics & VLM (No plain-text OCR)</span>
         </div>
       </section>
 
@@ -76,7 +88,7 @@
       <section id="loadingSection" class="loading-section hidden">
         <div class="spinner"></div>
         <h3 id="loadingTitle">Analyzing 2D Layout & Text...</h3>
-        <p id="loadingSubtitle">Running Donut Vision-Language Transformer</p>
+        <p id="loadingSubtitle">Running Document Understanding Engine</p>
         <div class="progress-bar-container">
           <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
@@ -108,7 +120,18 @@
           </div>
           <div class="metric-card">
             <span class="metric-label">Confidence</span>
-            <span class="metric-value" id="resConfidence">95%</span>
+            <span class="metric-value" id="resConfidence">100%</span>
+          </div>
+        </div>
+
+        <!-- 2D Layout Canvas Overlay (Digital PDFs) -->
+        <div id="layoutBoxContainer" class="section-block hidden">
+          <div class="block-header">
+            <h3>2D Layout Coordinate Boxes</h3>
+            <button id="toggleBoxesBtn" class="btn-sm">Hide Overlay</button>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="layoutCanvas" width="420" height="200"></canvas>
           </div>
         </div>
 
@@ -151,7 +174,7 @@
             <strong id="resPayment">-</strong>
           </div>
           <div class="meta-item">
-            <span>Time:</span>
+            <span>Latency:</span>
             <strong id="resTime">-</strong>
           </div>
         </div>

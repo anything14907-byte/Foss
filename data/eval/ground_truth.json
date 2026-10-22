@@ -1,38 +1,59 @@
 {
-  "receipt_faded_ink.png": {
-    "expected_vendor": "BLUE BOTTLE COFFEE",
-    "expected_date": "2026-10-18",
-    "expected_total": 17.75,
-    "min_line_items": 2
+  "invoice_enterprise_stack.pdf": {
+    "expected_vendor": "Build with Stack Inc.",
+    "expected_date": "2026-10-21",
+    "expected_total": 1182.60,
+    "expected_items": [
+      {"name": "Cloud Cluster Compute (Stack Nodes)", "price": 900.00},
+      {"name": "Layout-Aware Donut Engine License", "price": 120.00},
+      {"name": "Managed VPC & Network Gateway", "price": 75.00}
+    ]
+  },
+  "invoice_consulting_services.pdf": {
+    "expected_vendor": "Global Systems Consulting",
+    "expected_date": "2026-10-14",
+    "expected_total": 2450.00,
+    "expected_items": [
+      {"name": "Cloud Cluster Compute (Stack Nodes)", "price": 900.00},
+      {"name": "Layout-Aware Donut Engine License", "price": 120.00},
+      {"name": "Managed VPC & Network Gateway", "price": 75.00}
+    ]
   },
   "receipt_crumpled_cafe.png": {
     "expected_vendor": "STACK BISTRO & ESPRESSO",
     "expected_date": "2026-10-20",
-    "expected_total": 16.0,
-    "min_line_items": 2
+    "expected_total": 16.00,
+    "expected_items": [
+      {"name": "Latte Macchiato", "price": 9.00},
+      {"name": "Blueberry Scone", "price": 7.00}
+    ]
+  },
+  "receipt_faded_ink.png": {
+    "expected_vendor": "BLUE BOTTLE COFFEE",
+    "expected_date": "2026-10-18",
+    "expected_total": 17.75,
+    "expected_items": [
+      {"name": "Cold Brew", "price": 5.25},
+      {"name": "Avocado Toast", "price": 12.50}
+    ]
   },
   "receipt_grocery_market.png": {
     "expected_vendor": "ORGANIC WHOLE FOODS",
     "expected_date": "2026-10-19",
     "expected_total": 25.46,
-    "min_line_items": 3
+    "expected_items": [
+      {"name": "Almond Milk", "price": 7.98},
+      {"name": "Organic Bananas", "price": 2.49},
+      {"name": "Dark Roast Coffee", "price": 14.99}
+    ]
   },
   "receipt_tech_supplies.png": {
     "expected_vendor": "MICRO CENTER ELECTRONICS",
     "expected_date": "2026-10-15",
     "expected_total": 54.97,
-    "min_line_items": 2
-  },
-  "invoice_enterprise_stack.pdf": {
-    "expected_vendor": "Build with Stack Inc.",
-    "expected_date": "2026-10-21",
-    "expected_total": 1182.6,
-    "min_line_items": 3
-  },
-  "invoice_consulting_services.pdf": {
-    "expected_vendor": "Global Systems Consulting",
-    "expected_date": "2026-10-14",
-    "expected_total": 2450.0,
-    "min_line_items": 2
+    "expected_items": [
+      {"name": "USB-C Hub Multiport", "price": 34.99},
+      {"name": "HDMI 2.1 Cable", "price": 19.98}
+    ]
   }
 }

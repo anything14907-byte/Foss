@@ -1,0 +1,173 @@
+{
+  "timestamp": "2026-10-22T02:53:54Z",
+  "eval": {
+    "directory": "data/eval",
+    "total_documents": 6,
+    "pass_count": 2,
+    "vendor_accuracy": 33.3,
+    "date_accuracy": 33.3,
+    "total_accuracy": 33.3,
+    "mean_f1": 0.3333,
+    "mean_confidence": 0.8856,
+    "mean_latency_seconds": 3.2171,
+    "items": [
+      {
+        "filename": "invoice_consulting_services.pdf",
+        "engine": "layout",
+        "vendor_correct": true,
+        "date_correct": true,
+        "total_correct": true,
+        "line_items_f1": 1.0,
+        "confidence": 1.0,
+        "latency_seconds": 0.023,
+        "status": "PASS",
+        "extracted": {
+          "vendor_name": "Global Systems Consulting",
+          "date": "2026-10-14",
+          "total_amount": "$2,450.00",
+          "numeric_total": 2450.0,
+          "line_items_count": 3
+        }
+      },
+      {
+        "filename": "invoice_enterprise_stack.pdf",
+        "engine": "layout",
+        "vendor_correct": true,
+        "date_correct": true,
+        "total_correct": true,
+        "line_items_f1": 1.0,
+        "confidence": 1.0,
+        "latency_seconds": 0.0038,
+        "status": "PASS",
+        "extracted": {
+          "vendor_name": "Build with Stack Inc.",
+          "date": "2026-10-21",
+          "total_amount": "$1,182.60",
+          "numeric_total": 1182.6,
+          "line_items_count": 3
+        }
+      },
+      {
+        "filename": "receipt_crumpled_cafe.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8297,
+        "latency_seconds": 10.5086,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      },
+      {
+        "filename": "receipt_faded_ink.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8313,
+        "latency_seconds": 2.8111,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      },
+      {
+        "filename": "receipt_grocery_market.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8297,
+        "latency_seconds": 3.1875,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      },
+      {
+        "filename": "receipt_tech_supplies.png",
+        "engine": "donut",
+        "vendor_correct": false,
+        "date_correct": false,
+        "total_correct": false,
+        "line_items_f1": 0.0,
+        "confidence": 0.8231,
+        "latency_seconds": 2.7687,
+        "status": "FAIL",
+        "extracted": {
+          "vendor_name": "Unknown Vendor",
+          "date": "N/A",
+          "total_amount": "0.00",
+          "numeric_total": 0.0,
+          "line_items_count": 0
+        }
+      }
+    ]
+  },
+  "eval_real": {
+    "directory": "data/eval_real",
+    "total_documents": 2,
+    "pass_count": 1,
+    "vendor_accuracy": 100.0,
+    "date_accuracy": 50.0,
+    "total_accuracy": 100.0,
+    "mean_f1": 0.5,
+    "mean_confidence": 0.9902,
+    "mean_latency_seconds": 2.2283,
+    "items": [
+      {
+        "filename": "real_cafe_receipt.png",
+        "engine": "donut",
+        "vendor_correct": true,
+        "date_correct": false,
+        "total_correct": true,
+        "line_items_f1": 0.0,
+        "confidence": 0.9804,
+        "latency_seconds": 4.4395,
+        "status": "PARTIAL",
+        "extracted": {
+          "vendor_name": "STARBUCKS COFFEE",
+          "date": "N/A",
+          "total_amount": "$9.44",
+          "numeric_total": 9.44,
+          "line_items_count": 2
+        }
+      },
+      {
+        "filename": "real_cloud_invoice.pdf",
+        "engine": "layout",
+        "vendor_correct": true,
+        "date_correct": true,
+        "total_correct": true,
+        "line_items_f1": 1.0,
+        "confidence": 1.0,
+        "latency_seconds": 0.0171,
+        "status": "PASS",
+        "extracted": {
+          "vendor_name": "Stack Infrastructure Cloud LLC",
+          "date": "2026-10-19",
+          "total_amount": "$1,452.00",
+          "numeric_total": 1452.0,
+          "line_items_count": 3
+        }
+      }
+    ]
+  }
+}

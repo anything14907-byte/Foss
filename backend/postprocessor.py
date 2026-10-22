@@ -183,7 +183,7 @@ def normalize_line_items(raw_data: Any) -> List[Dict[str, Any]]:
 def postprocess_donut_output(
     donut_output: Union[Dict[str, Any], str],
     raw_sequence: str = "",
-    confidence_score: float = 0.95
+    confidence: Optional[float] = None
 ) -> Dict[str, Any]:
     """
     Transforms raw Donut token/JSON output into the standardized invoice/receipt schema:
@@ -193,6 +193,7 @@ def postprocess_donut_output(
     - Line Items
     - Subtotal, Tax, Payment Method
     - Layout & Model Metadata
+    - Honest token probability confidence (float 0-1, or None)
     """
     if isinstance(donut_output, str):
         parsed_data = parse_donut_xml_tokens(donut_output)
@@ -245,13 +246,9 @@ def postprocess_donut_output(
     if (num_total is None or num_total == 0) and line_items:
         computed = sum(item["numeric_price"] for item in line_items if item["numeric_price"] is not None)
         if computed > 0:
-            num_total = computed
+            num_total = round(computed, 2)
             total_val = f"{computed:.2f}"
             
-    # Calculate parsing confidence based on completeness
-    detected_fields = sum(1 for f in [vendor_name != "Unknown Vendor", date_val != "N/A", num_total is not None and num_total > 0, len(line_items) > 0])
-    calculated_confidence = round(min(0.99, max(0.60, (detected_fields / 4.0) * 0.4 + confidence_score * 0.6)), 2)
-    
     return {
         "status": "success",
         "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
@@ -266,7 +263,8 @@ def postprocess_donut_output(
         "payment_method": str(payment_method).strip(),
         "line_items": line_items,
         "line_items_count": len(line_items),
-        "confidence_score": calculated_confidence,
+        "confidence": confidence,
+        "confidence_score": confidence,
         "raw_donut_json": parsed_data,
         "raw_tokens": raw_sequence[:500] if raw_sequence else ""
     }

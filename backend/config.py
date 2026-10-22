@@ -3,7 +3,7 @@ import os
 # Resilient torch detection
 try:
     import torch
-    DEVICE_DEFAULT = "cuda" if torch.cuda.is_available() else ("mps" if torch.backends.mps.is_available() else "cpu")
+    DEVICE_DEFAULT = "cuda" if torch.cuda.is_available() else "cpu"
 except ImportError:
     torch = None
     DEVICE_DEFAULT = "cpu"
