@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StackDoc — Layout-Aware Document Understanding (AI/ML Studio)</title>
-  <meta name="description" content="Turn any invoice, receipt, form, or scientific PDF into structured data with real in-browser 2D layout extraction [x0, y0, x1, y1], nested modifier clustering, and deterministic math reconciliation.">
-  <meta property="og:title" content="StackDoc — Layout-Aware Document Understanding">
-  <meta property="og:description" content="Real in-browser 2D spatial coordinate layout extraction, nested modifier clustering, and deterministic math post-processing.">
+  <title>StackDoc: Layout-Aware Document Understanding</title>
+  <meta name="description" content="Dual-engine document understanding: digital vector PDFs via direct coordinate extraction (pdf.js), scans via in-browser Tesseract.js, with 2D layout reconstruction and deterministic math audit.">
+  <meta property="og:title" content="StackDoc: Layout-Aware Document Understanding">
+  <meta property="og:description" content="Extract structured tables, key-value fields, and nested line items using 2D spatial coordinate grounding [x0, y0, x1, y1] and deterministic math verification.">
   <meta property="og:type" content="website">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231d1b17'/%3E%3Cpath d='M8 6h11l5 5v15H8z' fill='%23fffdf8'/%3E%3Cpath d='M19 6v5h5' fill='%23ddd5c4'/%3E%3Crect x='11' y='14' width='10' height='2' rx='1' fill='%23b93815'/%3E%3Crect x='11' y='18' width='10' height='2' rx='1' fill='%23544f45'/%3E%3Crect x='11' y='22' width='6' height='2' rx='1' fill='%23544f45'/%3E%3C/svg%3E">
+  <meta property="og:url" content="https://anything14907-byte.github.io/Foss/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='3' fill='%231b1916'/%3E%3Cpath d='M8 6h11l5 5v15H8z' fill='%23f7f5f0'/%3E%3Cpath d='M19 6v5h5' fill='%23e2dcd2'/%3E%3Crect x='11' y='14' width='10' height='2' rx='1' fill='%23b8381e'/%3E%3Crect x='11' y='18' width='10' height='2' rx='1' fill='%235c564c'/%3E%3Crect x='11' y='22' width='6' height='2' rx='1' fill='%235c564c'/%3E%3C/svg%3E">
 
   <!-- Zero-flash theme initialization -->
   <script>
@@ -19,64 +20,59 @@
         var theme = saved || (prefersDark ? "dark" : "light");
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
-      } catch (e) {
-        var theme = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
-        document.documentElement.dataset.theme = theme;
-        document.documentElement.style.colorScheme = theme;
+      } catch (_) {
+        document.documentElement.dataset.theme = "light";
+        document.documentElement.style.colorScheme = "light";
       }
     })();
   </script>
 
-  <!-- Real In-Browser AI & Document Vision Engines: Tesseract.js (v5) + PDF.js (v3) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
   <style>
-    /* Design Tokens: Paper and Ink */
+    /* Design Tokens: Editorial Archival Paper & Ink */
     :root {
-      --bg: #f6f1e7;
-      --surface: #fffdf8;
-      --surface-raised: #fbf6ec;
-      --text: #1d1b17;
-      --text-muted: #544f45;
-      --border-rule: #ddd5c4;
-      --border-ui: #8c806a;
-      --accent: #b93815;
+      --bg: #f7f5f0;
+      --surface: #ffffff;
+      --surface-raised: #fbf9f4;
+      --text: #1b1916;
+      --text-muted: #5c564c;
+      --border-rule: #e2dcd2;
+      --border-ui: #8c8273;
+      --accent: #b8381e;
       --accent-contrast: #ffffff;
-      --code-bg: #ece5d6;
+      --code-bg: #f0ece2;
       --code-text: #221f1a;
-      --status-pass-text: #166534;
+      --status-pass-text: #15803d;
       --status-pass-bg: #dcfce7;
-      --status-partial-text: #854d0e;
+      --status-partial-text: #b45309;
       --status-partial-bg: #fef3c7;
-      --status-fail-text: #991b1b;
+      --status-fail-text: #b91c1c;
       --status-fail-bg: #fee2e2;
-      --focus-ring: #b93815;
-      --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      --focus-ring: #b8381e;
+      --font-serif: "Iowan Old Style", "Apple Garamond", Baskerville, "Times New Roman", "Droid Serif", Times, serif;
       --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
       color-scheme: light;
     }
 
     :root[data-theme="dark"] {
-      --bg: #14130f;
-      --surface: #1c1a15;
-      --surface-raised: #23201a;
-      --text: #ece6d8;
-      --text-muted: #aba392;
-      --border-rule: #2f2b22;
-      --border-ui: #6e6350;
-      --accent: #ff7a59;
-      --accent-contrast: #14130f;
-      --code-bg: #11100d;
-      --code-text: #ece6d8;
+      --bg: #12110e;
+      --surface: #1a1814;
+      --surface-raised: #22201b;
+      --text: #ede8df;
+      --text-muted: #a39c8e;
+      --border-rule: #2e2b24;
+      --border-ui: #736b5c;
+      --accent: #e05330;
+      --accent-contrast: #12110e;
+      --code-bg: #171512;
+      --code-text: #ede8df;
       --status-pass-text: #4ade80;
       --status-pass-bg: rgba(74, 222, 128, 0.12);
       --status-partial-text: #fbbf24;
       --status-partial-bg: rgba(251, 191, 36, 0.12);
       --status-fail-text: #f87171;
       --status-fail-bg: rgba(248, 113, 113, 0.12);
-      --focus-ring: #ff7a59;
+      --focus-ring: #e05330;
       color-scheme: dark;
     }
 
@@ -88,13 +84,24 @@
       line-height: 1.6;
       background-color: var(--bg);
       color: var(--text);
-      transition: background-color 200ms ease, color 200ms ease;
+      transition: background-color 150ms ease, color 150ms ease;
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Accessibility Focus & Reduced Motion */
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     .skip-link {
-      position: absolute; top: -40px; left: 16px; background: var(--accent); color: var(--accent-contrast);
-      padding: 8px 16px; z-index: 10000; font-weight: 600; text-decoration: none; border-radius: 4px;
+      position: absolute; top: -50px; left: 16px; background: var(--accent); color: var(--accent-contrast);
+      padding: 10px 18px; z-index: 10000; font-weight: 600; text-decoration: none; border-radius: 3px;
       transition: top 150ms ease;
     }
     .skip-link:focus { top: 16px; }
@@ -108,97 +115,90 @@
       border-bottom: 1px solid var(--border-rule);
       background: var(--surface);
       position: sticky; top: 0; z-index: 100;
-      backdrop-filter: blur(8px);
     }
     .header-inner {
       display: flex; align-items: center; justify-content: space-between;
       height: 64px; gap: 16px;
     }
     .brand {
-      display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px;
-      text-decoration: none; color: var(--text);
+      display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px;
+      text-decoration: none; color: var(--text); letter-spacing: -0.01em;
     }
     .brand-mark {
-      width: 26px; height: 26px; background: var(--text); color: var(--bg);
+      width: 28px; height: 28px; background: var(--text); color: var(--bg);
       display: inline-flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 14px; border-radius: 4px; font-family: var(--font-mono);
+      font-weight: 800; font-size: 14px; border-radius: 3px; font-family: var(--font-mono);
     }
     .brand-tag {
       font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-      color: var(--accent); background: var(--surface-raised); border: 1px solid var(--border-rule);
-      padding: 2px 7px; border-radius: 12px;
+      color: var(--text-muted); background: var(--surface-raised); border: 1px solid var(--border-rule);
+      padding: 2px 7px; border-radius: 3px;
     }
-    .live-badge {
-      font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-      color: var(--status-pass-text); background: var(--status-pass-bg);
-      padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;
-    }
-    .live-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulseDot 2s infinite; }
-    @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     nav.desktop-nav { display: flex; align-items: center; gap: 20px; }
     nav.desktop-nav a {
       color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500;
-      transition: color 150ms ease;
+      padding: 6px 0; border-bottom: 2px solid transparent; transition: color 150ms ease, border-color 150ms ease;
     }
-    nav.desktop-nav a:hover, nav.desktop-nav a.active { color: var(--text); font-weight: 600; }
+    nav.desktop-nav a:hover { color: var(--text); }
+    nav.desktop-nav a.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+    @media (max-width: 820px) { nav.desktop-nav { display: none; } }
 
     .header-actions { display: flex; align-items: center; gap: 10px; }
     .icon-btn {
       background: transparent; border: 1px solid var(--border-rule); color: var(--text);
-      cursor: pointer; padding: 6px 10px; border-radius: 4px; font-size: 13px; font-family: var(--font-mono);
-      display: inline-flex; align-items: center; gap: 6px; transition: all 150ms ease;
+      cursor: pointer; min-height: 44px; padding: 8px 14px; border-radius: 3px; font-size: 13px; font-family: var(--font-mono);
+      display: inline-flex; align-items: center; gap: 8px; transition: all 150ms ease;
     }
     .icon-btn:hover { border-color: var(--border-ui); background: var(--surface-raised); }
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 8px 16px; border-radius: 4px; font-size: 14px; font-weight: 600;
+      min-height: 44px; padding: 10px 18px; border-radius: 3px; font-size: 14px; font-weight: 600;
       text-decoration: none; cursor: pointer; transition: all 150ms ease; border: 1px solid transparent;
+      white-space: nowrap;
     }
     .btn-primary { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
-    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-primary:hover { opacity: 0.92; }
     .btn-secondary { background: var(--surface-raised); color: var(--text); border-color: var(--border-rule); }
     .btn-secondary:hover { border-color: var(--border-ui); }
 
-    /* Hero Section */
+    /* Hero Section (Left Aligned & Editorial) */
     .hero-section {
-      padding: 48px 0 36px 0; border-bottom: 1px solid var(--border-rule);
-      background: radial-gradient(circle at 50% 0%, var(--surface-raised), var(--bg) 80%);
-      text-align: center;
+      padding: 56px 0 44px 0; border-bottom: 1px solid var(--border-rule);
+      background: var(--surface-raised); text-align: left;
     }
     .academic-pill {
-      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 16px;
+      display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px;
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 3px;
       font-size: 12px; font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 20px;
     }
     .academic-pill a { color: var(--accent); text-decoration: none; font-weight: 600; }
     .academic-pill a:hover { text-decoration: underline; }
     .hero-title {
-      font-family: var(--font-serif); font-size: clamp(32px, 5vw, 52px);
-      line-height: 1.15; font-weight: 700; color: var(--text); max-width: 860px; margin: 0 auto 16px auto;
+      font-family: var(--font-serif); font-size: clamp(30px, 4.5vw, 48px);
+      line-height: 1.2; font-weight: 700; color: var(--text); max-width: 920px; margin-bottom: 16px;
       letter-spacing: -0.02em;
     }
     .hero-subtitle {
-      font-size: 18px; color: var(--text-muted); max-width: 740px; margin: 0 auto 28px auto; line-height: 1.5;
+      font-size: 18px; color: var(--text-muted); max-width: 820px; margin-bottom: 28px; line-height: 1.6;
     }
 
-    /* 3-Pill Visual Step Bar */
+    /* 3-Step Numbered Workflow */
     .hero-steps-bar {
-      display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 30px;
-      padding: 6px 18px; margin-bottom: 28px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+      display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 28px;
     }
     .step-pill {
       display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text);
+      background: var(--surface); border: 1px solid var(--border-rule); padding: 6px 12px; border-radius: 3px;
     }
     .step-num {
-      width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast);
+      width: 20px; height: 20px; border-radius: 2px; background: var(--text); color: var(--bg);
       font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono);
     }
     .step-arrow { color: var(--border-ui); font-size: 14px; user-select: none; }
 
-    .hero-ctas { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
     /* Studio / Workbench Section */
     .studio-section { padding: 40px 0 60px 0; border-bottom: 1px solid var(--border-rule); }
@@ -207,35 +207,28 @@
       margin-bottom: 20px;
     }
     .studio-tabs {
-      display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+      display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 4px; max-width: 100%;
     }
     .studio-tab-btn {
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
-      padding: 7px 14px; font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);
-      cursor: pointer; white-space: nowrap; transition: all 150ms ease;
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 3px;
+      min-height: 44px; padding: 8px 14px; font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);
+      cursor: pointer; white-space: nowrap; transition: all 120ms ease;
     }
     .studio-tab-btn:hover { border-color: var(--border-ui); color: var(--text); }
     .studio-tab-btn.active {
       background: var(--surface-raised); border-color: var(--accent); color: var(--accent); font-weight: 700;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
-    .upload-trigger-btn {
-      background: var(--accent); color: var(--accent-contrast); border: 1px solid var(--accent);
-      border-radius: 4px; padding: 7px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 8px; transition: all 150ms ease; white-space: nowrap;
-    }
-    .upload-trigger-btn:hover { opacity: 0.92; transform: translateY(-1px); }
 
     /* Studio Layout: Left Document Stage, Right Data Panel */
     .studio-grid {
-      display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px;
+      display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px;
     }
     @media (max-width: 980px) { .studio-grid { grid-template-columns: 1fr; } }
 
     /* Left Stage */
     .stage-card {
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 6px;
-      padding: 16px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
+      padding: 16px; display: flex; flex-direction: column; gap: 14px;
     }
     .stage-toolbar {
       display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
@@ -245,10 +238,18 @@
       font-family: var(--font-mono); font-weight: 600; font-size: 12px; color: var(--text);
       display: inline-flex; align-items: center; gap: 6px;
     }
-    .stage-controls { display: flex; align-items: center; gap: 14px; }
+    .stage-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .pdf-nav-controls {
+      display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px;
+    }
+    .pdf-nav-btn {
+      background: var(--surface-raised); border: 1px solid var(--border-rule); color: var(--text);
+      cursor: pointer; padding: 3px 8px; border-radius: 2px; font-size: 11px; font-family: var(--font-mono);
+    }
+    .pdf-nav-btn:hover { border-color: var(--border-ui); }
     .stage-legend {
       display: flex; align-items: center; gap: 12px; font-size: 11px; font-family: var(--font-mono);
-      flex-wrap: wrap; padding: 6px 10px; background: var(--surface-raised); border-radius: 4px; border: 1px solid var(--border-rule);
+      flex-wrap: wrap; padding: 6px 10px; background: var(--surface-raised); border-radius: 3px; border: 1px solid var(--border-rule);
     }
     .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
     .dot-blue { background: #2563eb; }
@@ -258,7 +259,7 @@
 
     /* Document Viewport Wrapper */
     .doc-viewport {
-      position: relative; width: 100%; border: 1px solid var(--border-rule); border-radius: 4px;
+      position: relative; width: 100%; border: 1px solid var(--border-rule); border-radius: 3px;
       overflow: hidden; background: var(--code-bg); min-height: 480px;
       display: flex; align-items: center; justify-content: center;
     }
@@ -281,7 +282,7 @@
     }
     .bbox-interactive:hover, .bbox-interactive.highlighted {
       z-index: 50; border-width: 2px !important;
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.8), 0 4px 12px rgba(0,0,0,0.3) !important;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.8), 0 3px 8px rgba(0,0,0,0.2) !important;
     }
     .bbox-header { border-color: #2563eb; background: rgba(37, 99, 235, 0.12); }
     .bbox-item { border-color: #16a34a; background: rgba(22, 163, 74, 0.12); }
@@ -314,20 +315,19 @@
     /* Scanning progress overlay */
     .scan-overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.75); color: #ffffff;
+      background: rgba(18, 17, 14, 0.82); color: #ffffff;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 14px; z-index: 100; backdrop-filter: blur(4px);
+      gap: 14px; z-index: 100;
     }
     .scan-laser-line {
-      position: absolute; left: 0; right: 0; height: 3px;
+      position: absolute; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, transparent, #22c55e, #38bdf8, transparent);
-      box-shadow: 0 0 16px #38bdf8;
       animation: laserScan 1.6s ease-in-out infinite alternate;
     }
-    @keyframes laserScan { 0% { top: 10%; } 100% { top: 90%; } }
+    @keyframes laserScan { 0% { top: 12%; } 100% { top: 88%; } }
 
     .scan-progress-bar-wrap {
-      width: 240px; height: 6px; background: rgba(255, 255, 255, 0.2);
+      width: 260px; height: 6px; background: rgba(255, 255, 255, 0.2);
       border-radius: 3px; overflow: hidden;
     }
     .scan-progress-fill {
@@ -336,22 +336,22 @@
 
     /* Drop zone hover state */
     .doc-viewport.drag-over {
-      outline: 3px dashed var(--accent); outline-offset: -8px; background: var(--surface-raised);
+      outline: 2px dashed var(--accent); outline-offset: -8px; background: var(--surface-raised);
     }
 
     /* Right Output Panel */
     .output-card {
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 6px;
-      padding: 18px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
+      padding: 18px; display: flex; flex-direction: column; gap: 16px;
     }
 
     /* 2x3 Summary Cards Grid */
     .summary-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
     }
     @media (max-width: 600px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
     .sum-cell {
-      background: var(--surface-raised); border: 1px solid var(--border-rule); border-radius: 4px;
+      background: var(--surface-raised); border: 1px solid var(--border-rule); border-radius: 3px;
       padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;
     }
     .sum-cell-wide { grid-column: span 3; }
@@ -362,31 +362,31 @@
 
     /* Status verification pills */
     .verify-pill {
-      display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
-      border-radius: 4px; font-family: var(--font-mono); font-size: 12px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px;
+      border-radius: 3px; font-family: var(--font-mono); font-size: 12px; font-weight: 600;
     }
-    .verify-pass { background: var(--status-pass-bg); color: var(--status-pass-text); border: 1px solid rgba(74, 222, 128, 0.4); }
-    .verify-warn { background: var(--status-partial-bg); color: var(--status-partial-text); border: 1px solid rgba(251, 191, 36, 0.4); }
+    .verify-pass { background: var(--status-pass-bg); color: var(--status-pass-text); border: 1px solid rgba(21, 128, 61, 0.3); }
+    .verify-warn { background: var(--status-partial-bg); color: var(--status-partial-text); border: 1px solid rgba(180, 83, 9, 0.3); }
+    .verify-neutral { background: var(--surface-raised); color: var(--text-muted); border: 1px solid var(--border-rule); }
 
     /* Output Tabs Switcher */
     .out-tabs-bar {
-      display: flex; gap: 4px; border: 1px solid var(--border-rule); border-radius: 4px;
+      display: flex; gap: 4px; border: 1px solid var(--border-rule); border-radius: 3px;
       background: var(--surface-raised); padding: 3px;
     }
     .out-tab-btn {
-      flex: 1; text-align: center; padding: 6px 10px; font-size: 13px; font-weight: 600;
-      color: var(--text-muted); background: transparent; border: none; border-radius: 3px;
+      flex: 1; text-align: center; min-height: 38px; padding: 6px 10px; font-size: 13px; font-weight: 600;
+      color: var(--text-muted); background: transparent; border: none; border-radius: 2px;
       cursor: pointer; transition: all 120ms ease;
     }
     .out-tab-btn:hover { color: var(--text); }
     .out-tab-btn.active {
       background: var(--surface); color: var(--text); border: 1px solid var(--border-rule);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     /* Output Tables */
     .table-container {
-      overflow-x: auto; border: 1px solid var(--border-rule); border-radius: 4px; max-height: 380px;
+      overflow-x: auto; border: 1px solid var(--border-rule); border-radius: 3px; max-height: 380px;
     }
     .data-table {
       width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;
@@ -404,24 +404,24 @@
     }
     .modifier-badge {
       font-family: var(--font-mono); font-size: 10px; font-weight: 700;
-      color: #9333ea; background: rgba(147, 51, 234, 0.12); padding: 2px 6px; border-radius: 3px;
+      color: #9333ea; background: rgba(147, 51, 234, 0.12); padding: 2px 6px; border-radius: 2px;
     }
 
     .coord-badge {
       display: inline-block; font-family: var(--font-mono); font-size: 11px;
       color: var(--accent); background: var(--surface-raised); border: 1px solid var(--border-rule);
-      padding: 1px 6px; border-radius: 3px; font-variant-numeric: tabular-nums;
+      padding: 1px 6px; border-radius: 2px; font-variant-numeric: tabular-nums;
     }
 
     .code-panel {
       font-family: var(--font-mono); font-size: 12px; line-height: 1.5;
       background: var(--code-bg); color: var(--code-text);
-      padding: 14px; border-radius: 4px; overflow: auto; max-height: 380px;
+      padding: 14px; border-radius: 3px; overflow: auto; max-height: 380px;
       border: 1px solid var(--border-rule); white-space: pre-wrap; word-break: break-word;
     }
 
     /* Educational Section Styles */
-    .edu-section { padding: 60px 0; border-bottom: 1px solid var(--border-rule); }
+    .edu-section { padding: 56px 0; border-bottom: 1px solid var(--border-rule); text-align: left; }
     .section-num {
       font-family: var(--font-mono); font-size: 12px; font-weight: 600; text-transform: uppercase;
       letter-spacing: 0.05em; color: var(--accent); margin-bottom: 6px; display: block;
@@ -431,55 +431,55 @@
       line-height: 1.25; margin-bottom: 12px; font-weight: 700; letter-spacing: -0.01em;
     }
     .section-intro {
-      font-size: 17px; color: var(--text-muted); max-width: 780px; margin-bottom: 32px; line-height: 1.6;
+      font-size: 17px; color: var(--text-muted); max-width: 820px; margin-bottom: 30px; line-height: 1.6;
     }
 
     /* Comparison Grid */
-    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 760px) { .compare-grid { grid-template-columns: 1fr; } }
     .card-fail {
-      background: var(--surface); border: 1px solid rgba(248, 113, 113, 0.4); border-radius: 6px;
-      padding: 24px; display: flex; flex-direction: column; gap: 12px;
+      background: var(--surface); border: 1px solid rgba(185, 28, 28, 0.3); border-radius: 4px;
+      padding: 22px; display: flex; flex-direction: column; gap: 10px;
     }
     .card-pass {
-      background: var(--surface); border: 1px solid rgba(74, 222, 128, 0.4); border-radius: 6px;
-      padding: 24px; display: flex; flex-direction: column; gap: 12px;
+      background: var(--surface); border: 1px solid rgba(21, 128, 61, 0.3); border-radius: 4px;
+      padding: 22px; display: flex; flex-direction: column; gap: 10px;
     }
 
     /* 3 Pipeline Cards */
-    .pipeline-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .pipeline-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     @media (max-width: 860px) { .pipeline-grid { grid-template-columns: 1fr; } }
     .pipe-card {
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 6px;
-      padding: 22px; display: flex; flex-direction: column; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
+      padding: 20px; display: flex; flex-direction: column; gap: 10px;
     }
     .pipe-num {
-      width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--accent-contrast);
-      font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+      width: 26px; height: 26px; border-radius: 2px; background: var(--accent); color: var(--accent-contrast);
+      font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; font-family: var(--font-mono);
     }
 
     /* Benchmark Scorecard */
     .metric-strip {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
     }
     @media (max-width: 800px) { .metric-strip { grid-template-columns: 1fr 1fr; } }
     .metric-card {
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 6px;
-      padding: 16px; text-align: center;
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
+      padding: 16px; text-align: left;
     }
     .metric-val {
-      font-size: clamp(24px, 3.5vw, 36px); font-weight: 800; font-family: var(--font-mono);
+      font-size: clamp(22px, 3vw, 32px); font-weight: 800; font-family: var(--font-mono);
       color: var(--accent); line-height: 1.1; margin-bottom: 4px;
     }
     .metric-label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
     .segmented-control {
       display: inline-flex; gap: 4px; background: var(--surface); border: 1px solid var(--border-rule);
-      border-radius: 4px; padding: 3px; overflow-x: auto; max-width: 100%;
+      border-radius: 3px; padding: 3px; overflow-x: auto; max-width: 100%;
     }
     .segment-btn {
       padding: 6px 12px; font-size: 13px; font-family: var(--font-mono); color: var(--text-muted);
-      background: transparent; border: none; border-radius: 3px; cursor: pointer; white-space: nowrap;
+      background: transparent; border: none; border-radius: 2px; cursor: pointer; white-space: nowrap;
     }
     .segment-btn:hover { color: var(--text); }
     .segment-btn.active {
@@ -487,7 +487,7 @@
     }
 
     .conf-bar-wrap { display: inline-flex; align-items: center; gap: 6px; }
-    .conf-bar { width: 44px; height: 5px; background: var(--border-rule); border-radius: 3px; overflow: hidden; display: inline-block; }
+    .conf-bar { width: 44px; height: 5px; background: var(--border-rule); border-radius: 2px; overflow: hidden; display: inline-block; }
     .conf-fill { height: 100%; background: var(--accent); }
     .status-dot { font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
     .status-pass { color: var(--status-pass-text); }
@@ -495,17 +495,17 @@
     .status-fail { color: var(--status-fail-text); }
 
     /* Extension Steps */
-    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 24px 0; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 24px 0; }
     .step-card {
-      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 6px;
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
       padding: 16px; display: flex; flex-direction: column; gap: 6px;
     }
 
     /* Toast */
     .toast-pill {
       position: fixed; bottom: 24px; right: 24px; background: var(--accent); color: var(--accent-contrast);
-      padding: 8px 16px; border-radius: 4px; font-size: 13px; font-weight: 600; font-family: var(--font-mono);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2); z-index: 9999; opacity: 0; transform: translateY(10px);
+      padding: 10px 18px; border-radius: 3px; font-size: 13px; font-weight: 600; font-family: var(--font-mono);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; opacity: 0; transform: translateY(10px);
       transition: opacity 200ms ease, transform 200ms ease; pointer-events: none;
     }
     .toast-pill.visible { opacity: 1; transform: translateY(0); }
@@ -529,23 +529,36 @@
         <span class="brand-mark">S</span>
         <span>StackDoc</span>
         <span class="brand-tag">Layout AI</span>
-        <span class="live-badge"><span class="live-dot"></span> In-Browser AI</span>
       </a>
 
-      <nav class="desktop-nav">
-        <a href="#studio">AI Studio</a>
+      <nav class="desktop-nav" aria-label="Page sections">
+        <a href="#studio">Studio</a>
         <a href="#why-layout">Why Layout AI</a>
-        <a href="#pipeline">3-Stage Pipeline</a>
+        <a href="#pipeline">Pipeline</a>
         <a href="#results">Benchmarks</a>
         <a href="#compare">Architecture</a>
         <a href="#extension">Extension</a>
       </nav>
 
       <div class="header-actions">
-        <button id="themeToggle" class="icon-btn" aria-label="Toggle theme">
-          <span id="themeIcon">☀️</span>
+        <button id="themeToggle" class="icon-btn theme-toggle-btn" aria-label="Switch to dark theme" aria-pressed="false" type="button">
+          <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-moon hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span class="theme-label-text">Theme</span>
         </button>
-        <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:13px; padding:6px 12px;">GitHub ↗</a>
+        <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener" class="btn btn-secondary" style="font-size:13px; padding:6px 12px; min-height:44px;">GitHub ↗</a>
       </div>
     </div>
   </header>
@@ -555,26 +568,26 @@
     <section class="hero-section">
       <div class="container">
         <div class="academic-pill">
-          <span>Anchored in <a href="https://arxiv.org/abs/2005.04444" target="_blank" rel="noopener">Xu et al. (2020) LayoutLM</a> — 2D Spatial Grounding [x0, y0, x1, y1]</span>
+          <span>Xu et al. (2020) LayoutLM coordinate grounding [x0, y0, x1, y1] &amp; deterministic spatial post-processing</span>
         </div>
 
-        <h1 class="hero-title">Turn Any Document Image or PDF into Structured Data.</h1>
+        <h1 class="hero-title">StackDoc: Layout-Aware Document Understanding</h1>
         <p class="hero-subtitle">
-          Upload a photo, scan, or PDF. Our AI reads both the text and 2D page layout <code class="mono">[x0, y0, x1, y1]</code> to extract tables, totals, and key fields—and checks the math automatically.
+          Extract key-value pairs, multi-page tables, and nested line items from invoices and receipts. Digital PDFs: text and coordinates read directly (pdf.js). Scans and photos: Tesseract.js OCR in the browser, followed by 2D layout reconstruction and deterministic math reconciliation.
         </p>
 
-        <!-- 3-Pill Step Bar -->
+        <!-- 3-Step Numbered Workflow -->
         <div class="hero-steps-bar">
-          <div class="step-pill"><span class="step-num">1</span> Upload Image or PDF</div>
+          <div class="step-pill"><span class="step-num">1</span> Select or upload document</div>
           <div class="step-arrow">➔</div>
-          <div class="step-pill"><span class="step-num">2</span> AI Maps 2D Layout Boxes</div>
+          <div class="step-pill"><span class="step-num">2</span> 2D layout &amp; bounding box mapping</div>
           <div class="step-arrow">➔</div>
-          <div class="step-pill"><span class="step-num">3</span> Get Clean Table &amp; Verified JSON</div>
+          <div class="step-pill"><span class="step-num">3</span> Extracted table &amp; math verification</div>
         </div>
 
         <div class="hero-ctas">
-          <a href="#studio" class="btn btn-primary" style="font-size:15px; padding:10px 20px;">⚡ Open Interactive Studio</a>
-          <button id="heroUploadTriggerBtn" class="btn btn-secondary" style="font-size:15px; padding:10px 20px;">📸 Upload Your Document</button>
+          <a href="#studio" class="btn btn-primary">Inspect Sample Documents</a>
+          <button id="heroUploadTriggerBtn" type="button" class="btn btn-secondary">Upload Document</button>
         </div>
       </div>
     </section>
@@ -584,35 +597,42 @@
       <div class="container">
         <div class="studio-header">
           <div>
-            <span class="section-num">Interactive AI Studio</span>
-            <h2 id="studioHead" style="font-family:var(--font-serif); font-size:26px; font-weight:700;">Live Layout-Aware Inspector &amp; Scanner</h2>
+            <span class="section-num">Document Studio</span>
+            <h2 id="studioHead" style="font-family:var(--font-serif); font-size:26px; font-weight:700;">Precomputed Samples &amp; Live In-Browser Upload</h2>
           </div>
 
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <!-- Hidden File Input -->
             <input type="file" id="fileUploadInput" accept=".pdf,.png,.jpg,.jpeg,.webp" style="display:none;">
-            <button id="mainUploadBtn" class="upload-trigger-btn">
-              <span>📸 Upload Image / PDF</span>
+            <button id="mainUploadBtn" type="button" class="btn btn-primary">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Upload Document</span>
             </button>
           </div>
         </div>
 
         <!-- 4 Preset Tabs + Dynamic Upload Tab -->
         <div class="studio-tabs" id="studioTabsBar" role="tablist" aria-label="Sample and uploaded documents">
-          <button class="studio-tab-btn active" role="tab" aria-selected="true" data-preset-idx="0">📄 Corporate Invoice (PDF)</button>
-          <button class="studio-tab-btn" role="tab" aria-selected="false" data-preset-idx="1">🧾 Camera Receipt (Photo)</button>
-          <button class="studio-tab-btn" role="tab" aria-selected="false" data-preset-idx="2">📋 Service Contract (Form)</button>
-          <button class="studio-tab-btn" role="tab" aria-selected="false" data-preset-idx="3">📊 Research Table (2-Column)</button>
-          <button id="uploadTabBtn" class="studio-tab-btn hidden" role="tab" aria-selected="false">⚡ Uploaded Document (Live Vision Scan)</button>
+          <button class="studio-tab-btn active" role="tab" aria-selected="true" data-preset-idx="0">Sample 1: Corporate Invoice</button>
+          <button class="studio-tab-btn" role="tab" aria-selected="false" data-preset-idx="1">Sample 2: Retail Receipt</button>
+          <button class="studio-tab-btn" role="tab" aria-selected="false" data-preset-idx="2">Sample 3: Service Contract</button>
+          <button class="studio-tab-btn" role="tab" aria-selected="false" data-preset-idx="3">Sample 4: Research Table</button>
+          <button id="uploadTabBtn" class="studio-tab-btn hidden" role="tab" aria-selected="false">Live Upload</button>
         </div>
 
         <div class="studio-grid" style="margin-top:16px;">
-          <!-- Left Column: Document Vision Stage -->
+          <!-- Left Column: Document Stage -->
           <div class="stage-card">
             <div class="stage-toolbar">
-              <span id="studioEngineBadge" class="stage-engine-badge">Engine: PyMuPDF 2D Layout (PASS)</span>
+              <span id="studioEngineBadge" class="stage-engine-badge">Sample (precomputed with the Python pipeline)</span>
 
               <div class="stage-controls">
+                <div id="pdfPageNav" class="pdf-nav-controls hidden">
+                  <button id="pdfPrevPageBtn" class="pdf-nav-btn" type="button" aria-label="Previous page">Prev</button>
+                  <span>Page <select id="pdfPageSelect" aria-label="Select page"></select> of <span id="pdfTotalPages">1</span></span>
+                  <button id="pdfNextPageBtn" class="pdf-nav-btn" type="button" aria-label="Next page">Next</button>
+                </div>
+
                 <label style="cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;">
                   <input type="checkbox" id="boxToggle" checked>
                   <span>Show 2D Boxes</span>
@@ -622,26 +642,30 @@
             </div>
 
             <div class="stage-legend">
-              <span><span class="legend-dot dot-blue"></span> Header/Vendor</span>
+              <span><span class="legend-dot dot-blue"></span> Header / Vendor</span>
               <span><span class="legend-dot dot-green"></span> Table Items</span>
-              <span><span class="legend-dot dot-purple"></span> Modifiers (Δx0 > 12px)</span>
-              <span><span class="legend-dot dot-amber"></span> Totals/Tax</span>
+              <span><span class="legend-dot dot-purple"></span> Nested Modifiers (&Delta;x0 &gt; 12px)</span>
+              <span><span class="legend-dot dot-amber"></span> Totals / Tax</span>
             </div>
 
             <!-- Main Document Stage Viewport -->
-            <div id="docStageContainer" class="doc-viewport">
-              <!-- Scanning Laser Overlay -->
-              <div id="scanProgressOverlay" class="scan-overlay hidden">
+            <div id="docStageContainer" class="doc-viewport" tabindex="0" aria-label="Document visual inspector stage">
+              <!-- Scanning Progress Overlay -->
+              <div id="scanProgressOverlay" class="scan-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="scanProgressTitle">
                 <div class="scan-laser-line"></div>
-                <div style="font-weight:700; font-size:15px; letter-spacing:0.02em;">Real In-Browser Vision AI Scanning...</div>
-                <div id="scanStatusText" style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1;">Initializing Tesseract OCR neural network...</div>
+                <div id="scanProgressTitle" style="font-weight:700; font-size:15px; letter-spacing:0.02em;">Document Processing</div>
+                <div id="scanStatusText" style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1;" aria-live="polite">Initializing document vision engine...</div>
                 <div class="scan-progress-bar-wrap">
-                  <div id="scanProgressBar" class="scan-progress-fill"></div>
+                  <div id="scanProgressBar" class="scan-progress-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:4px;">
+                  <button id="cancelScanBtn" type="button" class="btn btn-secondary" style="min-height:36px; padding:6px 14px; font-size:12px;">Cancel</button>
+                  <button id="scanRetryBtn" type="button" class="btn btn-primary hidden" style="min-height:36px; padding:6px 14px; font-size:12px;">Retry</button>
                 </div>
               </div>
 
               <!-- Preset SVG Mode -->
-              <svg id="sampleBoxSvg" class="doc-sheet-svg" viewBox="0 0 600 820" preserveAspectRatio="xMidYMid meet">
+              <svg id="sampleBoxSvg" class="doc-sheet-svg" viewBox="0 0 600 820" preserveAspectRatio="xMidYMid meet" aria-label="Precomputed document vector sheet">
                 <!-- Preset vector document rendered here -->
               </svg>
 
@@ -654,14 +678,14 @@
             </div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text-muted);">
-              <span>💡 Tip: Click or hover any 2D box or table row to inspect coordinates.</span>
+              <span>Click or hover any 2D bounding box or table row to inspect coordinates.</span>
               <span id="coordDimensionsBadge" class="mono">600 × 820 pt</span>
             </div>
           </div>
 
           <!-- Right Column: Structured Output Workspace -->
           <div class="output-card">
-            <!-- 2x3 Metric Cards Grid -->
+            <!-- 2x3 Summary Cards Grid -->
             <div class="summary-grid">
               <div class="sum-cell">
                 <span class="sum-label">Vendor Name</span>
@@ -684,7 +708,7 @@
                 <span id="outTax" class="sum-val mono">$200.00</span>
               </div>
               <div class="sum-cell">
-                <span class="sum-label">Verification</span>
+                <span class="sum-label">Extraction Status</span>
                 <span id="outConfidence" class="sum-val mono">100% Conf.</span>
               </div>
               <div class="sum-cell sum-cell-wide">
@@ -696,22 +720,22 @@
             </div>
 
             <!-- Output Tabs -->
-            <div class="out-tabs-bar" role="tablist">
-              <button id="tabBtnTable" class="out-tab-btn active" role="tab" aria-selected="true">📊 Extracted Table &amp; Fields</button>
-              <button id="tabBtnTokens" class="out-tab-btn" role="tab" aria-selected="false">🎯 2D Coordinates [x0, y0, x1, y1]</button>
-              <button id="tabBtnJson" class="out-tab-btn" role="tab" aria-selected="false">{ } Clean JSON</button>
+            <div class="out-tabs-bar" role="tablist" aria-label="Output format views">
+              <button id="tabBtnTable" class="out-tab-btn active" role="tab" aria-selected="true">Extracted Table &amp; Fields</button>
+              <button id="tabBtnTokens" class="out-tab-btn" role="tab" aria-selected="false">2D Coordinates [x0, y0, x1, y1]</button>
+              <button id="tabBtnJson" class="out-tab-btn" role="tab" aria-selected="false">Clean JSON</button>
             </div>
 
             <!-- View 1: Extracted Table & Fields -->
-            <div id="viewPanelTable" class="table-container">
+            <div id="viewPanelTable" class="table-container" role="tabpanel">
               <table class="data-table">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Description / Nested Modifiers</th>
                     <th scope="col">Qty</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Line Total</th>
                   </tr>
                 </thead>
                 <tbody id="tableBodyItems">
@@ -721,14 +745,14 @@
             </div>
 
             <!-- View 2: 2D Coordinates Table -->
-            <div id="viewPanelTokens" class="table-container hidden">
+            <div id="viewPanelTokens" class="table-container hidden" role="tabpanel">
               <table class="data-table">
                 <thead>
                   <tr>
                     <th scope="col">Field / Entity</th>
                     <th scope="col">Detected Value</th>
                     <th scope="col">2D Coordinates [x0, y0, x1, y1]</th>
-                    <th scope="col">Conf.</th>
+                    <th scope="col">Confidence</th>
                   </tr>
                 </thead>
                 <tbody id="tableBodyTokens">
@@ -738,12 +762,12 @@
             </div>
 
             <!-- View 3: Clean JSON -->
-            <div id="viewPanelJson" class="hidden">
+            <div id="viewPanelJson" class="hidden" role="tabpanel">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                 <span style="font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--text-muted);">Standardized Output Schema</span>
                 <div style="display:flex; gap:8px;">
-                  <button id="copyJsonBtn" class="btn btn-secondary" style="font-size:12px; padding:4px 10px;">Copy JSON</button>
-                  <button id="downloadJsonBtn" class="btn btn-secondary" style="font-size:12px; padding:4px 10px;">Download .json</button>
+                  <button id="copyJsonBtn" type="button" class="btn btn-secondary" style="font-size:12px; padding:6px 12px; min-height:36px;">Copy JSON</button>
+                  <button id="downloadJsonBtn" type="button" class="btn btn-secondary" style="font-size:12px; padding:6px 12px; min-height:36px;">Download .json</button>
                 </div>
               </div>
               <pre class="code-panel"><code id="jsonPreOutput"></code></pre>
@@ -756,20 +780,20 @@
     <!-- 01 Why Normal OCR Fails vs. Layout AI -->
     <section id="why-layout" class="edu-section" aria-labelledby="whyHead">
       <div class="container">
-        <span class="section-num">01 The Fundamental Problem</span>
+        <span class="section-num">01 The Spatial Problem</span>
         <h2 id="whyHead" class="section-title">Why Plain-Text OCR Fails on Modern Documents</h2>
         <p class="section-intro">
-          Standard OCR squashes rich 2D document pages into an ambiguous 1D text stream. Without spatial geometry and coordinates, multi-column tables collapse and nested modifiers are lost.
+          Standard OCR squashes 2D document pages into a 1D text stream. Without spatial coordinate grounding, multi-column tables collapse and nested modifiers are severed from their parent rows.
         </p>
 
         <div class="compare-grid">
           <div class="card-fail">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <strong style="color:var(--status-fail-text);">❌ Traditional Plain-Text OCR</strong>
-              <span class="status-dot status-fail">Brittle Stream</span>
+              <strong style="color:var(--status-fail-text);">Traditional Plain-Text OCR</strong>
+              <span class="status-dot status-fail">1D Stream Collapse</span>
             </div>
             <p style="font-size:14px; color:var(--text-muted);">
-              Scans left-to-right, top-to-bottom across columns. Destroys horizontal row alignment, mashes headers into data cells, and loses discount/modifier relationships.
+              Scans sequentially across columns. Destroys horizontal row alignment, mixes headers into data cells, and loses discount or modifier parent-child relationships.
             </p>
             <div class="code-panel" style="font-size:11px; max-height:160px;">
 Cloud Cluster Compute $900.00 Qty 2
@@ -777,17 +801,17 @@ Cloud Cluster Compute $900.00 Qty 2
 Layout Engine Site License $700.00
 ↳ Startup Volume Discount -$100.00
 Subtotal $3,250.00 Tax $200.00 Total $3,450.00
-[Error: Stream parser merges modifier prices into base line totals]
+[Stream parser loses modifier indentation and merges prices into base rows]
             </div>
           </div>
 
           <div class="card-pass">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-              <strong style="color:var(--status-pass-text);">✓ StackDoc 2D Layout AI</strong>
-              <span class="status-dot status-pass">Layout-Aware Grounding</span>
+              <strong style="color:var(--status-pass-text);">StackDoc 2D Layout AI</strong>
+              <span class="status-dot status-pass">2D Coordinate Grounding</span>
             </div>
             <p style="font-size:14px; color:var(--text-muted);">
-              Maintains spatial coordinates <code class="mono">[x0, y0, x1, y1]</code>. Binds table columns by X-ranges, reconstructs parent-child modifier trees by indentation (<code class="mono">&Delta;x0 &gt; 12px</code>), and verifies math.
+              Maintains spatial coordinates <code class="mono">[x0, y0, x1, y1]</code>. Binds table columns by horizontal X-intervals, groups parent-child modifiers by indentation (<code class="mono">&Delta;x0 &gt; 12px</code>), and verifies arithmetic.
             </p>
             <div class="code-panel" style="font-size:11px; max-height:160px; color:var(--status-pass-text);">
 {
@@ -810,44 +834,44 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
     <!-- 02 3-Stage Pipeline -->
     <section id="pipeline" class="edu-section" aria-labelledby="pipeHead">
       <div class="container">
-        <span class="section-num">02 Architecture &amp; Engineering</span>
-        <h2 id="pipeHead" class="section-title">Our 3-Stage Document Understanding Pipeline</h2>
+        <span class="section-num">02 Architecture</span>
+        <h2 id="pipeHead" class="section-title">3-Stage Document Understanding Architecture</h2>
         <p class="section-intro">
-          Designed for maximum speed, zero brittle OCR binaries, and deterministic mathematical accuracy.
+          A hybrid design that reads digital vector text directly and routes scans to neural OCR, followed by deterministic spatial grouping and arithmetic validation.
         </p>
 
         <div class="pipeline-grid">
           <div class="pipe-card">
             <div style="display:flex; align-items:center; gap:10px;">
               <span class="pipe-num">1</span>
-              <strong>Format &amp; Modality Router</strong>
+              <strong>Modality &amp; Vector Router</strong>
             </div>
             <p style="font-size:14px; color:var(--text-muted);">
-              Analyzes incoming document structure. If digital vector text density &gt; 20 words, routes to the lightning-fast 2D spatial layout parser (&lt;0.03s). Flat images and scans route to Vision AI.
+              Inspects incoming document format. Digital PDFs with embedded font streams route directly to coordinate extraction (pdf.js). Raster scans and photos route to the OCR pipeline.
             </p>
-            <span class="mono" style="font-size:12px; color:var(--accent);">&lt;0.001s Latency</span>
+            <span class="mono" style="font-size:12px; color:var(--accent);">Instant routing</span>
           </div>
 
           <div class="pipe-card">
             <div style="display:flex; align-items:center; gap:10px;">
               <span class="pipe-num">2</span>
-              <strong>Dual-Engine Layout Parser</strong>
+              <strong>Dual Coordinate Extractor</strong>
             </div>
             <p style="font-size:14px; color:var(--text-muted);">
-              Extracts coordinate-grounded word tokens <code class="mono">[x0, y0, x1, y1]</code>. Digital PDFs use direct coordinate geometry; scans run through vision autoregression without OCR bottlenecks.
+              Digital PDFs: exact vector text and bounding boxes <code class="mono">[x0, y0, x1, y1]</code> read directly without OCR errors. Scanned images: Tesseract.js neural OCR extracts words and spatial geometry in-browser.
             </p>
-            <span class="mono" style="font-size:12px; color:var(--accent);">&lt;0.03s Digital / 3.2s Vision</span>
+            <span class="mono" style="font-size:12px; color:var(--accent);">&lt;0.03s Digital / ~2&ndash;5s OCR</span>
           </div>
 
           <div class="pipe-card">
             <div style="display:flex; align-items:center; gap:10px;">
               <span class="pipe-num">3</span>
-              <strong>Structured Post-Processor</strong>
+              <strong>Structured Post-Processor &amp; Audit</strong>
             </div>
             <p style="font-size:14px; color:var(--text-muted);">
-              Reconstructs hierarchical nested modifier trees via indentation clustering (<code class="mono">&Delta;x0 &gt; 12px</code>), normalizes ISO-8601 dates, and executes deterministic arithmetic verification (<code class="mono">Subtotal + Tax == Total</code>).
+              Clusters table lines by vertical Y-intervals, links indented modifiers (<code class="mono">&Delta;x0 &gt; 12px</code>) to parent rows, and executes deterministic arithmetic verification (<code class="mono">Subtotal + Tax == Total</code>).
             </p>
-            <span class="mono" style="font-size:12px; color:var(--accent);">&lt;0.002s Execution</span>
+            <span class="mono" style="font-size:12px; color:var(--accent);">Deterministic math check</span>
           </div>
         </div>
       </div>
@@ -856,37 +880,38 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
     <!-- 03 Evaluation Results & Scorecard -->
     <section id="results" class="edu-section" aria-labelledby="resultsHead">
       <div class="container">
-        <span class="section-num">03 Measured Benchmarks</span>
-        <h2 id="resultsHead" class="section-title">Evaluation Scorecard &amp; Performance</h2>
-        <p class="section-intro">
-          All numbers come directly from benchmark evaluation runs stored in <code class="mono">evaluation/results.json</code>.
-        </p>
+        <span class="section-num">03 Verification &amp; Accuracy</span>
+        <h2 id="resultsHead" class="section-title">Evaluation Scorecard &amp; Benchmarks</h2>
+        <div style="background:var(--surface); border:1px solid var(--border-rule); border-left:3px solid var(--accent); padding:10px 14px; border-radius:3px; margin-bottom:20px;">
+          <p style="font-size:14px; font-weight:600; color:var(--text);">Small sanity check: 6 synthetic documents, not a general accuracy claim.</p>
+          <p class="mono" style="font-size:12px; color:var(--text-muted); margin-top:4px;">F1 = 2 &times; (Precision &times; Recall) / (Precision + Recall), evaluated on extracted line items against ground truth.</p>
+        </div>
 
         <div class="metric-strip">
           <div class="metric-card">
-            <div id="statF1" class="metric-val">1.00 F1</div>
-            <div id="labelF1" class="metric-label">Digital Table &amp; Field F1</div>
+            <div id="statDocCount" class="metric-val">6</div>
+            <div id="labelDocCount" class="metric-label">Sanity Check Documents</div>
+          </div>
+          <div class="metric-card">
+            <div id="statF1" class="metric-val">1.00</div>
+            <div id="labelF1" class="metric-label">Digital Vector Table F1</div>
           </div>
           <div class="metric-card">
             <div id="statLatency" class="metric-val">&lt;0.03s</div>
-            <div id="labelLatency" class="metric-label">2D Layout Engine Latency</div>
+            <div id="labelLatency" class="metric-label">Digital Layout Latency</div>
           </div>
           <div class="metric-card">
-            <div id="statConf" class="metric-val">94.2%</div>
-            <div id="labelConf" class="metric-label">Mean Extraction Confidence</div>
-          </div>
-          <div class="metric-card">
-            <div id="statDocCount" class="metric-val">100%</div>
-            <div id="labelDocCount" class="metric-label">Deterministic Math Verified</div>
+            <div id="statConf" class="metric-val">Enabled</div>
+            <div id="labelConf" class="metric-label">Deterministic Math Audit</div>
           </div>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
-          <div class="segmented-control" role="tablist" aria-label="Dataset view">
-            <button id="btnDatasetAll" class="segment-btn active" role="tab" aria-selected="true">All Documents</button>
-            <button id="btnDatasetDigital" class="segment-btn" role="tab" aria-selected="false">Digital Multi-Page (100% F1)</button>
-            <button id="btnDatasetScans" class="segment-btn" role="tab" aria-selected="false">Adversarial / OOD Scans</button>
-            <button id="btnDatasetReal" class="segment-btn" role="tab" aria-selected="false">Real Documents (data/eval_real)</button>
+          <div class="segmented-control" role="tablist" aria-label="Dataset filter">
+            <button id="btnDatasetAll" class="segment-btn active" role="tab" aria-selected="true">All Documents (6)</button>
+            <button id="btnDatasetDigital" class="segment-btn" role="tab" aria-selected="false">Digital Vector PDFs (2)</button>
+            <button id="btnDatasetScans" class="segment-btn" role="tab" aria-selected="false">Scanned Images (4)</button>
+            <button id="btnDatasetReal" class="segment-btn" role="tab" aria-selected="false">Real Documents (2)</button>
           </div>
           <span id="datasetBadge" class="coord-badge">6 documents • synthetic</span>
         </div>
@@ -904,7 +929,7 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
                 <th scope="col">Confidence</th>
                 <th scope="col">Latency</th>
                 <th scope="col">Status</th>
-                <th scope="col">Schema &amp; Math</th>
+                <th scope="col">Math Audit</th>
               </tr>
             </thead>
             <tbody id="evalTableBody">
@@ -918,18 +943,18 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
     <!-- Architecture Comparison Table -->
     <section id="compare" class="edu-section" aria-labelledby="compareHead">
       <div class="container">
-        <span class="section-num">04 Architectural Trade-offs</span>
-        <h2 id="compareHead" class="section-title">Donut vs. LayoutLMv3 vs. StackDoc</h2>
+        <span class="section-num">04 Comparative Analysis</span>
+        <h2 id="compareHead" class="section-title">Architectural Trade-offs</h2>
         <p class="section-intro">
-          Why our system implements a hybrid dual-engine architecture instead of relying on a monolithic OCR-dependent model.
+          Why our system implements a hybrid dual-engine architecture instead of relying on a single monolithic model.
         </p>
 
         <div class="table-container">
           <table class="data-table">
             <thead>
               <tr>
-                <th scope="col" style="width:22%;">Dimension</th>
-                <th scope="col" style="width:26%;">StackDoc Hybrid (Ours)</th>
+                <th scope="col" style="width:20%;">Dimension</th>
+                <th scope="col" style="width:28%;">StackDoc Hybrid (Ours)</th>
                 <th scope="col" style="width:26%;">Donut (Vision-Language)</th>
                 <th scope="col" style="width:26%;">LayoutLMv3 (Multimodal)</th>
               </tr>
@@ -943,9 +968,9 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
               </tr>
               <tr>
                 <th scope="row">OCR Dependency</th>
-                <td>Zero OCR for digital PDFs; In-browser vision for scans.</td>
-                <td>Zero external OCR binaries. Self-contained weights.</td>
-                <td>Strict dependency on Tesseract / system OCR binaries.</td>
+                <td>Direct text reads for digital PDFs; In-browser OCR for scans.</td>
+                <td>Self-contained weights; no external OCR binary.</td>
+                <td>Strict dependency on external OCR (Tesseract / cloud OCR).</td>
               </tr>
               <tr>
                 <th scope="row">Nested Modifiers</th>
@@ -955,14 +980,14 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
               </tr>
               <tr>
                 <th scope="row">Latency Profile</th>
-                <td>&lt;0.03s for 95% of corporate invoices (Digital PDFs).</td>
-                <td>2.7s &ndash; 4.5s autoregressive token generation.</td>
-                <td>0.35s &ndash; 1.2s plus external OCR time.</td>
+                <td>&lt;0.03s for vector PDFs (direct text); ~2&ndash;5s for photo OCR (Tesseract.js).</td>
+                <td>2.7s &ndash; 4.5s (typical published range, not measured by us).</td>
+                <td>0.35s &ndash; 1.2s plus OCR (typical published range, not measured by us).</td>
               </tr>
               <tr>
                 <th scope="row">Arithmetic Audit</th>
-                <td>Deterministic Stage 3 math reconciliation engine.</td>
-                <td>None (black-box neural generation).</td>
+                <td>Deterministic math reconciliation (<code class="mono">Subtotal + Tax == Total</code>).</td>
+                <td>None (black-box neural token generation).</td>
                 <td>None (requires downstream logic).</td>
               </tr>
             </tbody>
@@ -971,42 +996,49 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
       </div>
     </section>
 
-    <!-- 04 Chrome Extension & Local Setup -->
+    <!-- 05 Chrome Extension & Local Setup -->
     <section id="extension" class="edu-section" aria-labelledby="extHead">
       <div class="container">
-        <span class="section-num">05 Deployment &amp; Extension</span>
-        <h2 id="extHead" class="section-title">1-Click Chrome Extension &amp; Local FastAPI</h2>
+        <span class="section-num">05 Browser Extension</span>
+        <h2 id="extHead" class="section-title">Chrome Extension (Manifest V3) &amp; Local Backend</h2>
         <p class="section-intro">
-          Extract structured data while browsing invoices or connect your local backend server.
+          The Chrome Extension lets you capture active invoice tabs or drop files to inspect structured bounding box overlays via a local FastAPI backend.
         </p>
+
+        <div style="margin-bottom:24px;">
+          <a href="assets/stackdoc-extension.zip" download="stackdoc-extension.zip" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Download Extension (.zip)</span>
+          </a>
+        </div>
 
         <div class="steps-grid">
           <div class="step-card">
             <span class="mono" style="font-weight:700; color:var(--accent);">Step 1</span>
-            <span style="font-weight:600;">Open Extensions</span>
-            <span style="font-size:13px; color:var(--text-muted);">Navigate to <code class="mono">chrome://extensions</code> in Chrome or Brave.</span>
+            <span style="font-weight:600;">Download &amp; Unpack</span>
+            <span style="font-size:13px; color:var(--text-muted);">Download <code class="mono">stackdoc-extension.zip</code> and unpack it, or use the <code class="mono">extension/</code> directory in the repo.</span>
           </div>
           <div class="step-card">
             <span class="mono" style="font-weight:700; color:var(--accent);">Step 2</span>
+            <span style="font-weight:600;">Open Extensions</span>
+            <span style="font-size:13px; color:var(--text-muted);">Navigate to <code class="mono">chrome://extensions</code> in Chrome, Brave, or Edge.</span>
+          </div>
+          <div class="step-card">
+            <span class="mono" style="font-weight:700; color:var(--accent);">Step 3</span>
             <span style="font-weight:600;">Developer Mode</span>
             <span style="font-size:13px; color:var(--text-muted);">Enable the "Developer mode" toggle switch in the top-right corner.</span>
           </div>
           <div class="step-card">
-            <span class="mono" style="font-weight:700; color:var(--accent);">Step 3</span>
-            <span style="font-weight:600;">Load Unpacked</span>
-            <span style="font-size:13px; color:var(--text-muted);">Click "Load unpacked" and select the <code class="mono">extension/</code> directory.</span>
-          </div>
-          <div class="step-card">
             <span class="mono" style="font-weight:700; color:var(--accent);">Step 4</span>
-            <span style="font-weight:600;">Pin Extension</span>
-            <span style="font-size:13px; color:var(--text-muted);">Pin the StackDoc icon to your browser bar for 1-click document parsing.</span>
+            <span style="font-weight:600;">Load Unpacked</span>
+            <span style="font-size:13px; color:var(--text-muted);">Click "Load unpacked" and select the unzipped folder containing <code class="mono">manifest.json</code>.</span>
           </div>
         </div>
 
-        <div style="background:var(--surface); border:1px solid var(--border-rule); border-radius:6px; padding:20px; margin-top:20px;">
-          <h4 style="font-size:15px; font-weight:700; margin-bottom:8px;">Running the Local Backend Server (Optional)</h4>
+        <div style="background:var(--surface); border:1px solid var(--border-rule); border-radius:4px; padding:20px; margin-top:20px;">
+          <h3 style="font-size:15px; font-weight:700; margin-bottom:8px;">Running the Local Backend Server (Optional)</h3>
           <p style="font-size:14px; color:var(--text-muted); margin-bottom:12px;">
-            The static web app works 100% autonomously in the browser. You can also run the full Python FastAPI server for high-throughput batch processing:
+            The static GitHub Pages site runs in-browser without a backend. To run the full Python FastAPI server for batch processing:
           </p>
           <pre class="code-panel" style="font-size:12px;"><code># Install dependencies and start FastAPI server
 python -m venv venv && source venv/bin/activate
@@ -1021,7 +1053,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
   <footer class="site-footer">
     <div class="container footer-inner">
       <div>
-        <strong>StackDoc Layout AI</strong> • Created for FOSS Document Understanding Hackathon.
+        <strong>StackDoc Layout AI</strong> • Layout-Aware Document Understanding System.
       </div>
       <div>
         Repository: <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener">github.com/anything14907-byte/Foss</a>
@@ -1031,7 +1063,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
   <div id="toastPill" class="toast-pill"></div>
 
-  <!-- Embedded Benchmark & Sample Data -->
+  <!-- Embedded Benchmark & Sample Data for Offline Fallback -->
   <script id="results-data" type="application/json">
 {
   "timestamp": "2026-10-22T02:53:54Z",
@@ -1435,7 +1467,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       "engine": "donut",
       "status": "PASS",
       "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
-      "method": "Swin Transformer Vision Autoregression (Zero OCR)",
+      "method": "Donut VLM Transformer (Swin Encoder + mBART)",
       "vendor_name": "STARBUCKS COFFEE #14907",
       "date": "2026-10-21",
       "invoice_number": "CHK #8841-TERM4",
@@ -1858,7 +1890,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           "name": "Donut Base (Kim et al. 2022)",
           "quantity": "0.88 F1",
           "unit_price": "3.220s (1,200 MB)",
-          "line_total": "Zero OCR / Swin Trans.",
+          "line_total": "Pixel VLM / Swin+mBART",
           "numeric_price": 0.88,
           "bbox": [
             46.0,
@@ -1996,41 +2028,92 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
     let activeCustomDoc = null;
     let currentDatasetFilter = "all";
     let activePinnedKey = null;
+    let currentHoveredKey = null;
 
-    // Initialize PDF.js worker
-    if (window.pdfjsLib) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    // PDF Pagination state
+    let currentPdfDoc = null;
+    let currentPdfFile = null;
+    let currentPdfPageNum = 1;
+    let scanAbortController = null;
+
+    // Lazy load promises
+    let pdfjsLoadPromise = null;
+    let tesseractLoadPromise = null;
+
+    function loadPdfJs() {
+      if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+      if (pdfjsLoadPromise) return pdfjsLoadPromise;
+      pdfjsLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+        script.onload = () => {
+          if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+            resolve(window.pdfjsLib);
+          } else {
+            reject(new Error("PDF.js library failed to initialize"));
+          }
+        };
+        script.onerror = () => reject(new Error("Network error loading PDF.js from CDN"));
+        document.head.appendChild(script);
+      });
+      return pdfjsLoadPromise;
+    }
+
+    function loadTesseract() {
+      if (window.Tesseract) return Promise.resolve(window.Tesseract);
+      if (tesseractLoadPromise) return tesseractLoadPromise;
+      tesseractLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+        script.onload = () => {
+          if (window.Tesseract) {
+            resolve(window.Tesseract);
+          } else {
+            reject(new Error("Tesseract library failed to initialize"));
+          }
+        };
+        script.onerror = () => reject(new Error("Network error loading Tesseract.js from CDN"));
+        document.head.appendChild(script);
+      });
+      return tesseractLoadPromise;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       initTheme();
+      initScrollSpy();
       initTabs();
       initUploadHandlers();
       initOutputViews();
       loadResultsData();
     });
 
-    // Toast
+    // Toast Notification
     function showToast(msg) {
       const t = document.getElementById("toastPill");
       if (!t) return;
       t.textContent = msg;
       t.classList.add("visible");
       clearTimeout(t._timer);
-      t._timer = setTimeout(() => t.classList.remove("visible"), 2200);
+      t._timer = setTimeout(() => t.classList.remove("visible"), 2600);
     }
 
-    // Theme Toggle
+    // Light / Dark Theme Toggle
     function initTheme() {
       const btn = document.getElementById("themeToggle");
-      const icon = document.getElementById("themeIcon");
       if (!btn) return;
+      const sunIcon = btn.querySelector(".theme-icon-sun");
+      const moonIcon = btn.querySelector(".theme-icon-moon");
 
-      function updateIcon(theme) {
-        if (icon) icon.textContent = theme === "dark" ? "🌙" : "☀️";
+      function updateUI(theme) {
+        const isDark = (theme === "dark");
+        btn.setAttribute("aria-pressed", isDark ? "true" : "false");
+        btn.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+        if (sunIcon) sunIcon.classList.toggle("hidden", isDark);
+        if (moonIcon) moonIcon.classList.toggle("hidden", !isDark);
       }
 
-      updateIcon(document.documentElement.dataset.theme || "light");
+      updateUI(document.documentElement.dataset.theme || "light");
 
       btn.addEventListener("click", () => {
         const current = document.documentElement.dataset.theme || "light";
@@ -2038,18 +2121,53 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         document.documentElement.dataset.theme = next;
         document.documentElement.style.colorScheme = next;
         try { localStorage.setItem("stackdoc-theme", next); } catch (_) {}
-        updateIcon(next);
+        updateUI(next);
       });
     }
 
-    // Data Loading Pipeline
+    // Scroll Spy for Sticky Header Navigation
+    function initScrollSpy() {
+      const links = document.querySelectorAll("nav.desktop-nav a[href^='#']");
+      const sections = Array.from(links).map(l => document.querySelector(l.getAttribute("href"))).filter(Boolean);
+
+      if ("IntersectionObserver" in window && sections.length > 0) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute("id");
+              links.forEach(l => {
+                const isMatch = (l.getAttribute("href") === `#${id}`);
+                l.classList.toggle("active", isMatch);
+                if (isMatch) l.setAttribute("aria-current", "true");
+                else l.removeAttribute("aria-current");
+              });
+            }
+          });
+        }, { rootMargin: "-20% 0px -70% 0px", threshold: 0 });
+
+        sections.forEach(s => obs.observe(s));
+      }
+    }
+
+    // Robust Data Loading: evaluation/results.json -> assets/results.json -> embedded fallback
     async function loadResultsData() {
       let data = null;
+
+      // 1. Try evaluation/results.json
       try {
-        const res = await fetch("assets/results.json");
+        const res = await fetch("evaluation/results.json");
         if (res.ok) data = await res.json();
       } catch (_) {}
 
+      // 2. Try assets/results.json
+      if (!data) {
+        try {
+          const res = await fetch("assets/results.json");
+          if (res.ok) data = await res.json();
+        } catch (_) {}
+      }
+
+      // 3. Fallback to embedded script tag
       if (!data) {
         const tag = document.getElementById("results-data");
         if (tag && tag.textContent.trim()) {
@@ -2057,16 +2175,45 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         }
       }
 
+      // If evaluation/results.json was loaded, it may have 'eval' instead of 'summary' and lacks 'samples'
       if (data) {
-        globalData = data;
+        globalData = normalizeData(data);
         initScorecard();
         loadPresetSample(0);
+      } else {
+        showResultsUnavailable();
       }
+    }
+
+    function normalizeData(raw) {
+      const normalized = { ...raw };
+      if (!normalized.summary && raw.eval) normalized.summary = raw.eval;
+      if (!normalized.real_summary && raw.eval_real) normalized.real_summary = raw.eval_real;
+
+      // Ensure samples exist (load from embedded if missing in evaluation/results.json)
+      if (!normalized.samples || normalized.samples.length === 0) {
+        try {
+          const tag = document.getElementById("results-data");
+          if (tag) {
+            const embedded = JSON.parse(tag.textContent);
+            normalized.samples = embedded.samples || [];
+          }
+        } catch (_) {}
+      }
+      return normalized;
+    }
+
+    function showResultsUnavailable() {
+      const evalBody = document.getElementById("evalTableBody");
+      if (evalBody) {
+        evalBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:var(--text-muted);">Results unavailable. Run <code>python evaluate.py</code> then <code>python scripts/export_site_data.py</code>.</td></tr>`;
+      }
+      const label = document.getElementById("datasetBadge");
+      if (label) label.style.display = "none";
     }
 
     // Preset Tabs & Output Tabs
     function initTabs() {
-      // Preset tab clicks
       const presetBtns = document.querySelectorAll(".studio-tab-btn[data-preset-idx]");
       presetBtns.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -2075,7 +2222,6 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         });
       });
 
-      // Upload tab click
       const uploadTabBtn = document.getElementById("uploadTabBtn");
       if (uploadTabBtn) {
         uploadTabBtn.addEventListener("click", () => {
@@ -2119,6 +2265,10 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         btnTable.classList.toggle("active", mode === "table");
         btnTokens.classList.toggle("active", mode === "tokens");
         btnJson.classList.toggle("active", mode === "json");
+
+        btnTable.setAttribute("aria-selected", mode === "table" ? "true" : "false");
+        btnTokens.setAttribute("aria-selected", mode === "tokens" ? "true" : "false");
+        btnJson.setAttribute("aria-selected", mode === "json" ? "true" : "false");
 
         viewTable.classList.toggle("hidden", mode !== "table");
         viewTokens.classList.toggle("hidden", mode !== "tokens");
@@ -2178,13 +2328,15 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       // Switch stage to SVG Preset mode
       const svg = document.getElementById("sampleBoxSvg");
       const canvasWrap = document.getElementById("uploadCanvasWrapper");
+      const pdfNav = document.getElementById("pdfPageNav");
       if (svg) svg.classList.remove("hidden");
       if (canvasWrap) canvasWrap.classList.add("hidden");
+      if (pdfNav) pdfNav.classList.add("hidden");
 
-      // Update Engine Badge
+      // Label as precomputed sample
       const engineBadge = document.getElementById("studioEngineBadge");
       if (engineBadge) {
-        engineBadge.textContent = `Engine: ${sample.engine === 'layout' ? 'PyMuPDF 2D Layout (Digital PDF)' : 'Donut Swin Transformer (Vision VLM)'}`;
+        engineBadge.textContent = "Sample (precomputed with the Python pipeline)";
       }
 
       // Render Metrics & Output
@@ -2195,6 +2347,9 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
       // Render Locked-Coordinate SVG Sheet
       renderSvgPresetSheet(sample);
+
+      const dim = document.getElementById("coordDimensionsBadge");
+      if (dim) dim.textContent = "600 × 820 pt";
     }
 
     // Update Right-Hand Summary Cards
@@ -2207,31 +2362,95 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const elConf = document.getElementById("outConfidence");
       const elMath = document.getElementById("outMathPill");
 
-      if (elVendor) elVendor.textContent = data.vendor_name || "Unknown Vendor";
-      if (elDate) elDate.textContent = data.date || "N/A";
+      if (elVendor) elVendor.textContent = data.vendor_name || "— (Not detected)";
+      if (elDate) elDate.textContent = data.date || "—";
       if (elTotal) {
-        const t = data.total_amount || "-";
-        elTotal.textContent = (t.startsWith("$") || t.includes("F1")) ? t : `$${t}`;
+        const t = data.total_amount || "—";
+        elTotal.textContent = t;
       }
-      if (elSubtotal) elSubtotal.textContent = data.subtotal || "-";
-      if (elTax) elTax.textContent = data.tax_amount || "-";
+      if (elSubtotal) elSubtotal.textContent = data.subtotal || "—";
+      if (elTax) elTax.textContent = data.tax_amount || "—";
       if (elConf) {
         const c = data.confidence !== undefined ? Math.round(data.confidence * 100) : 98;
         elConf.textContent = `${c}% Conf.`;
       }
 
+      // Real Math Audit Check
       if (elMath) {
-        const mr = data.math_reconciliation;
-        if (mr && mr.reconciled) {
-          elMath.className = "verify-pill verify-pass";
-          elMath.textContent = `✓ Math Verified: Subtotal (${data.subtotal || '$' + data.numeric_total}) + Tax (${data.tax_amount || '$0.00'}) == Total (${data.total_amount})`;
-        } else if (mr && mr.reconciled === false) {
-          elMath.className = "verify-pill verify-warn";
-          elMath.textContent = `⚠ Math Discrepancy Flagged: Items ($${mr.items_sum}) + Tax (${data.tax_amount}) != Total (${data.total_amount})`;
-        } else {
-          elMath.className = "verify-pill verify-pass";
-          elMath.textContent = "✓ 2D Spatial Layout Verified";
-        }
+        const audit = auditDocumentMath(data.subtotal, data.tax_amount, data.total_amount);
+        elMath.className = audit.pillClass;
+        elMath.textContent = audit.text;
+      }
+    }
+
+    // Currency & Math Audit Engine
+    function parseCurrency(str) {
+      if (!str || typeof str !== "string") return null;
+      let s = str.trim();
+      if (s === "-" || s === "—" || s.toLowerCase() === "n/a") return null;
+
+      // Extract symbol if present
+      s = s.replace(/[\$€£¥₹]/g, "")
+           .replace(/\b(?:usd|eur|inr|gbp)\b/gi, "")
+           .replace(/\brs\.?\s*/gi, "")
+           .trim();
+      if (!s) return null;
+
+      // European decimal format (e.g. 1.250,50 or 1250,50)
+      if (/^\d{1,3}(\.\d{3})*,\d{2}$/.test(s) || /^\d+,\d{2}$/.test(s)) {
+        s = s.replace(/\./g, "").replace(",", ".");
+      } else {
+        // Standard comma thousands separator (e.g. 1,250.50)
+        s = s.replace(/,/g, "");
+      }
+
+      const num = parseFloat(s);
+      return isNaN(num) ? null : num;
+    }
+
+    function detectCurrencySymbol(str) {
+      if (!str || typeof str !== "string") return "$";
+      if (str.includes("₹") || /\brs\.?/i.test(str) || /\binr\b/i.test(str)) return "₹";
+      if (str.includes("€") || /\beur\b/i.test(str)) return "€";
+      if (str.includes("£") || /\bgbp\b/i.test(str)) return "£";
+      if (str.includes("¥") || /\bjpy\b/i.test(str)) return "¥";
+      return "$";
+    }
+
+    function formatAmount(sym, val) {
+      return `${sym}${val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function auditDocumentMath(subStr, taxStr, totStr) {
+      const numTot = parseCurrency(totStr);
+      const numSub = parseCurrency(subStr);
+      const numTax = parseCurrency(taxStr);
+
+      if (numTot === null || numSub === null) {
+        return {
+          status: "insufficient",
+          pillClass: "verify-pill verify-neutral",
+          text: "Not enough fields to check."
+        };
+      }
+
+      const sym = detectCurrencySymbol(totStr) || detectCurrencySymbol(subStr) || "$";
+      const actualSum = numSub + (numTax !== null ? numTax : 0);
+      const diff = Math.round((actualSum - numTot) * 100) / 100;
+
+      if (Math.abs(diff) < 0.05) {
+        return {
+          status: "verified",
+          pillClass: "verify-pill verify-pass",
+          text: `✓ Math Verified: Subtotal (${formatAmount(sym, numSub)}) + Tax (${formatAmount(sym, numTax || 0)}) == Total (${formatAmount(sym, numTot)})`
+        };
+      } else {
+        const sign = diff > 0 ? `+${diff.toFixed(2)}` : diff.toFixed(2);
+        return {
+          status: "mismatch",
+          pillClass: "verify-pill verify-warn",
+          text: `⚠ Mismatch: Subtotal (${formatAmount(sym, numSub)}) + Tax (${formatAmount(sym, numTax || 0)}) = ${formatAmount(sym, actualSum)} != Total (${formatAmount(sym, numTot)}) [Diff: ${sign}]`
+        };
       }
     }
 
@@ -2248,8 +2467,8 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         td.colSpan = 5;
         td.style.textAlign = "center";
         td.style.color = "var(--text-muted)";
-        td.style.padding = "20px";
-        td.textContent = "No separate table line items extracted.";
+        td.style.padding = "24px";
+        td.textContent = "No separate line items detected in document.";
         tr.appendChild(td);
         tbody.appendChild(tr);
         return;
@@ -2267,7 +2486,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         const tdName = document.createElement("td");
         tdName.style.fontWeight = "600";
-        tdName.textContent = item.name || "Item";
+        tdName.textContent = item.name || "Line Item";
         tr.appendChild(tdName);
 
         const tdQty = document.createElement("td");
@@ -2277,13 +2496,13 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         const tdPrice = document.createElement("td");
         tdPrice.className = "mono";
-        tdPrice.textContent = String(item.unit_price || "-");
+        tdPrice.textContent = String(item.unit_price || "—");
         tr.appendChild(tdPrice);
 
         const tdTot = document.createElement("td");
         tdTot.className = "mono";
         tdTot.style.fontWeight = "700";
-        tdTot.textContent = String(item.line_total || "-");
+        tdTot.textContent = String(item.line_total || "—");
         tr.appendChild(tdTot);
 
         const itemBox = (data.boxes && data.boxes[`item-${i}`]) ? data.boxes[`item-${i}`].bbox : item.bbox;
@@ -2346,7 +2565,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
             else if (k === "tax") label = "Tax Amount";
             else if (k.startsWith("item-") && k.includes("-mod-")) label = "Nested Modifier";
             else if (k.startsWith("item-")) label = `Line Item (${k.split("-")[1]})`;
-            tokens.push({ key: k, label: label, value: v.value || "-", bbox: v.bbox });
+            tokens.push({ key: k, label: label, value: v.value || "—", bbox: v.bbox });
           }
         }
       }
@@ -2357,8 +2576,8 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         td.colSpan = 4;
         td.style.textAlign = "center";
         td.style.color = "var(--text-muted)";
-        td.style.padding = "20px";
-        td.textContent = "No coordinate tokens available.";
+        td.style.padding = "24px";
+        td.textContent = "No coordinate tokens detected.";
         tr.appendChild(td);
         tbody.appendChild(tr);
         return;
@@ -2385,7 +2604,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         const tdConf = document.createElement("td");
         tdConf.className = "mono";
-        tdConf.textContent = "99%";
+        tdConf.textContent = data.confidence !== undefined ? `${Math.round(data.confidence * 100)}%` : "98%";
         tr.appendChild(tdConf);
 
         tr.addEventListener("mouseenter", () => highlightElement(tok.key, tok.bbox, tok.label));
@@ -2403,8 +2622,6 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
     }
 
     // Bidirectional Highlighting
-    let currentHoveredKey = null;
-
     function highlightElement(key, bbox, label) {
       if (activePinnedKey && activePinnedKey !== key) return;
       if (currentHoveredKey === key) return;
@@ -2607,7 +2824,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         g.appendChild(make("line", { x1: 46, y1: 298, x2: 550, y2: 298, stroke: "var(--text)", "stroke-width": 0.8 }));
 
         g.appendChild(make("text", { x: 50, y: 338, class: "doc-text-main", "font-size": "11", "font-weight": "700" }, "StackDoc 2D Hybrid (Ours)"));
-        g.appendChild(make("text", { x: 270, y: 338, class: "doc-text-muted", "font-size": "9.5" }, "Coordinates + VLM"));
+        g.appendChild(make("text", { x: 270, y: 338, class: "doc-text-muted", "font-size": "9.5" }, "Coordinates + OCR"));
         g.appendChild(make("text", { x: 395, y: 338, fill: "var(--accent)", "font-family": "var(--font-mono)", "font-size": "11", "font-weight": "700" }, "1.00"));
         g.appendChild(make("text", { x: 450, y: 338, class: "doc-text-mono", "font-size": "10.5" }, "0.018s"));
         g.appendChild(make("text", { x: 505, y: 338, fill: "#22c55e", "font-family": "var(--font-mono)", "font-size": "10", "font-weight": "700" }, "✓ PASS"));
@@ -2629,7 +2846,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         g.appendChild(make("line", { x1: 46, y1: 498, x2: 550, y2: 498, stroke: "var(--text)", "stroke-width": 1.2 }));
         g.appendChild(make("rect", { x: 46, y: 576, width: 474, height: 28, rx: 3, fill: "var(--surface)", stroke: "#d97706", "stroke-width": 1.5 }));
-        g.appendChild(make("text", { x: 54, y: 594, class: "doc-text-main", "font-size": "10.5", "font-weight": "700" }, "OVERALL WINNER: StackDoc Hybrid (1.00 F1 / 0.018s Digital Latency / 100% Math)"));
+        g.appendChild(make("text", { x: 54, y: 594, class: "doc-text-main", "font-size": "10.5", "font-weight": "700" }, "COMPARISON: StackDoc Digital Vector (1.00 F1 / 0.018s Latency / 100% Math)"));
 
       } else {
         // Corporate Multi-Page Invoice (Default)
@@ -2674,27 +2891,20 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         g.appendChild(make("text", { x: 425, y: 382, class: "doc-text-mono", "font-size": "11" }, "$700.00"));
         g.appendChild(make("text", { x: 495, y: 382, class: "doc-text-mono", "font-size": "11", "font-weight": "700" }, "$700.00"));
 
-        g.appendChild(make("text", { x: 105, y: 410, class: "doc-text-muted", "font-size": "10.5", "font-style": "italic" }, "↳ - Startup Volume Tier Discount (Indented Δx0 = +20px)"));
-        g.appendChild(make("text", { x: 495, y: 410, class: "doc-text-mono", "font-size": "10.5" }, "-$100.00"));
+        g.appendChild(make("line", { x1: 50, y1: 420, x2: 550, y2: 420, stroke: "var(--border-rule)", "stroke-width": 1 }));
 
-        // Row 3
-        g.appendChild(make("text", { x: 60, y: 444, class: "doc-text-mono", "font-size": "11" }, "3"));
-        g.appendChild(make("text", { x: 85, y: 444, class: "doc-text-main", "font-size": "11.5", "font-weight": "600" }, "Post-Processor Validation Pipeline Setup"));
-        g.appendChild(make("text", { x: 382, y: 444, class: "doc-text-mono", "font-size": "11" }, "1"));
-        g.appendChild(make("text", { x: 425, y: 444, class: "doc-text-mono", "font-size": "11" }, "$0.00"));
-        g.appendChild(make("text", { x: 475, y: 444, class: "doc-text-mono", "font-size": "10.5" }, "$0.00 (Incl.)"));
+        // Totals
+        g.appendChild(make("text", { x: 340, y: 450, class: "doc-text-muted", "font-size": "11" }, "SUBTOTAL:"));
+        g.appendChild(make("text", { x: 495, y: 450, class: "doc-text-mono", "font-size": "11", "font-weight": "600" }, "$3,250.00"));
 
-        g.appendChild(make("line", { x1: 50, y1: 464, x2: 550, y2: 464, stroke: "var(--border-rule)", "stroke-width": 1 }));
+        g.appendChild(make("text", { x: 340, y: 476, class: "doc-text-muted", "font-size": "11" }, "TAX (6.15%):"));
+        g.appendChild(make("text", { x: 495, y: 476, class: "doc-text-mono", "font-size": "11", "font-weight": "600" }, "$200.00"));
 
-        g.appendChild(make("text", { x: 368, y: 493, class: "doc-text-muted", "font-size": "11" }, "Subtotal:"));
-        g.appendChild(make("text", { x: 480, y: 493, class: "doc-text-mono", "font-size": "11", "font-weight": "600" }, "$3,250.00"));
+        g.appendChild(make("rect", { x: 320, y: 494, width: 230, height: 32, rx: 3, fill: "var(--surface)", stroke: "#d97706", "stroke-width": 1.5 }));
+        g.appendChild(make("text", { x: 330, y: 516, class: "doc-text-main", "font-size": "12", "font-weight": "700" }, "TOTAL DUE:"));
+        g.appendChild(make("text", { x: 485, y: 516, fill: "#d97706", "font-family": "var(--font-mono)", "font-size": "13", "font-weight": "700" }, "$3,450.00"));
 
-        g.appendChild(make("text", { x: 368, y: 519, class: "doc-text-muted", "font-size": "11" }, "Tax (Sales & Use):"));
-        g.appendChild(make("text", { x: 480, y: 519, class: "doc-text-mono", "font-size": "11", "font-weight": "600" }, "$200.00"));
-
-        g.appendChild(make("rect", { x: 340, y: 532, width: 210, height: 30, rx: 3, fill: "var(--surface)", stroke: "#d97706", "stroke-width": 1.5 }));
-        g.appendChild(make("text", { x: 350, y: 552, class: "doc-text-main", "font-size": "12", "font-weight": "700" }, "TOTAL DUE:"));
-        g.appendChild(make("text", { x: 465, y: 552, fill: "#d97706", "font-family": "var(--font-mono)", "font-size": "13", "font-weight": "700" }, "$3,450.00"));
+        g.appendChild(make("text", { x: 50, y: 570, class: "doc-text-muted", "font-size": "10" }, "PAYMENT TERMS: Remit to wire routing #021000021 • Bank of America, San Francisco"));
       }
     }
 
@@ -2766,9 +2976,31 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const mainUploadBtn = document.getElementById("mainUploadBtn");
       const heroUploadBtn = document.getElementById("heroUploadTriggerBtn");
       const dropZone = document.getElementById("docStageContainer");
+      const cancelBtn = document.getElementById("cancelScanBtn");
+      const retryBtn = document.getElementById("scanRetryBtn");
 
       if (mainUploadBtn && fileInput) mainUploadBtn.addEventListener("click", () => fileInput.click());
       if (heroUploadBtn && fileInput) heroUploadBtn.addEventListener("click", () => fileInput.click());
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+          if (scanAbortController) {
+            scanAbortController.abort();
+            scanAbortController = null;
+          }
+          showScanProgress(false);
+          showToast("Upload processing cancelled.");
+        });
+      }
+
+      if (retryBtn) {
+        retryBtn.addEventListener("click", () => {
+          retryBtn.classList.add("hidden");
+          if (fileInput.files && fileInput.files[0]) {
+            processUploadedFile(fileInput.files[0]);
+          }
+        });
+      }
 
       if (fileInput) {
         fileInput.addEventListener("change", (e) => {
@@ -2794,14 +3026,56 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           }
         });
       }
+
+      // PDF Page Navigation Controls
+      const prevBtn = document.getElementById("pdfPrevPageBtn");
+      const nextBtn = document.getElementById("pdfNextPageBtn");
+      const pageSelect = document.getElementById("pdfPageSelect");
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+          if (currentPdfDoc && currentPdfPageNum > 1) {
+            renderPdfPage(currentPdfPageNum - 1);
+          }
+        });
+      }
+      if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+          if (currentPdfDoc && currentPdfPageNum < currentPdfDoc.numPages) {
+            renderPdfPage(currentPdfPageNum + 1);
+          }
+        });
+      }
+      if (pageSelect) {
+        pageSelect.addEventListener("change", (e) => {
+          const page = parseInt(e.target.value, 10);
+          if (currentPdfDoc && page >= 1 && page <= currentPdfDoc.numPages) {
+            renderPdfPage(page);
+          }
+        });
+      }
     }
 
     // Process File (Image or PDF)
     async function processUploadedFile(file) {
-      const fileName = file.name;
-      const isPdf = fileName.toLowerCase().endsWith(".pdf");
+      // Validation: Accept PNG, JPG, WEBP and PDF
+      const validExtensions = [".pdf", ".png", ".jpg", ".jpeg", ".webp"];
+      const ext = "." + file.name.split(".").pop().toLowerCase();
+      if (!validExtensions.includes(ext)) {
+        showToast("Unsupported file type. Please upload a PNG, JPG, WEBP, or PDF document.");
+        return;
+      }
 
-      showScanProgress(true, "Initializing Vision AI model...", 10);
+      // Validation: Limit size to 15 MB
+      const maxBytes = 15 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        const mb = (file.size / (1024 * 1024)).toFixed(1);
+        showToast(`File exceeds 15 MB limit (${mb} MB). Please upload a smaller file.`);
+        return;
+      }
+
+      const isPdf = ext === ".pdf";
+      scanAbortController = new AbortController();
 
       // Show and activate the Upload tab
       const uploadTabBtn = document.getElementById("uploadTabBtn");
@@ -2813,7 +3087,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         });
         uploadTabBtn.classList.add("active");
         uploadTabBtn.setAttribute("aria-selected", "true");
-        uploadTabBtn.textContent = `⚡ ${fileName} (Live Scan)`;
+        uploadTabBtn.textContent = `Live Upload: ${file.name}`;
       }
 
       if (isPdf) {
@@ -2823,8 +3097,11 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       }
     }
 
-    // Image OCR with Tesseract.js
+    // Image OCR with Tesseract.js (Lazy-Loaded)
     async function processImageFile(file) {
+      const pdfNav = document.getElementById("pdfPageNav");
+      if (pdfNav) pdfNav.classList.add("hidden");
+
       const imgUrl = URL.createObjectURL(file);
       const img = document.getElementById("uploadedImg");
       const canvas = document.getElementById("pdfRenderCanvas");
@@ -2847,60 +3124,112 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
       const imgWidth = img.naturalWidth || 800;
       const imgHeight = img.naturalHeight || 1000;
+      const dimBadge = document.getElementById("coordDimensionsBadge");
+      if (dimBadge) dimBadge.textContent = `${imgWidth} × ${imgHeight} px`;
 
-      showScanProgress(true, "Scanning image pixels & extracting 2D word coordinates...", 30);
+      showScanProgress(true, "Loading Tesseract.js OCR engine (v5.1.1)...", 15);
 
       try {
-        if (window.Tesseract) {
-          const result = await Tesseract.recognize(file, 'eng', {
-            logger: m => {
-              if (m.status === 'recognizing text') {
-                const pct = Math.round(m.progress * 100);
-                showScanProgress(true, `Scanning image pixels & extracting 2D coordinates... ${pct}%`, pct);
-              }
+        const Tesseract = await loadTesseract();
+        if (!Tesseract) throw new Error("Failed to load Tesseract.js engine");
+
+        showScanProgress(true, "Scanning image pixels & extracting text coordinates...", 35);
+
+        const result = await Tesseract.recognize(file, "eng", {
+          logger: m => {
+            if (m.status === "recognizing text") {
+              const pct = Math.round(m.progress * 60) + 35;
+              showScanProgress(true, `Reading text & coordinates... ${Math.round(m.progress * 100)}%`, pct);
             }
-          });
+          }
+        });
 
-          showScanProgress(true, "Running Stage 3 Spatial Post-Processor...", 90);
+        if (scanAbortController && scanAbortController.signal.aborted) return;
 
-          const lines = (result.data.lines || []).map(l => ({
-            text: l.text,
-            bbox: [l.bbox.x0, l.bbox.y0, l.bbox.x1, l.bbox.y1],
-            confidence: l.confidence
-          }));
+        showScanProgress(true, "Reconstructing 2D layout & auditing math...", 92);
 
-          const extracted = runLayoutPostProcessor(lines, imgWidth, imgHeight, file.name);
-          extracted.engine = "Tesseract.js v5 (In-Browser Vision OCR)";
-          extracted.imageWidth = imgWidth;
-          extracted.imageHeight = imgHeight;
+        const lines = (result.data.lines || []).map(l => ({
+          text: l.text,
+          bbox: [l.bbox.x0, l.bbox.y0, l.bbox.x1, l.bbox.y1],
+          confidence: l.confidence
+        }));
 
-          activeCustomDoc = extracted;
-          displayCustomDoc(extracted);
-          showToast(`Extracted ${extracted.line_items_count} items & coordinates from ${file.name} ✓`);
-        } else {
-          // Fallback if Tesseract CDN failed
-          throw new Error("Tesseract.js not loaded");
-        }
+        const extracted = runLayoutPostProcessor(lines, imgWidth, imgHeight, file.name);
+        extracted.engine = "Live in-browser (Tesseract.js)";
+        extracted.imageWidth = imgWidth;
+        extracted.imageHeight = imgHeight;
+
+        activeCustomDoc = extracted;
+        displayCustomDoc(extracted);
+        showToast(`Extracted ${extracted.line_items_count} items & coordinates from ${file.name} ✓`);
       } catch (err) {
-        console.warn("Real OCR scan error; running simulated client fallback", err);
-        fallbackClientExtraction(file.name, imgWidth, imgHeight);
+        console.error("Image OCR error:", err);
+        showScanError("OCR engine failed to load or scan. Please check connection and retry.");
       } finally {
         showScanProgress(false);
       }
     }
 
-    // PDF Extraction with PDF.js
+    // PDF Extraction with PDF.js (Lazy-Loaded)
     async function processPdfFile(file) {
-      showScanProgress(true, "Parsing vector PDF stream with PDF.js...", 30);
+      showScanProgress(true, "Loading PDF.js engine (v3.11.174)...", 15);
       const arrayBuffer = await file.arrayBuffer();
 
       try {
-        if (!window.pdfjsLib) throw new Error("PDF.js not loaded");
+        const pdfjsLib = await loadPdfJs();
+        if (!pdfjsLib) throw new Error("Failed to load PDF.js engine");
+
+        showScanProgress(true, "Reading vector PDF stream...", 35);
 
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
         const pdf = await loadingTask.promise;
-        const page = await pdf.getPage(1);
+        currentPdfDoc = pdf;
+        currentPdfFile = file;
+        currentPdfPageNum = 1;
 
+        // Configure multi-page UI
+        const pdfNav = document.getElementById("pdfPageNav");
+        const totalSpan = document.getElementById("pdfTotalPages");
+        const pageSelect = document.getElementById("pdfPageSelect");
+
+        if (pdf.numPages > 1) {
+          if (pdfNav) pdfNav.classList.remove("hidden");
+          if (totalSpan) totalSpan.textContent = String(pdf.numPages);
+          if (pageSelect) {
+            pageSelect.innerHTML = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+              const opt = document.createElement("option");
+              opt.value = String(i);
+              opt.textContent = String(i);
+              pageSelect.appendChild(opt);
+            }
+            pageSelect.value = "1";
+          }
+        } else {
+          if (pdfNav) pdfNav.classList.add("hidden");
+        }
+
+        await renderPdfPage(1);
+      } catch (err) {
+        console.error("PDF extraction error:", err);
+        showScanError("Failed to read PDF. The file may be password protected or corrupted.");
+      } finally {
+        showScanProgress(false);
+      }
+    }
+
+    // Render a specific page of a multi-page PDF
+    async function renderPdfPage(pageNum) {
+      if (!currentPdfDoc) return;
+      currentPdfPageNum = pageNum;
+
+      const pageSelect = document.getElementById("pdfPageSelect");
+      if (pageSelect) pageSelect.value = String(pageNum);
+
+      showScanProgress(true, `Rendering PDF page ${pageNum}...`, 45);
+
+      try {
+        const page = await currentPdfDoc.getPage(pageNum);
         const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.getElementById("pdfRenderCanvas");
         const img = document.getElementById("uploadedImg");
@@ -2922,13 +3251,18 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         };
         await page.render(renderContext).promise;
 
-        showScanProgress(true, "Extracting 2D spatial text coordinates...", 60);
+        if (scanAbortController && scanAbortController.signal.aborted) return;
+
+        showScanProgress(true, `Extracting text & 2D coordinates on page ${pageNum}...`, 70);
 
         const textContent = await page.getTextContent();
         const items = textContent.items || [];
 
-        if (items.length >= 15) {
-          // Digital Vector PDF: extract exact coordinates
+        const dimBadge = document.getElementById("coordDimensionsBadge");
+        if (dimBadge) dimBadge.textContent = `${Math.round(viewport.width)} × ${Math.round(viewport.height)} pt (Page ${pageNum})`;
+
+        if (items.length >= 10) {
+          // Digital Vector PDF: extract exact coordinates directly
           const lines = [];
           items.forEach(it => {
             const tx = it.transform[4];
@@ -2943,26 +3277,29 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
             });
           });
 
-          showScanProgress(true, "Executing Stage 3 Structured Post-Processor...", 90);
+          showScanProgress(true, "Reconstructing 2D layout & auditing math...", 90);
 
-          const extracted = runLayoutPostProcessor(lines, viewport.width, viewport.height, file.name);
-          extracted.engine = "PDF.js 2D Spatial Vector Stream (<0.03s)";
+          const extracted = runLayoutPostProcessor(lines, viewport.width, viewport.height, currentPdfFile.name);
+          extracted.engine = "Live in-browser (PDF.js)";
           extracted.imageWidth = viewport.width;
           extracted.imageHeight = viewport.height;
 
           activeCustomDoc = extracted;
           displayCustomDoc(extracted);
-          showToast(`Vector extracted ${extracted.line_items_count} items from ${file.name} in <0.03s ✓`);
+          showToast(`Vector extracted ${extracted.line_items_count} items from page ${pageNum} ✓`);
         } else {
-          // Flat scanned PDF: convert canvas to image blob and pass to Tesseract OCR!
-          showScanProgress(true, "Scanned PDF detected. Routing to In-Browser OCR...", 40);
+          // Scanned PDF page: route canvas snapshot to Tesseract OCR
+          showScanProgress(true, `Scanned PDF page detected. Running OCR on page ${pageNum}...`, 50);
           canvas.toBlob(async (blob) => {
-            await processImageFile(new File([blob], file.name.replace(/\.pdf$/i, ".png"), { type: "image/png" }));
+            if (blob) {
+              const fileImg = new File([blob], `page_${pageNum}.png`, { type: "image/png" });
+              await processImageFile(fileImg);
+            }
           });
         }
       } catch (err) {
-        console.warn("PDF extraction error; running client fallback", err);
-        fallbackClientExtraction(file.name, 600, 800);
+        console.error("PDF page render error:", err);
+        showScanError(`Failed to extract page ${pageNum}.`);
       } finally {
         showScanProgress(false);
       }
@@ -2970,13 +3307,38 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
     // Stage 3 Spatial Layout & Heuristic Post-Processor
     function runLayoutPostProcessor(extractedLines, imgWidth, imgHeight, fileName) {
-      const lines = extractedLines
+      const lines = (extractedLines || [])
         .filter(l => l.text && l.text.trim().length > 0)
         .sort((a, b) => a.bbox[1] - b.bbox[1]);
 
-      let vendor = "Detected Vendor";
+      // If document is blank or unreadable, return empty/low confidence structure
+      if (lines.length < 3) {
+        return {
+          vendor_name: "— (Not detected)",
+          date: "—",
+          subtotal: "—",
+          tax_amount: "—",
+          total_amount: "—",
+          numeric_total: 0,
+          confidence: 0.1,
+          line_items: [],
+          line_items_count: 0,
+          boxes: {},
+          all_lines: lines,
+          math_reconciliation: {
+            reconciled: false,
+            items_sum: 0,
+            expected_total: 0,
+            actual_total: 0,
+            formula: "Not enough fields to check."
+          },
+          note: "Low confidence: No clear text could be detected in this image."
+        };
+      }
+
+      let vendor = null;
       let vendorBbox = null;
-      let date = new Date().toISOString().slice(0, 10);
+      let date = null;
       let dateBbox = null;
       let subtotal = null;
       let subtotalBbox = null;
@@ -2989,20 +3351,20 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
       const dateRegex = /\b(\d{4}[-/.]\d{1,2}[-/.]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})\b/i;
 
-      // 1. Vendor Name from top 30% of document
+      // 1. Vendor Name from top 35% of page
       const headerLines = lines.filter(l => l.bbox[1] < imgHeight * 0.35);
       for (const l of headerLines) {
         const clean = l.text.trim().replace(/^[^a-zA-Z0-9]+/, "");
         const lower = clean.toLowerCase();
-        if (lower.length > 3 && !lower.includes("invoice") && !lower.includes("receipt") && !lower.includes("date") && !lower.includes("bill to") && !lower.includes("tax invoice")) {
+        if (lower.length > 3 && !lower.includes("invoice") && !lower.includes("receipt") && !lower.includes("date") && !lower.includes("bill to") && !lower.includes("tax invoice") && !lower.includes("page ")) {
           vendor = clean;
           vendorBbox = l.bbox;
           break;
         }
       }
-      if (!vendorBbox && lines.length > 0) {
-        vendor = lines[0].text.trim();
-        vendorBbox = lines[0].bbox;
+      if (!vendorBbox && headerLines.length > 0) {
+        vendor = headerLines[0].text.trim();
+        vendorBbox = headerLines[0].bbox;
       }
 
       // 2. Date
@@ -3015,15 +3377,23 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         }
       }
 
-      // 3. Totals (Total, Subtotal, Tax)
+      // 3. Currency Amounts & Totals Parsing (supports $, €, £, ¥, ₹, Rs, INR, comma decimals)
+      function extractAmounts(txt) {
+        const re = /(?:[\$€£¥₹]|rs\.?|inr|usd|eur|gbp)?\s*([0-9]{1,3}(?:[,.][0-9]{3})*[,.][0-9]{2})\b/gi;
+        return [...txt.matchAll(re)];
+      }
       const amountCandidates = [];
+
       lines.forEach((l, idx) => {
         const lower = l.text.toLowerCase();
-        const matches = [...l.text.matchAll(/(?:[\$£€]|USD\s*)?([0-9]{1,3}(?:,[0-9]{3})*\.[0-9]{2})\b/g)];
+        const matches = extractAmounts(l.text);
         if (matches.length > 0) {
-          const valStr = matches[matches.length - 1][1];
-          const valNum = parseFloat(valStr.replace(/,/g, ""));
-          amountCandidates.push({ line: l, lineIdx: idx, valStr: `$${valStr}`, valNum, lower });
+          const rawMatch = matches[matches.length - 1][0];
+          const valNum = parseCurrency(rawMatch);
+          if (valNum !== null && valNum > 0) {
+            const sym = detectCurrencySymbol(rawMatch);
+            amountCandidates.push({ line: l, lineIdx: idx, valStr: formatAmount(sym, valNum), valNum, lower });
+          }
         }
       });
 
@@ -3032,7 +3402,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           if (!subtotal) { subtotal = cand.valStr; subtotalBbox = cand.line.bbox; }
         } else if (cand.lower.includes("tax") || cand.lower.includes("vat") || cand.lower.includes("gst")) {
           if (!tax) { tax = cand.valStr; taxBbox = cand.line.bbox; }
-        } else if (cand.lower.includes("total") || cand.lower.includes("balance due") || cand.lower.includes("amount due") || cand.lower.includes("due")) {
+        } else if (cand.lower.includes("total") || cand.lower.includes("balance due") || cand.lower.includes("amount due") || cand.lower.includes("total due")) {
           total = cand.valStr;
           totalBbox = cand.line.bbox;
         }
@@ -3050,13 +3420,6 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           subtotalBbox = belowTotal[0].line.bbox;
         }
       }
-      if (!tax && subtotal && total) {
-        const sNum = parseFloat(subtotal.replace(/[$,]/g, ""));
-        const tNum = parseFloat(total.replace(/[$,]/g, ""));
-        if (tNum > sNum) {
-          tax = `$${(tNum - sNum).toFixed(2)}`;
-        }
-      }
 
       // 4. Line Items & Indented Modifiers (Δx0 > 12px)
       let baseTableX0 = null;
@@ -3070,24 +3433,25 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         if (lower.includes("invoice") && idx < 3) return;
         if (lower.includes("bill to") || lower.includes("page ")) return;
 
-        const matches = [...l.text.matchAll(/(?:[\$£€]|USD\s*)?([0-9]{1,3}(?:,[0-9]{3})*\.[0-9]{2})\b/g)];
+        const matches = extractAmounts(l.text);
         const hasPrice = matches.length > 0;
         const isModifierPrefix = l.text.trim().startsWith("↳") || l.text.trim().startsWith("+") || l.text.trim().startsWith("-");
 
         if (hasPrice || isModifierPrefix) {
-          const priceStr = hasPrice ? `$${matches[matches.length - 1][1]}` : "Included";
-          const numPrice = hasPrice ? parseFloat(matches[matches.length - 1][1].replace(/,/g, "")) : 0;
-          const cleanDesc = l.text.replace(/(?:[\$£€]|USD\s*)?[0-9]{1,3}(?:,[0-9]{3})*\.[0-9]{2}/g, "").trim();
+          const rawPrice = hasPrice ? matches[matches.length - 1][0] : "Included";
+          const numPrice = hasPrice ? parseCurrency(rawPrice) : 0;
+          const sym = detectCurrencySymbol(rawPrice);
+          const priceStr = hasPrice ? formatAmount(sym, numPrice || 0) : "Included";
+          const cleanDesc = l.text.replace(/(?:[\$€£¥₹]|rs\.?|inr|usd|eur|gbp)?\s*[0-9]{1,3}(?:[,.][0-9]{3})*[,.][0-9]{2}\b/gi, "").trim();
 
           if (baseTableX0 === null) baseTableX0 = l.bbox[0];
-
           const isIndented = (l.bbox[0] - baseTableX0 > 14) || isModifierPrefix;
 
           if (isIndented && currentParentItem) {
             const mod = {
               name: cleanDesc.replace(/^[↳+\-\s]+/, "") || "Service Option / Modifier",
               price: priceStr,
-              numeric_price: numPrice,
+              numeric_price: numPrice || 0,
               bbox: l.bbox,
               indent_delta_x0: Math.round(l.bbox[0] - baseTableX0)
             };
@@ -3100,7 +3464,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
               quantity: "1",
               unit_price: priceStr,
               line_total: priceStr,
-              numeric_price: numPrice,
+              numeric_price: numPrice || 0,
               bbox: l.bbox,
               modifiers: []
             };
@@ -3109,29 +3473,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         }
       });
 
-      if (lineItems.length === 0) {
-        const candidateBody = lines.filter(l => l.bbox[1] > imgHeight * 0.25 && l.bbox[1] < imgHeight * 0.75).slice(0, 4);
-        candidateBody.forEach((l, i) => {
-          lineItems.push({
-            line_number: i + 1,
-            name: l.text.trim(),
-            quantity: "1",
-            unit_price: "-",
-            line_total: "-",
-            numeric_price: 0,
-            bbox: l.bbox,
-            modifiers: []
-          });
-        });
-      }
-
-      // 5. Deterministic Math Check
-      const numSub = subtotal ? parseFloat(subtotal.replace(/[$,]/g, "")) : 0;
-      const numTax = tax ? parseFloat(tax.replace(/[$,]/g, "")) : 0;
-      const numTot = total ? parseFloat(total.replace(/[$,]/g, "")) : 0;
-      const reconciled = (numSub > 0 && numTot > 0 && Math.abs((numSub + numTax) - numTot) < 0.05);
-
-      // 6. Assemble Boxes
+      // 5. Assemble Detected Bounding Boxes
       if (vendorBbox) boxes.vendor = { value: vendor, bbox: vendorBbox };
       if (dateBbox) boxes.date = { value: date, bbox: dateBbox };
       if (subtotalBbox) boxes.subtotal = { value: subtotal, bbox: subtotalBbox };
@@ -3145,24 +3487,29 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         });
       });
 
+      const numSub = parseCurrency(subtotal);
+      const numTax = parseCurrency(tax);
+      const numTot = parseCurrency(total);
+      const mathAudit = auditDocumentMath(subtotal, tax, total);
+
       return {
-        vendor_name: vendor,
-        date: date,
-        subtotal: subtotal || "-",
-        tax_amount: tax || "-",
-        total_amount: total || "-",
-        numeric_total: numTot,
-        confidence: lines.length > 0 ? (lines.reduce((acc, l) => acc + (l.confidence || 90), 0) / lines.length) / 100 : 0.96,
+        vendor_name: vendor || "— (Not detected)",
+        date: date || "—",
+        subtotal: subtotal || "—",
+        tax_amount: tax || "—",
+        total_amount: total || "—",
+        numeric_total: numTot || 0,
+        confidence: lines.length > 0 ? (lines.reduce((acc, l) => acc + (l.confidence || 90), 0) / lines.length) / 100 : 0.94,
         line_items: lineItems,
         line_items_count: lineItems.length,
         boxes: boxes,
         all_lines: lines,
         math_reconciliation: {
-          reconciled: reconciled,
-          items_sum: numSub,
-          expected_total: numTot,
-          actual_total: numTot,
-          formula: "subtotal + tax == total"
+          reconciled: mathAudit.status === "verified",
+          items_sum: numSub || 0,
+          expected_total: numTot || 0,
+          actual_total: numTot || 0,
+          formula: mathAudit.text
         }
       };
     }
@@ -3176,7 +3523,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       // Update Engine Badge
       const engineBadge = document.getElementById("studioEngineBadge");
       if (engineBadge) {
-        engineBadge.textContent = `Engine: ${doc.engine || 'Real Vision AI Scanner'}`;
+        engineBadge.textContent = doc.engine || "Live in-browser";
       }
 
       // Update Right Panel
@@ -3193,7 +3540,6 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const w = doc.imageWidth || 800;
       const h = doc.imageHeight || 1000;
 
-      // Draw all line boxes
       if (doc.boxes) {
         for (const [key, item] of Object.entries(doc.boxes)) {
           if (!item.bbox) continue;
@@ -3207,7 +3553,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           else if (key === "subtotal") { colorCls = "bbox-total"; label = "SUBTOTAL"; }
           else if (key === "tax") { colorCls = "bbox-total"; label = "TAX"; }
           else if (key.startsWith("item-") && key.includes("-mod-")) { colorCls = "bbox-mod"; label = "MODIFIER"; }
-          else if (key.startsWith("item-")) { colorCls = "bbox-item"; label = `ITEM`; }
+          else if (key.startsWith("item-")) { colorCls = "bbox-item"; label = "ITEM"; }
 
           const boxEl = document.createElement("div");
           boxEl.className = `bbox-interactive ${colorCls}`;
@@ -3227,74 +3573,62 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       }
     }
 
-    // Client fallback if offline or CDN fails
-    function fallbackClientExtraction(fileName, w, h) {
-      const isPdf = fileName.toLowerCase().endsWith(".pdf");
-      const cleanVendor = fileName.replace(/\.[^/.]+$/, "").replace(/[_\-\.]+/g, " ").toUpperCase();
-      const mock = {
-        vendor_name: cleanVendor || "ENTERPRISE SUPPLIES INC",
-        date: new Date().toISOString().slice(0, 10),
-        subtotal: "$1,250.00",
-        tax_amount: "$100.00",
-        total_amount: "$1,350.00",
-        numeric_total: 1350.0,
-        confidence: 0.98,
-        engine: isPdf ? "PyMuPDF 2D Layout Spatial Parser" : "Tesseract.js OCR Engine",
-        imageWidth: w,
-        imageHeight: h,
-        line_items: [
-          { line_number: 1, name: "Managed Cloud Compute Core", quantity: "2", unit_price: "$500.00", line_total: "$1,000.00", bbox: [50, 200, 550, 230], modifiers: [
-            { name: "Priority 24/7 SLA Support (Indented Δx0 = +20px)", price: "+$150.00", bbox: [70, 235, 550, 260] }
-          ] },
-          { line_number: 2, name: "Layout AI Parser License", quantity: "1", unit_price: "$250.00", line_total: "$250.00", bbox: [50, 270, 550, 295], modifiers: [] }
-        ],
-        line_items_count: 2,
-        boxes: {
-          vendor: { value: cleanVendor, bbox: [50, 48, 320, 80] },
-          date: { value: new Date().toISOString().slice(0, 10), bbox: [430, 52, 550, 76] },
-          "item-0": { value: "Managed Cloud Compute Core", bbox: [50, 200, 550, 230] },
-          "item-0-mod-0": { value: "↳ Priority 24/7 SLA Support", bbox: [70, 235, 550, 260] },
-          "item-1": { value: "Layout AI Parser License", bbox: [50, 270, 550, 295] },
-          subtotal: { value: "$1,250.00", bbox: [360, 360, 550, 385] },
-          tax: { value: "$100.00", bbox: [360, 390, 550, 415] },
-          total: { value: "$1,350.00", bbox: [340, 430, 550, 460] }
-        },
-        math_reconciliation: {
-          reconciled: true,
-          items_sum: 1250.0,
-          expected_total: 1350.0,
-          actual_total: 1350.0,
-          formula: "subtotal + tax == total"
-        }
-      };
-
-      activeCustomDoc = mock;
-      displayCustomDoc(mock);
-      showToast("Completed 2D Layout-Aware extraction on your document ✓");
-    }
-
     // Scanning Progress Helper
     function showScanProgress(show, text, percent) {
       const overlay = document.getElementById("scanProgressOverlay");
       const statusText = document.getElementById("scanStatusText");
       const bar = document.getElementById("scanProgressBar");
+      const retryBtn = document.getElementById("scanRetryBtn");
 
       if (overlay) overlay.classList.toggle("hidden", !show);
       if (statusText && text) statusText.textContent = text;
-      if (bar && percent !== undefined) bar.style.width = `${Math.min(100, Math.max(5, percent))}%`;
+      if (bar && percent !== undefined) {
+        bar.style.width = `${Math.min(100, Math.max(5, percent))}%`;
+        bar.setAttribute("aria-valuenow", String(Math.round(percent)));
+      }
+      if (retryBtn) retryBtn.classList.add("hidden");
+    }
+
+    function showScanError(msg) {
+      const statusText = document.getElementById("scanStatusText");
+      const retryBtn = document.getElementById("scanRetryBtn");
+      if (statusText) statusText.textContent = msg;
+      if (retryBtn) retryBtn.classList.remove("hidden");
     }
 
     // Copy text helper
     function copyText(str, btn) {
+      function markSuccess() {
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = "Copied ✓";
+          setTimeout(() => { btn.textContent = orig; }, 1800);
+        }
+        showToast("Copied to clipboard ✓");
+      }
+
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(str).then(() => {
-          if (btn) {
-            const orig = btn.textContent;
-            btn.textContent = "Copied ✓";
-            setTimeout(() => { btn.textContent = orig; }, 1500);
-          }
-          showToast("Copied to clipboard ✓");
+        navigator.clipboard.writeText(str).then(markSuccess).catch(() => {
+          fallbackCopy(str);
         });
+      } else {
+        fallbackCopy(str);
+      }
+
+      function fallbackCopy(text) {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          markSuccess();
+        } catch (e) {
+          showToast("Copy failed: please select and copy manually.");
+        }
       }
     }
 
@@ -3306,6 +3640,14 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const btnReal = document.getElementById("btnDatasetReal");
 
       const buttons = [btnAll, btnDigital, btnScans, btnReal].filter(Boolean);
+
+      // Hide Real Documents tab if no real documents are present in loaded data
+      if (btnReal) {
+        const hasReal = globalData && globalData.real_summary && Array.isArray(globalData.real_summary.items) && globalData.real_summary.items.length > 0;
+        if (!hasReal) {
+          btnReal.style.display = "none";
+        }
+      }
 
       function setFilter(key) {
         currentDatasetFilter = key;
@@ -3335,13 +3677,23 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const synthItems = (globalData.summary && globalData.summary.items) || [];
       const realItems = (globalData.real_summary && globalData.real_summary.items) || [];
 
-      if (currentDatasetFilter === "all") items = [...synthItems, ...realItems];
-      else if (currentDatasetFilter === "digital") items = [...synthItems, ...realItems].filter(i => i.engine === "layout");
+      if (currentDatasetFilter === "all") items = [...synthItems];
+      else if (currentDatasetFilter === "digital") items = synthItems.filter(i => i.engine === "layout");
       else if (currentDatasetFilter === "scans") items = synthItems.filter(i => i.engine === "donut");
       else if (currentDatasetFilter === "real") items = realItems;
 
       const badge = document.getElementById("datasetBadge");
-      if (badge) badge.textContent = `${items.length} documents • ${currentDatasetFilter}`;
+      if (badge) {
+        if (currentDatasetFilter === "real") badge.textContent = `${items.length} documents • real typography`;
+        else badge.textContent = `${items.length} documents • synthetic sanity check`;
+      }
+
+      if (items.length === 0) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="10" style="text-align:center; padding:24px; color:var(--text-muted);">No documents available in this view.</td>`;
+        evalBody.appendChild(tr);
+        return;
+      }
 
       items.forEach(it => {
         const tr = document.createElement("tr");
@@ -3366,7 +3718,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         const tdF1 = document.createElement("td");
         tdF1.className = "mono";
-        tdF1.textContent = it.line_items_f1 !== undefined ? it.line_items_f1.toFixed(2) : "-";
+        tdF1.textContent = it.line_items_f1 !== undefined ? it.line_items_f1.toFixed(2) : "—";
         tr.appendChild(tdF1);
 
         const tdConf = document.createElement("td");
@@ -3376,7 +3728,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         const tdLat = document.createElement("td");
         tdLat.className = "mono";
-        tdLat.textContent = it.latency_seconds !== undefined ? `${it.latency_seconds.toFixed(3)}s` : "-";
+        tdLat.textContent = it.latency_seconds !== undefined ? `${it.latency_seconds.toFixed(3)}s` : "—";
         tr.appendChild(tdLat);
 
         const tdStatus = document.createElement("td");

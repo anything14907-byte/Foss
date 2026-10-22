@@ -400,7 +400,7 @@
       "engine": "donut",
       "status": "PASS",
       "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
-      "method": "Swin Transformer Vision Autoregression (Zero OCR)",
+      "method": "Donut VLM Transformer (Swin Encoder + mBART)",
       "vendor_name": "STARBUCKS COFFEE #14907",
       "date": "2026-10-21",
       "invoice_number": "CHK #8841-TERM4",
@@ -823,7 +823,7 @@
           "name": "Donut Base (Kim et al. 2022)",
           "quantity": "0.88 F1",
           "unit_price": "3.220s (1,200 MB)",
-          "line_total": "Zero OCR / Swin Trans.",
+          "line_total": "Pixel VLM / Swin+mBART",
           "numeric_price": 0.88,
           "bbox": [
             46.0,
