@@ -1,6 +1,7 @@
 {
   "timestamp": "2026-10-22T02:53:54Z",
   "summary": {
+    "dataset": "synthetic",
     "directory": "data/eval",
     "total_documents": 6,
     "pass_count": 2,

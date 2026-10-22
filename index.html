@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StackDoc - Layout-Aware Document Understanding</title>
+  <meta name="description" content="StackDoc: Layout-aware document understanding extracting vendor, date, totals, and line items from receipts and invoices without brittle plain-text OCR.">
+  <meta property="og:title" content="StackDoc - Layout-Aware Document Understanding">
+  <meta property="og:description" content="Extracts vendor, date, totals and line items from receipts and invoices, with multi-page table support for digital PDFs.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%236366f1'/%3E%3Cpath d='M8 7h11l5 5v13H8z' fill='%23ffffff'/%3E%3Cpath d='M19 7v5h5' fill='%23cbd5e1'/%3E%3Cpath d='M11 15h10M11 18h10M11 21h6' stroke='%236366f1' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
   <style>
     :root {
       --bg: #0f172a;
@@ -24,12 +29,29 @@
       :root {
         --bg: #f8fafc;
         --surface: #ffffff;
-        --surface-border: #e2e8f0;
+        --surface-border: #cbd5e1;
         --text: #0f172a;
-        --text-muted: #64748b;
-        --primary: #4f46e5;
-        --primary-hover: #4338ca;
+        --text-muted: #475569; /* WCAG AA: 7.0:1 on #ffffff */
+        --primary: #4338ca;    /* WCAG AA: 7.0:1 on #ffffff */
+        --primary-hover: #3730a3;
         --code-bg: #f1f5f9;
+      }
+      .status-badge.pass { background: #dcfce7; color: #15803d; }
+      .status-badge.partial { background: #fef3c7; color: #b45309; }
+      .status-badge.fail { background: #fee2e2; color: #b91c1c; }
+      .dataset-badge {
+        background: #ede9fe;
+        color: #5b21b6;
+        border-color: #c4b5fd;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
       }
     }
 
@@ -51,6 +73,10 @@
       max-width: 1140px;
       margin: 0 auto;
       padding: 0 20px;
+    }
+
+    .hidden {
+      display: none !important;
     }
 
     /* Header Nav */
@@ -91,9 +117,10 @@
 
     .nav-links {
       display: flex;
-      gap: 20px;
+      gap: 18px;
       list-style: none;
       font-size: 13px;
+      flex-wrap: wrap;
     }
 
     .nav-links a {
@@ -136,8 +163,16 @@
 
     .hero p.problem-statement {
       max-width: 820px;
-      margin: 0 auto 24px;
+      margin: 0 auto 12px;
       font-size: 16px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .hero p.hero-subtext {
+      max-width: 820px;
+      margin: 0 auto 24px;
+      font-size: 14px;
       color: var(--text-muted);
     }
 
@@ -194,6 +229,19 @@
       border-radius: var(--radius);
       padding: 24px;
       margin-bottom: 40px;
+    }
+
+    /* Dataset badge */
+    .dataset-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      letter-spacing: 0.3px;
     }
 
     /* Diagram */
@@ -357,31 +405,17 @@
 
     .comp-item strong {
       display: block;
-      color: var(--text-muted);
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: var(--text-muted);
       margin-bottom: 2px;
-    }
-
-    /* Code Block */
-    pre.code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 14px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 12px;
-      overflow-x: auto;
-      color: #38bdf8;
-      margin-bottom: 16px;
+      letter-spacing: 0.5px;
     }
 
     /* Roadmap */
     .roadmap-list {
-      list-style: none;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
     }
 
@@ -390,13 +424,96 @@
       border: 1px solid var(--surface-border);
       border-radius: var(--radius);
       padding: 14px;
-      font-size: 13px;
     }
 
     .roadmap-item h4 {
-      font-size: 14px;
+      font-size: 13px;
       margin-bottom: 4px;
       color: #818cf8;
+    }
+
+    .roadmap-item p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Extension Section */
+    .steps-list {
+      list-style-position: inside;
+      margin: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .steps-list li {
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+    }
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .feature-pill {
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      padding: 5px 14px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    /* Try It Section */
+    .curl-box {
+      background: var(--code-bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .demo-upload-container {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px dashed var(--surface-border);
+    }
+    .upload-form {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+    .demo-result-box {
+      margin-top: 16px;
+      background: var(--bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .demo-error {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    /* Code Blocks */
+    pre.code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 12px;
+      overflow-x: auto;
+      color: #cbd5e1;
+      line-height: 1.5;
     }
 
     /* Footer */
@@ -422,7 +539,7 @@
   <header class="site-header">
     <div class="container nav-row">
       <a href="#" class="brand-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
           <polyline points="14 2 14 8 20 8"></polyline>
           <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -433,9 +550,11 @@
       <ul class="nav-links">
         <li><a href="#pipeline">Architecture</a></li>
         <li><a href="#evaluation">Evaluation</a></li>
-        <li><a href="#gallery">Samples</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#extension">Extension</a></li>
+        <li><a href="#try-it">Try It</a></li>
         <li><a href="#comparison">Donut vs LayoutLMv3</a></li>
-        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#quickstart">Run Locally</a></li>
       </ul>
     </div>
   </header>
@@ -448,13 +567,17 @@
       </div>
       <h1>Layout-Aware Document Understanding</h1>
       <p class="problem-statement">
-        Extract structured data from messy real documents using text, 2D layout, and visual signals.
-        Handles multi-page tables, key-value pairs, and nested structures with zero brittle plain-text OCR dependencies.
+        Extracts vendor, date, totals and line items from receipts and invoices, with multi-page table support for digital PDFs. Nested modifiers are on the roadmap.
+      </p>
+      <p class="hero-subtext">
+        Built with no OCR step: digital PDFs use the embedded text layer with coordinates, and scans go through a vision-language model.
       </p>
       <div class="hero-cta">
         <a href="#gallery" class="btn btn-primary">Inspect Extraction Gallery</a>
+        <a href="#extension" class="btn btn-outline">Chrome Extension</a>
+        <a href="#try-it" class="btn btn-outline">Try It</a>
         <a href="#quickstart" class="btn btn-outline">Run Locally</a>
-        <a href="https://github.com/anything14907-byte/Foss" target="_blank" class="btn btn-outline">GitHub Repository</a>
+        <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener" class="btn btn-outline">GitHub Repository</a>
       </div>
     </section>
 
@@ -465,7 +588,7 @@
         StackDoc dynamically routes inputs: Digital PDFs utilize coordinate-based 2D geometric clustering via PyMuPDF; scanned receipts and images route through the Donut Vision-Language Transformer.
       </p>
       <div class="diagram-container">
-        <svg class="diagram-svg" viewBox="0 0 960 280" width="960" height="280" xmlns="http://www.w3.org/2000/svg">
+        <svg class="diagram-svg" viewBox="0 0 960 280" width="960" height="280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dual-Engine Layout-Aware Pipeline Architecture Diagram">
           <!-- Input Document -->
           <rect x="20" y="90" width="160" height="90" rx="8" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
           <text x="100" y="125" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Input Document</text>
@@ -473,8 +596,8 @@
           <text x="100" y="162" fill="#818cf8" font-size="10" text-anchor="middle">POST /parse-document</text>
 
           <!-- Branch arrows -->
-          <path d="M 180 120 L 250 65" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-          <path d="M 180 150 L 250 205" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+          <path d="M 180 120 L 250 65" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
+          <path d="M 180 150 L 250 205" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
 
           <!-- Top Branch: Layout Engine (Digital PDF) -->
           <rect x="260" y="20" width="220" height="90" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
@@ -511,12 +634,15 @@
 
     <!-- Evaluation Benchmark Scorecard -->
     <section id="evaluation" class="section-card">
-      <h2 class="section-title">Real Evaluation Scorecard</h2>
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+        <h2 class="section-title" style="margin-bottom: 0;">Real Evaluation Scorecard</h2>
+        <span id="datasetBadge" class="dataset-badge hidden"></span>
+      </div>
       <p class="section-desc">
         Metrics computed directly by <code>evaluation/evaluate.py</code>. Warm-up inferences are excluded; confidence values reflect true token transition probabilities; table line items are evaluated via difflib fuzzy matching.
       </p>
 
-      <div class="table-responsive">
+      <div class="table-responsive" style="overflow-x: auto;">
         <table class="data-table" id="evalScorecardTable">
           <thead>
             <tr>
@@ -546,6 +672,77 @@
       </p>
       <div class="gallery-grid" id="galleryGrid">
         <!-- Rendered by client script from embedded JSON -->
+      </div>
+    </section>
+
+    <!-- Chrome Extension -->
+    <section id="extension" class="section-card">
+      <h2 class="section-title">Chrome Extension (Manifest V3)</h2>
+      <p class="section-desc">
+        A client extension for zero-friction document extraction right from your browser side-panel or popup.
+      </p>
+      <div class="feature-pills">
+        <span class="feature-pill">📸 Tab Capture</span>
+        <span class="feature-pill">📂 Drag &amp; Drop</span>
+        <span class="feature-pill">📊 Structured Table</span>
+        <span class="feature-pill">📋 Copy JSON</span>
+        <span class="feature-pill">📐 Canvas 2D Overlay</span>
+      </div>
+      <h3 style="font-size: 15px; margin-top: 16px; margin-bottom: 8px;">Installation Steps</h3>
+      <ol class="steps-list">
+        <li>Open <code>chrome://extensions</code> in your Chrome browser address bar.</li>
+        <li>Enable <strong>Developer mode</strong> using the toggle switch in the top-right corner.</li>
+        <li>Click the <strong>Load unpacked</strong> button in the top-left toolbar.</li>
+        <li>Navigate to this repository and select the <code>extension/</code> folder.</li>
+        <li>Pin the <strong>StackDoc</strong> extension icon to your browser toolbar for instant access.</li>
+      </ol>
+      <div style="margin-top: 16px; text-align: center;">
+        <img src="assets/extension.png" alt="StackDoc Chrome extension showing extracted invoice data" onerror="this.style.display='none';" style="max-width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--surface-border);" />
+      </div>
+    </section>
+
+    <!-- Try It Section -->
+    <section id="try-it" class="section-card">
+      <h2 class="section-title">Try It: Test the Extraction API</h2>
+      <p class="section-desc">
+        Test document extraction against your local StackDoc backend running at <code>http://localhost:8000</code>.
+      </p>
+      <div class="curl-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Run cURL Command:</span>
+          <button id="copyCurlBtn" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;">Copy cURL</button>
+        </div>
+        <pre class="code-block" style="margin: 0;"><code id="curlCode">curl -X POST "http://localhost:8000/parse-document?mode=auto" \
+  -F "file=@data/eval/invoice_consulting_services.pdf"</code></pre>
+      </div>
+
+      <div id="demoUploadContainer" class="demo-upload-container hidden">
+        <h3 style="font-size: 15px; margin-bottom: 8px;">Interactive Document Parser</h3>
+        <p class="section-desc" style="margin-bottom: 12px;">Upload a receipt image or invoice PDF to inspect parsed results.</p>
+        <form id="demoUploadForm" class="upload-form">
+          <input type="file" id="demoFileInput" accept=".pdf,.png,.jpg,.jpeg" style="font-size: 13px;" required />
+          <button type="submit" id="demoSubmitBtn" class="btn btn-primary" style="padding: 6px 16px;">Parse Document</button>
+        </form>
+        <div id="demoLoading" class="hidden" style="color: var(--primary); font-size: 13px; font-weight: 600; padding: 8px 0;">
+          Processing document with layout-aware pipeline...
+        </div>
+        <div id="demoError" class="demo-error hidden"></div>
+        <div id="demoResultBox" class="demo-result-box hidden">
+          <h4 style="font-size: 14px; margin-bottom: 8px;">Extracted Key-Values</h4>
+          <div class="table-responsive" style="overflow-x: auto; margin-bottom: 12px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 30%;">Field</th>
+                  <th>Extracted Value</th>
+                </tr>
+              </thead>
+              <tbody id="demoTableBody"></tbody>
+            </table>
+          </div>
+          <h4 style="font-size: 14px; margin-bottom: 8px;">Raw JSON Response</h4>
+          <pre class="code-block" style="max-height: 250px; overflow-y: auto;"><code id="demoJsonPre"></code></pre>
+        </div>
       </div>
     </section>
 
@@ -656,19 +853,23 @@ pytest tests/</code></pre>
   <footer class="site-footer">
     <div class="container">
       <p>
-        <strong>StackDoc</strong> • Sponsored by <a href="https://buildwithstack.com" target="_blank">Build with Stack</a> for FOSS Forge.
+        <strong>StackDoc</strong> • Sponsored by <a href="https://buildwithstack.com" target="_blank" rel="noopener">Build with Stack</a> for FOSS Forge.
+      </p>
+      <p style="margin-top: 6px; font-size: 11px; color: var(--text-muted);">
+        Evaluation set composition: 6 synthetic documents (2 digital multi-page PDFs, 4 noisy receipt images) from data/eval, evaluated on CPU.
       </p>
       <p style="margin-top: 4px;">
-        Repository: <a href="https://github.com/anything14907-byte/Foss" target="_blank">github.com/anything14907-byte/Foss</a>
+        Repository: <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener">github.com/anything14907-byte/Foss</a>
       </p>
     </div>
   </footer>
 
   <!-- EMBEDDED_DATA_START -->
-  <script id="siteData" type="application/json">
+  <script id="results-data" type="application/json">
 {
   "timestamp": "2026-10-22T02:53:54Z",
   "summary": {
+    "dataset": "synthetic",
     "directory": "data/eval",
     "total_documents": 6,
     "pass_count": 2,
@@ -1481,112 +1682,350 @@ pytest tests/</code></pre>
   <!-- EMBEDDED_DATA_END -->
 
   <script>
-    // Client script to render Evaluation Table and Sample Gallery from JSON
+    const DEMO_API_URL = "";
+
     document.addEventListener("DOMContentLoaded", () => {
+      loadResultsData();
+      setupTryItSection();
+      setupCurlCopy();
+    });
+
+    async function loadResultsData() {
       let data = null;
 
-      // 1. Try reading embedded script tag (works seamlessly when opened via file://)
-      const embeddedTag = document.getElementById("siteData");
-      if (embeddedTag && embeddedTag.textContent.trim()) {
-        try {
-          data = JSON.parse(embeddedTag.textContent);
-        } catch (e) {
-          console.warn("Failed to parse embedded siteData:", e);
+      // 1. Try fetch('assets/results.json') inside try/catch
+      try {
+        const res = await fetch("assets/results.json");
+        if (res.ok) {
+          data = await res.json();
+        }
+      } catch (err) {
+        console.warn("fetch('assets/results.json') failed, checking embedded script tag:", err);
+      }
+
+      // 2. Fall back to embedded JSON block <script type="application/json" id="results-data">
+      if (!data) {
+        const embeddedTag = document.getElementById("results-data");
+        if (embeddedTag && embeddedTag.textContent.trim()) {
+          try {
+            data = JSON.parse(embeddedTag.textContent);
+          } catch (err) {
+            console.warn("Failed to parse embedded results-data JSON:", err);
+          }
         }
       }
 
-      // 2. Fallback to fetch assets/results.json if hosted on web server
+      // 3. If both fail, replace 'Loading evaluation results...' with clear error message
       if (!data) {
-        fetch("assets/results.json")
-          .then(res => res.json())
-          .then(json => renderPage(json))
-          .catch(err => {
-            console.warn("Could not fetch assets/results.json:", err);
-          });
-      } else {
-        renderPage(data);
+        const evalBody = document.getElementById("evalTableBody");
+        if (evalBody) {
+          while (evalBody.firstChild) evalBody.removeChild(evalBody.firstChild);
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.colSpan = 9;
+          td.style.textAlign = "center";
+          td.style.padding = "24px";
+          td.style.color = "#ef4444";
+          td.style.fontWeight = "600";
+          td.textContent = "Results unavailable. Run python evaluate.py then python scripts/export_site_data.py.";
+          tr.appendChild(td);
+          evalBody.appendChild(tr);
+        }
+        return;
       }
-    });
 
-    function renderPage(data) {
+      // Render results cleanly using textContent
+      renderResultsPage(data);
+    }
+
+    function renderResultsPage(data) {
       if (!data) return;
+
+      // Dataset label next to scorecard
+      const datasetBadge = document.getElementById("datasetBadge");
+      if (datasetBadge) {
+        const dataset = (data.summary && data.summary.dataset) || data.dataset;
+        const count = (data.summary && data.summary.total_documents) || (data.summary && data.summary.items && data.summary.items.length) || 0;
+        if (dataset) {
+          datasetBadge.textContent = `${count} documents, ${dataset}`;
+          datasetBadge.classList.remove("hidden");
+        } else {
+          datasetBadge.textContent = "";
+          datasetBadge.classList.add("hidden");
+        }
+      }
 
       // Render Evaluation Table
       const evalBody = document.getElementById("evalTableBody");
       const evalItems = (data.summary && data.summary.items) || [];
       if (evalBody && evalItems.length > 0) {
-        evalBody.innerHTML = "";
+        while (evalBody.firstChild) evalBody.removeChild(evalBody.firstChild);
+
         evalItems.forEach(item => {
           const tr = document.createElement("tr");
-          const vOk = item.vendor_correct ? "<span style='color:#10b981;'>YES</span>" : "<span style='color:#ef4444;'>NO</span>";
-          const dOk = item.date_correct ? "<span style='color:#10b981;'>YES</span>" : "<span style='color:#ef4444;'>NO</span>";
-          const tOk = item.total_correct ? "<span style='color:#10b981;'>YES</span>" : "<span style='color:#ef4444;'>NO</span>";
-          const f1Str = item.line_items_f1 !== null && item.line_items_f1 !== undefined ? item.line_items_f1.toFixed(2) : "-";
-          const confStr = item.confidence !== null && item.confidence !== undefined ? Math.round(item.confidence * 100) + "%" : "null";
-          const latStr = item.latency_seconds ? item.latency_seconds.toFixed(4) + "s" : "-";
-          
+
+          // Document
+          const tdDoc = document.createElement("td");
+          const codeDoc = document.createElement("code");
+          codeDoc.textContent = item.filename || "-";
+          tdDoc.appendChild(codeDoc);
+          tr.appendChild(tdDoc);
+
+          // Engine
+          const tdEngine = document.createElement("td");
+          const spanEngine = document.createElement("span");
+          spanEngine.className = `sample-tag ${item.engine || 'donut'}`;
+          spanEngine.textContent = item.engine || "donut";
+          tdEngine.appendChild(spanEngine);
+          tr.appendChild(tdEngine);
+
+          // Vendor Match
+          tr.appendChild(createMatchCell(item.vendor_correct));
+
+          // Date Match
+          tr.appendChild(createMatchCell(item.date_correct));
+
+          // Total Match
+          tr.appendChild(createMatchCell(item.total_correct));
+
+          // Line Items F1
+          const tdF1 = document.createElement("td");
+          const strongF1 = document.createElement("strong");
+          strongF1.textContent = (item.line_items_f1 !== null && item.line_items_f1 !== undefined)
+            ? item.line_items_f1.toFixed(2)
+            : "-";
+          tdF1.appendChild(strongF1);
+          tr.appendChild(tdF1);
+
+          // Confidence
+          const tdConf = document.createElement("td");
+          tdConf.textContent = (item.confidence !== null && item.confidence !== undefined)
+            ? Math.round(item.confidence * 100) + "%"
+            : "null";
+          tr.appendChild(tdConf);
+
+          // Latency
+          const tdLat = document.createElement("td");
+          tdLat.textContent = item.latency_seconds ? item.latency_seconds.toFixed(4) + "s" : "-";
+          tr.appendChild(tdLat);
+
+          // Status Badge
+          const tdStatus = document.createElement("td");
+          const spanStatus = document.createElement("span");
           let statusClass = "fail";
           if (item.status === "PASS") statusClass = "pass";
           else if (item.status === "PARTIAL") statusClass = "partial";
+          spanStatus.className = `status-badge ${statusClass}`;
+          spanStatus.textContent = item.status || "FAIL";
+          tdStatus.appendChild(spanStatus);
+          tr.appendChild(tdStatus);
 
-          tr.innerHTML = `
-            <td><code>${escapeHtml(item.filename)}</code></td>
-            <td><span class="sample-tag ${item.engine}">${escapeHtml(item.engine || 'donut')}</span></td>
-            <td>${vOk}</td>
-            <td>${dOk}</td>
-            <td>${tOk}</td>
-            <td><strong>${f1Str}</strong></td>
-            <td>${confStr}</td>
-            <td>${latStr}</td>
-            <td><span class="status-badge ${statusClass}">${escapeHtml(item.status)}</span></td>
-          `;
           evalBody.appendChild(tr);
         });
       }
 
-      // Render Sample Gallery
+      // Render Sample Gallery using pure DOM and textContent
       const galleryGrid = document.getElementById("galleryGrid");
       const samples = data.samples || [];
       if (galleryGrid && samples.length > 0) {
-        galleryGrid.innerHTML = "";
+        while (galleryGrid.firstChild) galleryGrid.removeChild(galleryGrid.firstChild);
+
         samples.forEach(s => {
           const card = document.createElement("div");
           card.className = "sample-card";
 
-          const totalDisplay = s.total_amount ? (s.total_amount.startsWith("$") ? s.total_amount : "$" + s.total_amount) : "$0.00";
-          const confDisplay = s.confidence !== null && s.confidence !== undefined ? Math.round(s.confidence * 100) + "%" : "N/A";
+          // Preview
+          const preview = document.createElement("div");
+          preview.className = "sample-preview";
+
+          const img = document.createElement("img");
+          img.src = s.preview_url || "";
+          img.alt = s.filename ? `Preview of ${s.filename}` : "Sample document preview";
+          img.loading = "lazy";
+          img.onerror = function() { this.style.display = 'none'; };
+          preview.appendChild(img);
+
+          const tag = document.createElement("span");
+          tag.className = `sample-tag ${s.engine || 'donut'}`;
+          tag.textContent = (s.engine || "donut").toUpperCase();
+          preview.appendChild(tag);
+          card.appendChild(preview);
+
+          // Info
+          const info = document.createElement("div");
+          info.className = "sample-info";
+
+          const title = document.createElement("div");
+          title.className = "sample-title";
+          title.textContent = s.filename || "Document";
+          info.appendChild(title);
+
+          function addMetaRow(label, value, valueColor) {
+            const row = document.createElement("div");
+            row.className = "meta-row";
+
+            const lblSpan = document.createElement("span");
+            lblSpan.textContent = label;
+            row.appendChild(lblSpan);
+
+            const valStrong = document.createElement("strong");
+            valStrong.textContent = value;
+            if (valueColor) valStrong.style.color = valueColor;
+            row.appendChild(valStrong);
+
+            info.appendChild(row);
+          }
+
+          const totalDisplay = s.total_amount
+            ? (s.total_amount.startsWith("$") || s.total_amount.startsWith("€") || s.total_amount.startsWith("£") ? s.total_amount : "$" + s.total_amount)
+            : "$0.00";
+          const confDisplay = (s.confidence !== null && s.confidence !== undefined)
+            ? Math.round(s.confidence * 100) + "%"
+            : "N/A";
           const latDisplay = s.latency_seconds ? s.latency_seconds.toFixed(4) + "s" : "-";
 
-          card.innerHTML = `
-            <div class="sample-preview">
-              <img src="${escapeHtml(s.preview_url)}" alt="${escapeHtml(s.filename)}" loading="lazy" />
-              <span class="sample-tag ${escapeHtml(s.engine)}">${escapeHtml(s.engine.toUpperCase())}</span>
-            </div>
-            <div class="sample-info">
-              <div class="sample-title">${escapeHtml(s.filename)}</div>
-              <div class="meta-row"><span>Vendor:</span> <strong>${escapeHtml(s.vendor_name)}</strong></div>
-              <div class="meta-row"><span>Date:</span> <strong>${escapeHtml(s.date)}</strong></div>
-              <div class="meta-row"><span>Total:</span> <strong style="color:#10b981;">${escapeHtml(totalDisplay)}</strong></div>
-              <div class="meta-row"><span>Confidence:</span> <strong>${escapeHtml(confDisplay)}</strong></div>
-              <div class="meta-row"><span>Latency:</span> <strong>${escapeHtml(latDisplay)}</strong></div>
-              <div class="sample-items-summary">
-                ${s.line_items_count} line item(s) parsed
-              </div>
-            </div>
-          `;
+          addMetaRow("Vendor:", s.vendor_name || "Unknown");
+          addMetaRow("Date:", s.date || "N/A");
+          addMetaRow("Total:", totalDisplay, "#10b981");
+          addMetaRow("Confidence:", confDisplay);
+          addMetaRow("Latency:", latDisplay);
+
+          const summary = document.createElement("div");
+          summary.className = "sample-items-summary";
+          const count = s.line_items_count !== undefined ? s.line_items_count : (s.line_items ? s.line_items.length : 0);
+          summary.textContent = `${count} line item${count === 1 ? '' : 's'} parsed`;
+          info.appendChild(summary);
+
+          card.appendChild(info);
           galleryGrid.appendChild(card);
         });
       }
     }
 
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    function createMatchCell(isCorrect) {
+      const td = document.createElement("td");
+      const span = document.createElement("span");
+      span.style.fontWeight = "600";
+      if (isCorrect) {
+        span.style.color = "#10b981";
+        span.textContent = "YES";
+      } else {
+        span.style.color = "#ef4444";
+        span.textContent = "NO";
+      }
+      td.appendChild(span);
+      return td;
+    }
+
+    function setupTryItSection() {
+      const container = document.getElementById("demoUploadContainer");
+      if (!DEMO_API_URL || DEMO_API_URL.trim() === "") {
+        if (container) container.classList.add("hidden");
+        return;
+      }
+
+      if (container) container.classList.remove("hidden");
+
+      const form = document.getElementById("demoUploadForm");
+      const fileInput = document.getElementById("demoFileInput");
+      const submitBtn = document.getElementById("demoSubmitBtn");
+      const loading = document.getElementById("demoLoading");
+      const errorBox = document.getElementById("demoError");
+      const resultBox = document.getElementById("demoResultBox");
+      const jsonPre = document.getElementById("demoJsonPre");
+      const tableBody = document.getElementById("demoTableBody");
+
+      if (!form) return;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (!fileInput.files || !fileInput.files[0]) {
+          if (errorBox) {
+            errorBox.textContent = "Please select a file to parse.";
+            errorBox.classList.remove("hidden");
+          }
+          return;
+        }
+
+        if (errorBox) errorBox.classList.add("hidden");
+        if (resultBox) resultBox.classList.add("hidden");
+        if (loading) loading.classList.remove("hidden");
+        if (submitBtn) submitBtn.disabled = true;
+
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch(`${DEMO_API_URL}/parse-document`, {
+            method: "POST",
+            body: formData
+          });
+
+          if (!response.ok) {
+            let msg = `HTTP ${response.status}`;
+            try {
+              const errData = await response.json();
+              if (errData.detail) msg = errData.detail;
+            } catch (_) {}
+            throw new Error(msg);
+          }
+
+          const resJson = await response.json();
+          if (loading) loading.classList.add("hidden");
+          if (resultBox) resultBox.classList.remove("hidden");
+
+          // Render JSON
+          if (jsonPre) jsonPre.textContent = JSON.stringify(resJson, null, 2);
+
+          // Render summary table
+          if (tableBody) {
+            while (tableBody.firstChild) tableBody.removeChild(tableBody.firstChild);
+            const rows = [
+              ["Vendor", resJson.vendor_name || "Unknown"],
+              ["Date", resJson.date || "N/A"],
+              ["Total Amount", resJson.total_amount || "0.00"],
+              ["Engine", resJson.engine || "-"],
+              ["Confidence", (resJson.confidence !== null && resJson.confidence !== undefined) ? Math.round(resJson.confidence * 100) + "%" : "null"],
+              ["Latency", (resJson.latency_seconds !== undefined) ? resJson.latency_seconds + "s" : "-"]
+            ];
+            rows.forEach(([field, val]) => {
+              const tr = document.createElement("tr");
+              const tdF = document.createElement("td");
+              tdF.style.fontWeight = "600";
+              tdF.textContent = field;
+              const tdV = document.createElement("td");
+              tdV.textContent = val;
+              tr.appendChild(tdF);
+              tr.appendChild(tdV);
+              tableBody.appendChild(tr);
+            });
+          }
+        } catch (err) {
+          if (loading) loading.classList.add("hidden");
+          if (errorBox) {
+            errorBox.textContent = `Inference failed: ${err.message}`;
+            errorBox.classList.remove("hidden");
+          }
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      });
+    }
+
+    function setupCurlCopy() {
+      const btn = document.getElementById("copyCurlBtn");
+      const code = document.getElementById("curlCode");
+      if (btn && code) {
+        btn.addEventListener("click", () => {
+          const text = code.textContent;
+          navigator.clipboard.writeText(text).then(() => {
+            const orig = btn.textContent;
+            btn.textContent = "Copied!";
+            setTimeout(() => { btn.textContent = orig; }, 2000);
+          });
+        });
+      }
     }
   </script>
 </body>
