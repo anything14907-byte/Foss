@@ -38,8 +38,8 @@ To ensure complete transparency regarding how data is presented across the showc
 | :--- | :--- | :--- |
 | **Preset Samples** (`#studio`) | Precomputed outputs from the Python pipeline (`PyMuPDF` & `Donut`) cached in `assets/results.json`. | Labeled explicitly as `"Sample (precomputed with the Python pipeline)"`. Guarantees instant interactive inspection of benchmark documents. |
 | **Live File Upload** (`#studio`) | **100% Real Live In-Browser Execution**. Lazy-loads `pdf.js` or `Tesseract.js` upon file selection. | Labeled `"Live in-browser"`. Never invents fallback values. Unreadable scans report low confidence and missing fields as `— (Not detected)`. |
-| **Benchmark Metrics** (`#results`) | Measured on a small sanity-check dataset (6 synthetic documents in `data/eval/`). | Labeled as `"Small sanity check: 6 synthetic documents, not a general accuracy claim"`. Loaded dynamically from `evaluation/results.json`. |
-| **Architectural Comparison** (`#compare`) | Compares PyMuPDF Vector Layout, Donut VLM, and LayoutLMv3. | Latency ranges for Donut and LayoutLMv3 are clearly marked as typical published literature ranges, not measured in-house. |
+| **Benchmark Metrics** (`#results`) | Measured on a small sanity-check dataset (6 synthetic documents in `data/eval/`, plus 2 real documents in `data/eval_real/`). | Labeled as `"Small sanity check: 6 synthetic documents and 2 real documents, not a general accuracy claim"`. Loaded dynamically from `evaluation/results.json`. |
+| **Architectural Comparison** (`#compare`) | Compares PyMuPDF Vector Layout, Donut VLM, and LayoutLMv3. | Latency ranges for Donut and LayoutLMv3 are clearly marked as typical published literature ranges, not measured in-house. Vector PDF latency (<0.03s) is measured on local CPU. |
 
 ---
 
@@ -47,9 +47,9 @@ To ensure complete transparency regarding how data is presented across the showc
 
 Results generated directly by running `python evaluate.py` on the benchmark evaluation set:
 
-- **Total Documents:** `6` (2 Digital Invoices, 4 Scanned Receipts)
-- **Digital Vector PDF F1:** `1.00` (100% precision and recall on consulting & enterprise invoices)
-- **Vector Engine Latency:** `< 0.03s`
+- **Total Documents:** `6` (2 Digital Invoices, 4 Scanned Receipts, plus 2 Real Typography Documents)
+- **Digital Vector PDF F1:** `1.00` (100% precision and recall on 2 digital consulting & enterprise invoices)
+- **Vector Engine Latency:** `< 0.03s` (measured on local CPU)
 - **Mean Table Line-Item F1:** `0.3333` (computed as `2 × (Precision × Recall) / (Precision + Recall)` at row-level match threshold 0.8)
 - **Mean Latency:** `2.11s` (dominated by Donut CPU inference on scanned receipts)
 
@@ -113,7 +113,7 @@ The repository includes a Chrome Extension for capturing browser tabs and inspec
 - **Manifest V3 Compliant**: Uses background service worker and standard popup architecture.
 - **Tab Capture**: Uses `chrome.tabs.captureVisibleTab` to snapshot invoices or receipts open in the browser.
 - **Canvas 2D Overlay**: Draws interactive bounding boxes directly over captured document previews.
-- **Backend Connection**: Sends captured documents to `http://localhost:8000/parse-document`.
+- **Backend Connection**: Sends captured documents to `http://localhost:8000/parse-document`. The tab-capture feature requires the local backend running; without it, use the web studio.
 - **Icons**: Includes custom crisp PNG icons in 16x16, 32x32, 48x48, and 128x128 px formats.
 
 ### Installation Instructions

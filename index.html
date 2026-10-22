@@ -568,7 +568,7 @@
     <section class="hero-section">
       <div class="container">
         <div class="academic-pill">
-          <span>Xu et al. (2020) LayoutLM coordinate grounding [x0, y0, x1, y1] &amp; deterministic spatial post-processing</span>
+          <span>Inspired by LayoutLM's 2D coordinate idea (Xu et al., 2020)</span>
         </div>
 
         <h1 class="hero-title">StackDoc: Layout-Aware Document Understanding</h1>
@@ -628,9 +628,9 @@
 
               <div class="stage-controls">
                 <div id="pdfPageNav" class="pdf-nav-controls hidden">
-                  <button id="pdfPrevPageBtn" class="pdf-nav-btn" type="button" aria-label="Previous page">Prev</button>
+                  <button id="pdfPrevPageBtn" class="pdf-nav-btn hidden" type="button" aria-label="Previous page">Prev</button>
                   <span>Page <select id="pdfPageSelect" aria-label="Select page"></select> of <span id="pdfTotalPages">1</span></span>
-                  <button id="pdfNextPageBtn" class="pdf-nav-btn" type="button" aria-label="Next page">Next</button>
+                  <button id="pdfNextPageBtn" class="pdf-nav-btn hidden" type="button" aria-label="Next page">Next</button>
                 </div>
 
                 <label style="cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600;">
@@ -654,12 +654,12 @@
               <div id="scanProgressOverlay" class="scan-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="scanProgressTitle">
                 <div class="scan-laser-line"></div>
                 <div id="scanProgressTitle" style="font-weight:700; font-size:15px; letter-spacing:0.02em;">Document Processing</div>
-                <div id="scanStatusText" style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1;" aria-live="polite">Initializing document vision engine...</div>
+                <div id="scanStatusText" style="font-family:var(--font-mono); font-size:12px; color:#cbd5e1;" aria-live="polite">Loading OCR engine...</div>
                 <div class="scan-progress-bar-wrap">
                   <div id="scanProgressBar" class="scan-progress-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div style="display:flex; gap:10px; margin-top:4px;">
-                  <button id="cancelScanBtn" type="button" class="btn btn-secondary" style="min-height:36px; padding:6px 14px; font-size:12px;">Cancel</button>
+                  <button id="cancelScanBtn" type="button" class="btn btn-secondary hidden" style="min-height:36px; padding:6px 14px; font-size:12px;">Cancel</button>
                   <button id="scanRetryBtn" type="button" class="btn btn-primary hidden" style="min-height:36px; padding:6px 14px; font-size:12px;">Retry</button>
                 </div>
               </div>
@@ -860,7 +860,7 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
             <p style="font-size:14px; color:var(--text-muted);">
               Digital PDFs: exact vector text and bounding boxes <code class="mono">[x0, y0, x1, y1]</code> read directly without OCR errors. Scanned images: Tesseract.js neural OCR extracts words and spatial geometry in-browser.
             </p>
-            <span class="mono" style="font-size:12px; color:var(--accent);">&lt;0.03s Digital / ~2&ndash;5s OCR</span>
+            <span class="mono" style="font-size:12px; color:var(--accent);">&lt;0.03s Digital (measured on local CPU) / ~2&ndash;5s OCR</span>
           </div>
 
           <div class="pipe-card">
@@ -883,7 +883,7 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
         <span class="section-num">03 Verification &amp; Accuracy</span>
         <h2 id="resultsHead" class="section-title">Evaluation Scorecard &amp; Benchmarks</h2>
         <div style="background:var(--surface); border:1px solid var(--border-rule); border-left:3px solid var(--accent); padding:10px 14px; border-radius:3px; margin-bottom:20px;">
-          <p style="font-size:14px; font-weight:600; color:var(--text);">Small sanity check: 6 synthetic documents, not a general accuracy claim.</p>
+          <p style="font-size:14px; font-weight:600; color:var(--text);">Small sanity check: 6 synthetic documents and 2 real documents, not a general accuracy claim.</p>
           <p class="mono" style="font-size:12px; color:var(--text-muted); margin-top:4px;">F1 = 2 &times; (Precision &times; Recall) / (Precision + Recall), evaluated on extracted line items against ground truth.</p>
         </div>
 
@@ -894,11 +894,11 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
           </div>
           <div class="metric-card">
             <div id="statF1" class="metric-val">1.00</div>
-            <div id="labelF1" class="metric-label">Digital Vector Table F1</div>
+            <div id="labelF1" class="metric-label">2 digital documents</div>
           </div>
           <div class="metric-card">
             <div id="statLatency" class="metric-val">&lt;0.03s</div>
-            <div id="labelLatency" class="metric-label">Digital Layout Latency</div>
+            <div id="labelLatency" class="metric-label">Digital Layout Latency (measured on local CPU)</div>
           </div>
           <div class="metric-card">
             <div id="statConf" class="metric-val">Enabled</div>
@@ -908,12 +908,12 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
 
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
           <div class="segmented-control" role="tablist" aria-label="Dataset filter">
-            <button id="btnDatasetAll" class="segment-btn active" role="tab" aria-selected="true">All Documents (6)</button>
+            <button id="btnDatasetAll" class="segment-btn active" role="tab" aria-selected="true">Synthetic Documents (6)</button>
             <button id="btnDatasetDigital" class="segment-btn" role="tab" aria-selected="false">Digital Vector PDFs (2)</button>
             <button id="btnDatasetScans" class="segment-btn" role="tab" aria-selected="false">Scanned Images (4)</button>
             <button id="btnDatasetReal" class="segment-btn" role="tab" aria-selected="false">Real Documents (2)</button>
           </div>
-          <span id="datasetBadge" class="coord-badge">6 documents • synthetic</span>
+          <span id="datasetBadge" class="coord-badge">6 synthetic documents • 2 real documents</span>
         </div>
 
         <div class="table-container">
@@ -980,7 +980,7 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
               </tr>
               <tr>
                 <th scope="row">Latency Profile</th>
-                <td>&lt;0.03s for vector PDFs (direct text); ~2&ndash;5s for photo OCR (Tesseract.js).</td>
+                <td>&lt;0.03s for vector PDFs (measured on local CPU); ~2&ndash;5s for photo OCR (Tesseract.js).</td>
                 <td>2.7s &ndash; 4.5s (typical published range, not measured by us).</td>
                 <td>0.35s &ndash; 1.2s plus OCR (typical published range, not measured by us).</td>
               </tr>
@@ -1002,7 +1002,7 @@ Subtotal $3,250.00 Tax $200.00 Total $3,450.00
         <span class="section-num">05 Browser Extension</span>
         <h2 id="extHead" class="section-title">Chrome Extension (Manifest V3) &amp; Local Backend</h2>
         <p class="section-intro">
-          The Chrome Extension lets you capture active invoice tabs or drop files to inspect structured bounding box overlays via a local FastAPI backend.
+          The Chrome Extension lets you capture active invoice tabs or drop files to inspect structured bounding box overlays via a local FastAPI backend. The tab-capture feature needs the local backend running. Without it, use the web studio.
         </p>
 
         <div style="margin-bottom:24px;">
@@ -2329,9 +2329,13 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const svg = document.getElementById("sampleBoxSvg");
       const canvasWrap = document.getElementById("uploadCanvasWrapper");
       const pdfNav = document.getElementById("pdfPageNav");
+      const prevBtn = document.getElementById("pdfPrevPageBtn");
+      const nextBtn = document.getElementById("pdfNextPageBtn");
       if (svg) svg.classList.remove("hidden");
       if (canvasWrap) canvasWrap.classList.add("hidden");
       if (pdfNav) pdfNav.classList.add("hidden");
+      if (prevBtn) prevBtn.classList.add("hidden");
+      if (nextBtn) nextBtn.classList.add("hidden");
 
       // Label as precomputed sample
       const engineBadge = document.getElementById("studioEngineBadge");
@@ -3100,7 +3104,11 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
     // Image OCR with Tesseract.js (Lazy-Loaded)
     async function processImageFile(file) {
       const pdfNav = document.getElementById("pdfPageNav");
+      const prevBtn = document.getElementById("pdfPrevPageBtn");
+      const nextBtn = document.getElementById("pdfNextPageBtn");
       if (pdfNav) pdfNav.classList.add("hidden");
+      if (prevBtn) prevBtn.classList.add("hidden");
+      if (nextBtn) nextBtn.classList.add("hidden");
 
       const imgUrl = URL.createObjectURL(file);
       const img = document.getElementById("uploadedImg");
@@ -3189,11 +3197,15 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
         // Configure multi-page UI
         const pdfNav = document.getElementById("pdfPageNav");
+        const prevBtn = document.getElementById("pdfPrevPageBtn");
+        const nextBtn = document.getElementById("pdfNextPageBtn");
         const totalSpan = document.getElementById("pdfTotalPages");
         const pageSelect = document.getElementById("pdfPageSelect");
 
         if (pdf.numPages > 1) {
           if (pdfNav) pdfNav.classList.remove("hidden");
+          if (prevBtn) prevBtn.classList.remove("hidden");
+          if (nextBtn) nextBtn.classList.remove("hidden");
           if (totalSpan) totalSpan.textContent = String(pdf.numPages);
           if (pageSelect) {
             pageSelect.innerHTML = "";
@@ -3207,6 +3219,8 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           }
         } else {
           if (pdfNav) pdfNav.classList.add("hidden");
+          if (prevBtn) prevBtn.classList.add("hidden");
+          if (nextBtn) nextBtn.classList.add("hidden");
         }
 
         await renderPdfPage(1);
@@ -3578,6 +3592,7 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       const overlay = document.getElementById("scanProgressOverlay");
       const statusText = document.getElementById("scanStatusText");
       const bar = document.getElementById("scanProgressBar");
+      const cancelBtn = document.getElementById("cancelScanBtn");
       const retryBtn = document.getElementById("scanRetryBtn");
 
       if (overlay) overlay.classList.toggle("hidden", !show);
@@ -3586,14 +3601,24 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         bar.style.width = `${Math.min(100, Math.max(5, percent))}%`;
         bar.setAttribute("aria-valuenow", String(Math.round(percent)));
       }
-      if (retryBtn) retryBtn.classList.add("hidden");
+      if (show) {
+        if (cancelBtn) cancelBtn.classList.remove("hidden");
+        if (retryBtn) retryBtn.classList.add("hidden");
+      } else {
+        if (cancelBtn) cancelBtn.classList.add("hidden");
+        if (retryBtn) retryBtn.classList.add("hidden");
+      }
     }
 
     function showScanError(msg) {
+      const overlay = document.getElementById("scanProgressOverlay");
       const statusText = document.getElementById("scanStatusText");
+      const cancelBtn = document.getElementById("cancelScanBtn");
       const retryBtn = document.getElementById("scanRetryBtn");
+      if (overlay) overlay.classList.remove("hidden");
       if (statusText) statusText.textContent = msg;
       if (retryBtn) retryBtn.classList.remove("hidden");
+      if (cancelBtn) cancelBtn.classList.add("hidden");
     }
 
     // Copy text helper
@@ -3684,8 +3709,15 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
       const badge = document.getElementById("datasetBadge");
       if (badge) {
-        if (currentDatasetFilter === "real") badge.textContent = `${items.length} documents • real typography`;
-        else badge.textContent = `${items.length} documents • synthetic sanity check`;
+        if (currentDatasetFilter === "real") {
+          badge.textContent = `${items.length} real documents • 6 synthetic in benchmark`;
+        } else if (currentDatasetFilter === "all") {
+          badge.textContent = `${items.length} synthetic documents • 2 real documents`;
+        } else if (currentDatasetFilter === "digital") {
+          badge.textContent = `${items.length} digital vector documents (synthetic) • 2 real in benchmark`;
+        } else if (currentDatasetFilter === "scans") {
+          badge.textContent = `${items.length} scanned receipts (synthetic) • 2 real in benchmark`;
+        }
       }
 
       if (items.length === 0) {
