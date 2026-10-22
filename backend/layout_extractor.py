@@ -114,6 +114,23 @@ class LayoutAwarePdfExtractor:
                 num_total = round(computed, 2)
                 total_val = f"{computed:.2f}"
 
+        # Mathematical Reconciliation Check (sum(items) + tax == total)
+        num_subtotal = clean_amount(subtotal_val)
+        num_tax = clean_amount(tax_val)
+        items_sum = sum(item.get("numeric_price") or 0.0 for item in table_items)
+        expected_total = round((num_subtotal if num_subtotal is not None else items_sum) + (num_tax or 0.0), 2)
+        reconciled = False
+        if num_total is not None and num_total > 0:
+            reconciled = abs(expected_total - num_total) <= 0.05 or abs(items_sum - num_total) <= 0.05
+
+        math_reconciliation = {
+            "reconciled": reconciled,
+            "items_sum": round(items_sum, 2),
+            "expected_total": expected_total,
+            "actual_total": num_total,
+            "formula": "subtotal + tax == total"
+        }
+
         # Consolidate bounding boxes for UI canvas overlay
         boxes = {
             "vendor": vendor_info,
@@ -142,9 +159,10 @@ class LayoutAwarePdfExtractor:
             "payment_method": "Invoice / Net Terms",
             "line_items": table_items,
             "line_items_count": len(table_items),
+            "boxes": boxes,
             "confidence": 1.0,
             "confidence_score": 1.0,
-            "boxes": boxes
+            "math_reconciliation": math_reconciliation
         }
 
     def _cluster_words_into_lines(self, raw_words: List[Tuple], page_num: int) -> List[Dict[str, Any]]:
@@ -292,11 +310,12 @@ class LayoutAwarePdfExtractor:
     def _extract_tables(self, all_page_lines: List[List[Dict[str, Any]]]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
         """
         Detects tables, extracts column ranges, and handles multi-page continuation
-        with repeated header skipping.
+        with repeated header skipping and hierarchical nested modifier extraction.
         """
         all_items: List[Dict[str, Any]] = []
         all_boxes: List[Dict[str, Any]] = []
         active_column_ranges: Optional[Dict[str, Tuple[float, float]]] = None
+        modifier_prefixes = ("+", "-", "*", "discount:", "add-on:", "addon:", "option:", "includes:", "with ")
 
         for page_idx, page_lines in enumerate(all_page_lines):
             page_num = page_idx + 1
@@ -328,11 +347,52 @@ class LayoutAwarePdfExtractor:
                     continue
 
                 text = line["text"]
-                lower = text.lower()
+                lower = text.lower().strip()
 
                 # Stop conditions: totals, tax, footer, notes
                 if any(k in lower for k in ["subtotal", "sub-total", "tax", "gst", "vat", "total amount", "amount due", "thank you", "terms", "notes:"]):
                     break
+
+                # Check if this line is an indented child or modifier of the previous item
+                is_modifier = False
+                if all_items:
+                    parent_bbox = all_items[-1].get("bbox")
+                    has_mod_prefix = any(lower.startswith(p) for p in modifier_prefixes)
+                    is_indented = bool(parent_bbox and line["bbox"][0] > parent_bbox[0] + 12)
+                    if has_mod_prefix or is_indented:
+                        is_modifier = True
+
+                if is_modifier:
+                    mod_item = self._parse_line_to_item(line, active_column_ranges, 0)
+                    mod_name = text.lstrip("+-* ").strip()
+                    mod_price = None
+                    mod_num = None
+                    if mod_item:
+                        mod_name = mod_item["name"].lstrip("+-* ").strip()
+                        mod_price = mod_item["line_total"]
+                        mod_num = mod_item["numeric_price"]
+                    else:
+                        words = line["words"]
+                        if words:
+                            last_token = words[-1][4]
+                            c = clean_amount(last_token)
+                            if c is not None:
+                                mod_num = c
+                                mod_price = last_token
+                                mod_name = " ".join(w[4] for w in words[:-1]).lstrip("+-* ").strip()
+
+                    all_items[-1]["modifiers"].append({
+                        "name": mod_name,
+                        "price": mod_price,
+                        "numeric_price": mod_num,
+                        "bbox": line["bbox"]
+                    })
+                    all_boxes.append({
+                        "name": f"Modifier: {mod_name}",
+                        "bbox": line["bbox"],
+                        "page": page_num
+                    })
+                    continue
 
                 item = self._parse_line_to_item(line, active_column_ranges, len(all_items) + 1)
                 if item:
@@ -448,6 +508,7 @@ class LayoutAwarePdfExtractor:
             "line_total": total,
             "total_price": total,
             "numeric_price": num_price,
+            "modifiers": [],
             "page": line["page"],
             "bbox": line["bbox"]
         }

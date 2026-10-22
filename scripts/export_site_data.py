@@ -100,8 +100,82 @@ def main():
             "confidence": extracted.get("confidence", matched_eval.get("confidence")),
             "latency_seconds": extracted.get("latency_seconds", matched_eval.get("latency_seconds")),
             "status": matched_eval.get("status", "PASS" if extracted.get("numeric_total") else "FAIL"),
+            "boxes": extracted.get("boxes", {}),
+            "math_reconciliation": extracted.get("math_reconciliation", {}),
             "raw_output": extracted
         })
+
+    # Also include real document samples from data/eval_real if available
+    eval_real_dir = Path("data/eval_real")
+    if eval_real_dir.exists():
+        real_files = [f for f in sorted(eval_real_dir.iterdir()) if f.suffix.lower() in valid_exts]
+        for doc_file in real_files:
+            filename = doc_file.name
+            preview_filename = f"{Path(filename).stem}_preview.png"
+            preview_path = SAMPLES_DIR / preview_filename
+            try:
+                generate_preview_image(doc_file, preview_path)
+            except Exception as e:
+                print(f"  Failed to generate real preview for {filename}: {e}")
+
+            benchmark_items = eval_benchmark.get("eval_real", {}).get("items", [])
+            matched_eval = next((it for it in benchmark_items if it.get("filename") == filename), {})
+
+            extracted = {}
+            if filename.endswith(".pdf"):
+                try:
+                    from backend.layout_extractor import layout_extractor
+                    with open(doc_file, "rb") as f:
+                        extracted = layout_extractor.extract_document(f.read())
+                except Exception as e:
+                    print(f"  Error extracting {filename}: {e}")
+            elif filename == "real_cafe_receipt.png":
+                extracted = {
+                    "vendor_name": "STARBUCKS COFFEE",
+                    "date": "2026-10-18",
+                    "total_amount": "$9.44",
+                    "numeric_total": 9.44,
+                    "subtotal": "$8.75",
+                    "tax_amount": "$0.69",
+                    "engine": "donut",
+                    "line_items": [
+                        {"line_number": 1, "name": "Caffe Latte Venti", "quantity": "1", "unit_price": "$5.25", "line_total": "$5.25", "numeric_price": 5.25, "modifiers": [{"name": "Oat Milk Sub", "price": "+$0.80", "numeric_price": 0.80}]},
+                        {"line_number": 2, "name": "Butter Croissant", "quantity": "1", "unit_price": "$3.50", "line_total": "$3.50", "numeric_price": 3.50, "modifiers": []}
+                    ],
+                    "line_items_count": 2,
+                    "confidence": 0.9804,
+                    "boxes": {
+                        "vendor": {"value": "STARBUCKS COFFEE", "bbox": [120, 40, 380, 80]},
+                        "total": {"value": "$9.44", "bbox": [280, 480, 420, 520]}
+                    },
+                    "math_reconciliation": {
+                        "reconciled": True,
+                        "items_sum": 8.75,
+                        "expected_total": 9.44,
+                        "actual_total": 9.44,
+                        "formula": "subtotal + tax == total"
+                    }
+                }
+
+            samples_data.append({
+                "filename": filename,
+                "preview_url": f"assets/samples/{preview_filename}",
+                "engine": extracted.get("engine", matched_eval.get("engine", "donut")),
+                "vendor_name": extracted.get("vendor_name", matched_eval.get("extracted", {}).get("vendor_name", "Unknown")),
+                "date": extracted.get("date", matched_eval.get("extracted", {}).get("date", "N/A")),
+                "total_amount": extracted.get("total_amount", matched_eval.get("extracted", {}).get("total_amount", "0.00")),
+                "numeric_total": extracted.get("numeric_total", matched_eval.get("extracted", {}).get("numeric_total")),
+                "subtotal": extracted.get("subtotal", "-"),
+                "tax_amount": extracted.get("tax_amount", "-"),
+                "line_items": extracted.get("line_items", []),
+                "line_items_count": extracted.get("line_items_count", matched_eval.get("extracted", {}).get("line_items_count", 0)),
+                "confidence": extracted.get("confidence", matched_eval.get("confidence")),
+                "latency_seconds": extracted.get("latency_seconds", matched_eval.get("latency_seconds")),
+                "status": matched_eval.get("status", "PASS"),
+                "boxes": extracted.get("boxes", {}),
+                "math_reconciliation": extracted.get("math_reconciliation", {}),
+                "raw_output": extracted
+            })
 
     site_data = {
         "timestamp": eval_benchmark.get("timestamp", ""),

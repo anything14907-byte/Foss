@@ -95,9 +95,10 @@ def test_enterprise_stack_pdf():
     assert res["numeric_total"] == 1182.60
     assert res["line_items_count"] == 3
     assert res["confidence"] == 1.0
+    assert res["math_reconciliation"]["reconciled"] is True
 
 def test_consulting_services_pdf():
-    """Tests extraction on data/eval/invoice_consulting_services.pdf."""
+    """Tests extraction on data/eval/invoice_consulting_services.pdf (Adversarial mismatch test)."""
     path = "data/eval/invoice_consulting_services.pdf"
     assert os.path.exists(path)
     with open(path, "rb") as f:
@@ -110,3 +111,37 @@ def test_consulting_services_pdf():
     assert res["numeric_total"] == 2450.00
     assert res["line_items_count"] == 3
     assert res["confidence"] == 1.0
+    # Consulting services PDF tests adversarial math mismatch: printed total 2450 != 1095 + 87.60
+    assert res["math_reconciliation"]["reconciled"] is False
+
+def test_nested_modifiers_and_math_reconciliation():
+    """Verifies that indented child rows or modifier prefixes (+, -) are attached as modifiers."""
+    doc = fitz.open()
+    page = doc.new_page(width=612, height=792)
+    p_text = (
+        "Apex Cloud Infrastructure\n"
+        "Date: 2026-10-22\n"
+        "Invoice Number: INV-7711\n"
+        "----------------------------------------------------\n"
+        "Item Description                Qty   Unit Price   Total\n"
+        "Enterprise Dedicated Cluster     1     $1000.00    $1000.00\n"
+        "  + 24/7 Priority Support SLA    1     $200.00     $200.00\n"
+        "  - Automated Disaster Recovery  1     $100.00     $100.00\n"
+        "Database Sharding Cluster       2     $300.00     $600.00\n"
+        "----------------------------------------------------\n"
+        "Subtotal: $1,900.00\n"
+        "Tax: $190.00\n"
+        "TOTAL AMOUNT DUE: $2,090.00\n"
+    )
+    page.insert_text((50, 60), p_text, fontsize=11)
+    pdf_bytes = doc.write()
+    doc.close()
+
+    res = layout_extractor.extract_document(pdf_bytes)
+    assert res["status"] == "success"
+    assert res["line_items_count"] == 2  # 2 main items, modifiers attached
+    assert len(res["line_items"][0]["modifiers"]) == 2
+    assert "Priority Support" in res["line_items"][0]["modifiers"][0]["name"]
+    assert res["math_reconciliation"]["reconciled"] is True
+    assert res["math_reconciliation"]["actual_total"] == 2090.00
+

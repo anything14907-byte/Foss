@@ -30,7 +30,8 @@
           194.16,
           424.15,
           210.68
-        ]
+        ],
+        "modifiers": []
       },
       {
         "line_number": 2,
@@ -47,7 +48,8 @@
           214.16,
           422.17,
           230.68
-        ]
+        ],
+        "modifiers": []
       },
       {
         "line_number": 3,
@@ -64,7 +66,8 @@
           234.16,
           415.52,
           250.68
-        ]
+        ],
+        "modifiers": []
       }
     ],
     "line_items_count": 3,
@@ -165,7 +168,15 @@
       ]
     },
     "latency_seconds": 0.0138,
-    "execution_time_seconds": 0.0138
+    "execution_time_seconds": 0.0138,
+    "math_reconciliation": {
+      "reconciled": false,
+      "items_sum": 1095.0,
+      "expected_total": 1182.6,
+      "actual_total": 2450.0,
+      "formula": "subtotal + tax == total",
+      "flag": "Adversarial Mismatch Detected"
+    }
   },
   "invoice_enterprise_stack.pdf": {
     "status": "success",
@@ -198,6 +209,41 @@
           194.16,
           424.15,
           210.68
+        ],
+        "modifiers": [
+          {
+            "name": "Priority 24/7 SLA Support (+Indented \u0394x0)",
+            "price": "+$150.00",
+            "numeric_price": 150.0,
+            "bbox": [
+              65.0,
+              204.0,
+              310.0,
+              218.0
+            ]
+          },
+          {
+            "name": "Multi-Region Hot Standby",
+            "price": "+$100.00",
+            "numeric_price": 100.0,
+            "bbox": [
+              65.0,
+              218.0,
+              280.0,
+              232.0
+            ]
+          },
+          {
+            "name": "Startup Tier Volume Credit",
+            "price": "-$250.00",
+            "numeric_price": -250.0,
+            "bbox": [
+              65.0,
+              232.0,
+              290.0,
+              246.0
+            ]
+          }
         ]
       },
       {
@@ -215,7 +261,8 @@
           214.16,
           422.17,
           230.68
-        ]
+        ],
+        "modifiers": []
       },
       {
         "line_number": 3,
@@ -232,7 +279,8 @@
           234.16,
           415.52,
           250.68
-        ]
+        ],
+        "modifiers": []
       }
     ],
     "line_items_count": 3,
@@ -333,7 +381,14 @@
       ]
     },
     "latency_seconds": 0.0054,
-    "execution_time_seconds": 0.0054
+    "execution_time_seconds": 0.0054,
+    "math_reconciliation": {
+      "reconciled": true,
+      "items_sum": 1095.0,
+      "expected_total": 1182.6,
+      "actual_total": 1182.6,
+      "formula": "subtotal + tax == total"
+    }
   },
   "receipt_crumpled_cafe.png": {
     "status": "success",
@@ -358,7 +413,14 @@
     "engine": "donut",
     "device": "cpu",
     "latency_seconds": 2.7533,
-    "execution_time_seconds": 2.7533
+    "execution_time_seconds": 2.7533,
+    "math_reconciliation": {
+      "reconciled": false,
+      "items_sum": 0.0,
+      "expected_total": 0.0,
+      "actual_total": 0.0,
+      "formula": "subtotal + tax == total"
+    }
   },
   "receipt_faded_ink.png": {
     "status": "success",
@@ -383,7 +445,14 @@
     "engine": "donut",
     "device": "cpu",
     "latency_seconds": 2.7773,
-    "execution_time_seconds": 2.7773
+    "execution_time_seconds": 2.7773,
+    "math_reconciliation": {
+      "reconciled": false,
+      "items_sum": 0.0,
+      "expected_total": 0.0,
+      "actual_total": 0.0,
+      "formula": "subtotal + tax == total"
+    }
   },
   "receipt_grocery_market.png": {
     "status": "success",
@@ -408,7 +477,14 @@
     "engine": "donut",
     "device": "cpu",
     "latency_seconds": 3.0,
-    "execution_time_seconds": 3.0
+    "execution_time_seconds": 3.0,
+    "math_reconciliation": {
+      "reconciled": false,
+      "items_sum": 0.0,
+      "expected_total": 0.0,
+      "actual_total": 0.0,
+      "formula": "subtotal + tax == total"
+    }
   },
   "receipt_tech_supplies.png": {
     "status": "success",
@@ -433,6 +509,13 @@
     "engine": "donut",
     "device": "cpu",
     "latency_seconds": 2.7556,
-    "execution_time_seconds": 2.7556
+    "execution_time_seconds": 2.7556,
+    "math_reconciliation": {
+      "reconciled": false,
+      "items_sum": 0.0,
+      "expected_total": 0.0,
+      "actual_total": 0.0,
+      "formula": "subtotal + tax == total"
+    }
   }
 }

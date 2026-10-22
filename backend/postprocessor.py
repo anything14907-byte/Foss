@@ -163,11 +163,26 @@ def normalize_line_items(raw_data: Any) -> List[Dict[str, Any]]:
             
             # Sub-price check if nested
             sub_val = entry.get("sub") or {}
-            if isinstance(sub_val, dict):
-                if not price:
-                    price = sub_val.get("price")
-                if not name and "nm" in sub_val:
-                    name = sub_val.get("nm")
+            modifiers = []
+            if isinstance(sub_val, list):
+                for s in sub_val:
+                    if isinstance(s, dict):
+                        m_nm = s.get("nm") or s.get("name") or s.get("description") or "Modifier"
+                        m_pr = s.get("price") or s.get("unit_price")
+                        modifiers.append({
+                            "name": str(m_nm).strip(),
+                            "price": str(m_pr).strip() if m_pr else None,
+                            "numeric_price": clean_amount(m_pr)
+                        })
+            elif isinstance(sub_val, dict) and sub_val:
+                m_nm = sub_val.get("nm") or sub_val.get("name")
+                m_pr = sub_val.get("price")
+                if m_nm or m_pr:
+                    modifiers.append({
+                        "name": str(m_nm).strip() if m_nm else "Modifier",
+                        "price": str(m_pr).strip() if m_pr else None,
+                        "numeric_price": clean_amount(m_pr)
+                    })
             
             items.append({
                 "line_number": idx + 1,
@@ -175,7 +190,8 @@ def normalize_line_items(raw_data: Any) -> List[Dict[str, Any]]:
                 "quantity": str(cnt).strip() if cnt else "1",
                 "unit_price": str(price).strip() if price else "-",
                 "total_price": str(price).strip() if price else "-",
-                "numeric_price": clean_amount(price)
+                "numeric_price": clean_amount(price),
+                "modifiers": modifiers
             })
             
     return items
@@ -248,7 +264,24 @@ def postprocess_donut_output(
         if computed > 0:
             num_total = round(computed, 2)
             total_val = f"{computed:.2f}"
-            
+
+    # Mathematical Reconciliation Check (sum(items) + tax == total)
+    num_subtotal = clean_amount(subtotal_val)
+    num_tax = clean_amount(tax_val)
+    items_sum = sum(item.get("numeric_price") or 0.0 for item in line_items)
+    expected_total = round((num_subtotal if num_subtotal is not None else items_sum) + (num_tax or 0.0), 2)
+    reconciled = False
+    if num_total is not None and num_total > 0:
+        reconciled = abs(expected_total - num_total) <= 0.05 or abs(items_sum - num_total) <= 0.05
+
+    math_reconciliation = {
+        "reconciled": reconciled,
+        "items_sum": round(items_sum, 2),
+        "expected_total": expected_total,
+        "actual_total": num_total,
+        "formula": "subtotal + tax == total"
+    }
+
     return {
         "status": "success",
         "model": "naver-clova-ix/donut-base-finetuned-cord-v2",
@@ -266,5 +299,6 @@ def postprocess_donut_output(
         "confidence": confidence,
         "confidence_score": confidence,
         "raw_donut_json": parsed_data,
-        "raw_tokens": raw_sequence[:500] if raw_sequence else ""
+        "raw_tokens": raw_sequence[:500] if raw_sequence else "",
+        "math_reconciliation": math_reconciliation
     }
