@@ -277,10 +277,10 @@
     /* Bounding Box Elements */
     .bbox-interactive {
       position: absolute; pointer-events: all; cursor: pointer; box-sizing: border-box;
-      transition: all 120ms ease; border: 1.5px solid; z-index: 10;
+      transition: background-color 120ms ease, box-shadow 120ms ease, border-color 120ms ease; border: 1.5px solid; z-index: 10;
     }
     .bbox-interactive:hover, .bbox-interactive.highlighted {
-      z-index: 50; transform: scale(1.01);
+      z-index: 50; border-width: 2px !important;
       box-shadow: 0 0 0 2px rgba(255,255,255,0.8), 0 4px 12px rgba(0,0,0,0.3) !important;
     }
     .bbox-header { border-color: #2563eb; background: rgba(37, 99, 235, 0.12); }
@@ -290,19 +290,25 @@
     .bbox-word { border-color: rgba(120, 113, 108, 0.7); background: rgba(120, 113, 108, 0.08); border-style: dashed; }
 
     /* SVG Document Sheet styling for presets */
-    .doc-paper-bg { fill: var(--surface-raised); stroke: var(--border-rule); stroke-width: 1; }
+    .doc-paper-bg { fill: var(--surface-raised); stroke: var(--border-rule); stroke-width: 1; pointer-events: all; }
     .doc-text-main { fill: var(--text); font-family: var(--font-sans); }
     .doc-text-mono { fill: var(--text); font-family: var(--font-mono); }
     .doc-text-muted { fill: var(--text-muted); font-family: var(--font-sans); }
+    #sampleDocContent, #sampleDocContent * {
+      pointer-events: none !important;
+      user-select: none !important;
+    }
     .svg-bbox-rect {
-      cursor: pointer; pointer-events: all; stroke-width: 1.5; stroke-dasharray: 4 2;
-      transition: all 120ms ease;
+      cursor: pointer; pointer-events: all; stroke-width: 1.8; stroke-dasharray: 4 2;
+      fill-opacity: 0.12;
+      transition: fill-opacity 120ms ease, stroke-width 120ms ease;
     }
     .svg-bbox-rect:hover, .svg-bbox-rect.highlighted {
-      stroke-width: 2.5 !important; stroke-dasharray: none !important; fill-opacity: 0.3 !important;
+      stroke-width: 2.2 !important; stroke-dasharray: none !important; fill-opacity: 0.35 !important;
     }
     .svg-bbox-tag {
-      font-family: var(--font-mono); font-size: 9px; font-weight: 700; pointer-events: none;
+      font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+      pointer-events: none !important; user-select: none !important;
     }
 
     /* Scanning progress overlay */
@@ -2086,6 +2092,15 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
           if (svgOverlays) svgOverlays.style.display = show ? "block" : "none";
           const boxContainer = document.getElementById("overlayBoxesContainer");
           if (boxContainer) boxContainer.style.display = show ? "block" : "none";
+          if (!show && !activePinnedKey) unhighlightElement();
+        });
+      }
+
+      // Stage Mouse Leave: reset unpinned hover highlight
+      const stageContainer = document.getElementById("docStageContainer");
+      if (stageContainer) {
+        stageContainer.addEventListener("mouseleave", () => {
+          if (!activePinnedKey) unhighlightElement();
         });
       }
     }
@@ -2148,6 +2163,8 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       if (!globalData || !globalData.samples || !globalData.samples[idx]) return;
       selectedPresetIdx = idx;
       activePinnedKey = null;
+      currentHoveredKey = null;
+      unhighlightElement();
 
       // Update Tab Bar
       document.querySelectorAll(".studio-tab-btn").forEach((b, bIdx) => {
@@ -2386,22 +2403,29 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
     }
 
     // Bidirectional Highlighting
+    let currentHoveredKey = null;
+
     function highlightElement(key, bbox, label) {
       if (activePinnedKey && activePinnedKey !== key) return;
+      if (currentHoveredKey === key) return;
+      currentHoveredKey = key;
 
       // SVG highlight
       document.querySelectorAll(".svg-bbox-rect").forEach(r => {
-        r.classList.toggle("highlighted", r.getAttribute("data-key") === key);
+        const isMatch = r.getAttribute("data-key") === key;
+        r.classList.toggle("highlighted", isMatch);
       });
 
       // Canvas percentage overlay highlight
       document.querySelectorAll(".bbox-interactive").forEach(box => {
-        box.classList.toggle("highlighted", box.getAttribute("data-key") === key);
+        const isMatch = box.getAttribute("data-key") === key;
+        box.classList.toggle("highlighted", isMatch);
       });
 
       // Table highlight
       document.querySelectorAll("tr[data-item-key]").forEach(row => {
-        row.classList.toggle("highlighted", row.getAttribute("data-item-key") === key);
+        const isMatch = row.getAttribute("data-item-key") === key;
+        row.classList.toggle("highlighted", isMatch);
       });
 
       const pill = document.getElementById("hoverInfoPill");
@@ -2413,6 +2437,9 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
 
     function unhighlightElement(key) {
       if (activePinnedKey) return;
+      if (key && currentHoveredKey !== key) return;
+      currentHoveredKey = null;
+
       document.querySelectorAll(".svg-bbox-rect.highlighted").forEach(r => r.classList.remove("highlighted"));
       document.querySelectorAll(".bbox-interactive.highlighted").forEach(b => b.classList.remove("highlighted"));
       document.querySelectorAll("tr[data-item-key].highlighted").forEach(r => r.classList.remove("highlighted"));
@@ -2423,9 +2450,11 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
     function togglePin(key, bbox, label) {
       if (activePinnedKey === key) {
         activePinnedKey = null;
+        currentHoveredKey = null;
         unhighlightElement(key);
       } else {
         activePinnedKey = key;
+        currentHoveredKey = null;
         highlightElement(key, bbox, label);
       }
     }
@@ -2445,10 +2474,20 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
       paperBg.setAttribute("height", "820");
       paperBg.setAttribute("rx", "4");
       paperBg.className.baseVal = "doc-paper-bg";
+      paperBg.setAttribute("pointer-events", "all");
+      paperBg.addEventListener("click", () => {
+        if (activePinnedKey) {
+          activePinnedKey = null;
+          currentHoveredKey = null;
+          unhighlightElement();
+        }
+      });
       svg.appendChild(paperBg);
 
       const contentG = document.createElementNS(svgNS, "g");
       contentG.id = "sampleDocContent";
+      contentG.setAttribute("pointer-events", "none");
+      contentG.style.pointerEvents = "none";
       renderSvgDocContent(contentG, sample, svgNS);
       svg.appendChild(contentG);
 
@@ -2670,10 +2709,9 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         const h = Math.max(6, bbox[3] - bbox[1]);
 
         let strokeColor = "#2563eb";
-        let fillColor = "rgba(37, 99, 235, 0.12)";
-        if (colorCls === "item") { strokeColor = "#16a34a"; fillColor = "rgba(22, 163, 74, 0.12)"; }
-        else if (colorCls === "mod") { strokeColor = "#9333ea"; fillColor = "rgba(147, 51, 234, 0.14)"; }
-        else if (colorCls === "total") { strokeColor = "#d97706"; fillColor = "rgba(217, 119, 6, 0.16)"; }
+        if (colorCls === "item") { strokeColor = "#16a34a"; }
+        else if (colorCls === "mod") { strokeColor = "#9333ea"; }
+        else if (colorCls === "total") { strokeColor = "#d97706"; }
 
         const rect = document.createElementNS(svgNS, "rect");
         rect.className.baseVal = `svg-bbox-rect`;
@@ -2682,8 +2720,11 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         rect.setAttribute("y", y);
         rect.setAttribute("width", w);
         rect.setAttribute("height", h);
-        rect.setAttribute("fill", fillColor);
+        rect.setAttribute("fill", strokeColor);
+        rect.setAttribute("fill-opacity", "0.12");
         rect.setAttribute("stroke", strokeColor);
+        rect.setAttribute("stroke-width", "1.8");
+        rect.setAttribute("pointer-events", "all");
 
         rect.addEventListener("mouseenter", () => highlightElement(k, bbox, label));
         rect.addEventListener("mouseleave", () => unhighlightElement(k));
@@ -2696,6 +2737,9 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
         txt.setAttribute("x", x + 3);
         txt.setAttribute("y", Math.max(12, y - 3));
         txt.setAttribute("fill", strokeColor);
+        txt.setAttribute("pointer-events", "none");
+        txt.style.pointerEvents = "none";
+        txt.style.userSelect = "none";
         txt.textContent = label;
         g.appendChild(txt);
       }
@@ -3126,6 +3170,8 @@ uvicorn backend.main:app --reload --port 8000</code></pre>
     // Display Custom Uploaded Document
     function displayCustomDoc(doc) {
       activePinnedKey = null;
+      currentHoveredKey = null;
+      unhighlightElement();
 
       // Update Engine Badge
       const engineBadge = document.getElementById("studioEngineBadge");
