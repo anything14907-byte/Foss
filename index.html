@@ -3,51 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StackDoc - Layout-Aware Document Understanding</title>
-  <meta name="description" content="StackDoc: Layout-aware document understanding extracting vendor, date, totals, and line items from receipts and invoices without brittle plain-text OCR.">
-  <meta property="og:title" content="StackDoc - Layout-Aware Document Understanding">
-  <meta property="og:description" content="Extracts vendor, date, totals and line items from receipts and invoices, with multi-page table support for digital PDFs.">
+  <title>StackDoc — Layout-Aware Document Understanding</title>
+  <meta name="description" content="Extracts vendor, date, totals, and line items from receipts and invoices using 2D geometry and vision-language models without brittle plain-text OCR.">
+  <meta property="og:title" content="StackDoc — Layout-Aware Document Understanding">
+  <meta property="og:description" content="Dual-engine document understanding: PyMuPDF 2D coordinate layout extraction for digital PDFs, Donut vision-language model for scanned receipts.">
   <meta property="og:type" content="website">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%236366f1'/%3E%3Cpath d='M8 7h11l5 5v13H8z' fill='%23ffffff'/%3E%3Cpath d='M19 7v5h5' fill='%23cbd5e1'/%3E%3Cpath d='M11 15h10M11 18h10M11 21h6' stroke='%236366f1' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231d1b17'/%3E%3Cpath d='M8 6h11l5 5v15H8z' fill='%23fffdf8'/%3E%3Cpath d='M19 6v5h5' fill='%23ddd5c4'/%3E%3Crect x='11' y='14' width='10' height='2' rx='1' fill='%23b93815'/%3E%3Crect x='11' y='18' width='10' height='2' rx='1' fill='%23544f45'/%3E%3Crect x='11' y='22' width='6' height='2' rx='1' fill='%23544f45'/%3E%3C/svg%3E">
+
+  <!-- Zero-flash theme initialization -->
+  <script>
+    (function() {
+      try {
+        var saved = localStorage.getItem("stackdoc-theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      } catch (e) {
+        var theme = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      }
+    })();
+  </script>
+
   <style>
+    /* Design Tokens: Paper and Ink */
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface-border: #334155;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --code-bg: #090d16;
-      --radius: 8px;
+      --bg: #f6f1e7;
+      --surface: #fffdf8;
+      --surface-raised: #fbf6ec;
+      --text: #1d1b17;
+      --text-muted: #544f45;
+      --border-rule: #ddd5c4;
+      --border-ui: #8c806a;
+      --accent: #b93815;
+      --accent-contrast: #ffffff;
+      --code-bg: #ece5d6;
+      --code-text: #221f1a;
+      --status-pass-text: #166534;
+      --status-pass-bg: #dcfce7;
+      --status-partial-text: #854d0e;
+      --status-partial-bg: #fef3c7;
+      --status-fail-text: #991b1b;
+      --status-fail-bg: #fee2e2;
+      --focus-ring: #b93815;
+      --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      color-scheme: light;
     }
 
-    @media (prefers-color-scheme: light) {
-      :root {
-        --bg: #f8fafc;
-        --surface: #ffffff;
-        --surface-border: #cbd5e1;
-        --text: #0f172a;
-        --text-muted: #475569; /* WCAG AA: 7.0:1 on #ffffff */
-        --primary: #4338ca;    /* WCAG AA: 7.0:1 on #ffffff */
-        --primary-hover: #3730a3;
-        --code-bg: #f1f5f9;
-      }
-      .status-badge.pass { background: #dcfce7; color: #15803d; }
-      .status-badge.partial { background: #fef3c7; color: #b45309; }
-      .status-badge.fail { background: #fee2e2; color: #b91c1c; }
-      .dataset-badge {
-        background: #ede9fe;
-        color: #5b21b6;
-        border-color: #c4b5fd;
-      }
+    :root[data-theme="dark"] {
+      --bg: #14130f;
+      --surface: #1c1a15;
+      --surface-raised: #23201a;
+      --text: #ece6d8;
+      --text-muted: #aba392;
+      --border-rule: #2f2b22;
+      --border-ui: #6e6350;
+      --accent: #ff7a59;
+      --accent-contrast: #14130f;
+      --code-bg: #11100d;
+      --code-text: #ece6d8;
+      --status-pass-text: #4ade80;
+      --status-pass-bg: rgba(74, 222, 128, 0.12);
+      --status-partial-text: #fbbf24;
+      --status-partial-bg: rgba(251, 191, 36, 0.12);
+      --status-fail-text: #f87171;
+      --status-fail-bg: rgba(248, 113, 113, 0.12);
+      --focus-ring: #ff7a59;
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: var(--bg); color: var(--text); }
+    body {
+      font-family: var(--font-sans);
+      font-size: 17px;
+      line-height: 1.65;
+      background-color: var(--bg);
+      color: var(--text);
+      transition: background-color 200ms ease, color 200ms ease;
+      -webkit-font-smoothing: antialiased;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, ::before, ::after {
+      *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
@@ -55,816 +97,868 @@
       }
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    .skip-link {
+      position: absolute; top: -60px; left: 16px;
+      background: var(--accent); color: var(--accent-contrast);
+      padding: 8px 14px; border-radius: 4px; font-weight: 600; font-size: 14px;
+      z-index: 1000; text-decoration: none; transition: top 150ms ease;
+    }
+    .skip-link:focus { top: 12px; outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+    :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+    .hidden { display: none !important; }
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
     }
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding-bottom: 60px;
+    h1, h2, h3, h4 {
+      font-family: var(--font-serif); font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; color: var(--text);
     }
+    p { max-width: 68ch; }
+    code, pre, .mono { font-family: var(--font-mono); font-size: 0.9em; font-variant-numeric: tabular-nums; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
 
-    .container {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* Header Nav */
     header.site-header {
-      border-bottom: 1px solid var(--surface-border);
-      background: var(--surface);
-      padding: 16px 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 90;
+      background-color: var(--surface); border-bottom: 1px solid var(--border-rule);
+      transition: background-color 200ms ease, border-color 200ms ease;
+    }
+    .header-inner { display: flex; justify-content: space-between; align-items: center; height: 56px; }
+    .brand { display: flex; align-items: baseline; gap: 8px; text-decoration: none; color: var(--text); }
+    .brand-name { font-family: var(--font-serif); font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
+    .brand-tag { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+
+    nav.desktop-nav { display: flex; align-items: center; gap: 20px; }
+    nav.desktop-nav a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 150ms ease; }
+    nav.desktop-nav a:hover { color: var(--text); }
+    nav.desktop-nav a.active { color: var(--accent); font-weight: 600; }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .theme-toggle {
+      background: transparent; border: 1px solid var(--border-rule); color: var(--text);
+      width: 36px; height: 36px; border-radius: 4px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: border-color 150ms ease, background-color 150ms ease;
+    }
+    .theme-toggle:hover { background-color: var(--surface-raised); border-color: var(--border-ui); }
+    .theme-toggle svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.5; fill: none; }
+    .sun-icon { display: none; }
+    .moon-icon { display: block; }
+    :root[data-theme="dark"] .sun-icon { display: block; }
+    :root[data-theme="dark"] .moon-icon { display: none; }
+
+    .menu-button {
+      display: none; background: transparent; border: 1px solid var(--border-rule); color: var(--text);
+      width: 36px; height: 36px; border-radius: 4px; cursor: pointer; align-items: center; justify-content: center;
+    }
+    .menu-button svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.5; }
+    .mobile-panel {
+      display: none; position: absolute; top: 57px; left: 0; right: 0;
+      background: var(--surface); border-bottom: 1px solid var(--border-rule);
+      padding: 16px 24px; flex-direction: column; gap: 12px;
+    }
+    .mobile-panel.open { display: flex; }
+    .mobile-panel a { color: var(--text); text-decoration: none; font-size: 15px; padding: 6px 0; }
+
+    @media (max-width: 820px) {
+      nav.desktop-nav { display: none; }
+      .menu-button { display: inline-flex; }
     }
 
-    .nav-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    section { padding: 64px 0; border-bottom: 1px solid var(--border-rule); scroll-margin-top: 60px; }
+    .section-num {
+      font-family: var(--font-mono); font-size: 12px; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: block;
     }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 18px;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .brand-pill {
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      color: white;
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 18px;
-      list-style: none;
-      font-size: 13px;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-    }
-
-    /* Hero Section */
-    section.hero {
-      padding: 60px 0 40px;
-      text-align: center;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-radius: 20px;
-      color: #818cf8;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 18px;
-    }
-
-    .hero h1 {
-      font-size: 38px;
-      font-weight: 800;
-      letter-spacing: -1px;
-      line-height: 1.2;
-      margin-bottom: 16px;
-    }
-
-    .hero p.problem-statement {
-      max-width: 820px;
-      margin: 0 auto 12px;
-      font-size: 16px;
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .hero p.hero-subtext {
-      max-width: 820px;
-      margin: 0 auto 24px;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .hero-cta {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    .section-title { font-size: clamp(24px, 3vw, 32px); margin-bottom: 12px; }
+    .section-intro { font-size: 17px; color: var(--text-muted); margin-bottom: 32px; }
 
     .btn {
-      padding: 10px 20px;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 13px;
-      text-decoration: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px;
+      font-size: 14px; font-weight: 600; border-radius: 4px; text-decoration: none; cursor: pointer;
+      transition: background-color 150ms ease, opacity 150ms ease;
+    }
+    .btn-primary { background: var(--accent); color: var(--accent-contrast); border: 1px solid var(--accent); }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border-ui); }
+    .btn-secondary:hover { background: var(--surface-raised); }
+
+    section.hero { padding: 72px 0 64px; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
+    .hero-headline { font-size: clamp(34px, 4.4vw, 48px); line-height: 1.18; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .hero-lead { font-size: 18px; color: var(--text); margin-bottom: 12px; line-height: 1.6; font-weight: 500; }
+    .hero-subtext { font-size: 15px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.55; }
+    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+    .hero-meta { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); }
+    .hero-meta a { color: var(--text); text-decoration: underline; }
+
+    .hero-figure {
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
+      padding: 16px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .hero-figure-svg { width: 100%; height: auto; max-height: 380px; }
+    .hero-figure-caption { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); text-align: right; }
+
+    @keyframes boxFadeIn { 0% { opacity: 0; stroke-dashoffset: 40; } 100% { opacity: 1; stroke-dashoffset: 0; } }
+    .reveal-box-1 { animation: boxFadeIn 600ms ease forwards 200ms; }
+    .reveal-box-2 { animation: boxFadeIn 600ms ease forwards 500ms; }
+    .reveal-box-3 { animation: boxFadeIn 600ms ease forwards 800ms; }
+    .reveal-box-4 { animation: boxFadeIn 600ms ease forwards 1100ms; }
+
+    @media (max-width: 860px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 36px; }
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      border: none;
-    }
-    .btn-primary:hover { background: var(--primary-hover); }
+    .triad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 36px; }
+    .triad-card { background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px; padding: 20px; }
+    .triad-card h3 { font-size: 18px; margin-bottom: 8px; }
+    .triad-card p { font-size: 15px; color: var(--text-muted); }
 
-    .btn-outline {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--surface-border);
-    }
-    .btn-outline:hover { background: var(--surface); }
-
-    /* Section Headers */
-    .section-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 8px;
+    .before-after-container { background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px; padding: 24px; }
+    .before-after-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+    .before-after-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .code-panel {
+      background: var(--code-bg); border: 1px solid var(--border-rule); border-radius: 3px;
+      padding: 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.5; color: var(--code-text); max-height: 240px;
     }
 
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 24px;
+    @media (max-width: 760px) {
+      .triad-grid, .before-after-grid { grid-template-columns: 1fr; }
     }
 
-    .section-card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 40px;
+    .flow-wrapper {
+      background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px;
+      padding: 24px; margin-bottom: 24px; overflow-x: auto;
     }
+    .flow-svg { width: 100%; min-width: 680px; height: auto; }
+    .decision-table-wrap { overflow-x: auto; margin-top: 24px; }
 
-    /* Dataset badge */
-    .dataset-badge {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 12px;
-      background: rgba(99, 102, 241, 0.15);
-      color: #818cf8;
-      border: 1px solid rgba(99, 102, 241, 0.35);
-      letter-spacing: 0.3px;
-    }
+    .metric-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .metric-card { background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px; padding: 18px 20px; }
+    .metric-val { font-family: var(--font-serif); font-size: 32px; font-weight: 700; color: var(--text); line-height: 1.1; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+    .metric-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
 
-    /* Diagram */
-    .diagram-container {
-      width: 100%;
-      overflow-x: auto;
-      text-align: center;
-      padding: 10px 0;
+    .results-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+    .segmented-control { display: inline-flex; border: 1px solid var(--border-rule); border-radius: 4px; background: var(--surface); padding: 2px; }
+    .segment-btn {
+      background: transparent; border: none; color: var(--text-muted); font-family: var(--font-sans);
+      font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 3px; cursor: pointer; transition: all 150ms ease;
     }
+    .segment-btn.active { background: var(--surface-raised); color: var(--text); font-weight: 600; border: 1px solid var(--border-ui); }
+    .dataset-badge { font-family: var(--font-mono); font-size: 12px; padding: 3px 10px; border-radius: 3px; background: var(--surface-raised); border: 1px solid var(--border-rule); color: var(--text-muted); }
 
-    .diagram-svg {
-      max-width: 100%;
-      height: auto;
-    }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--border-rule); border-radius: 4px; background: var(--surface); margin-bottom: 16px; }
+    table.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    table.data-table th, table.data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border-rule); white-space: nowrap; }
+    table.data-table th { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); background: var(--surface-raised); }
+    table.data-table tbody tr:last-child td { border-bottom: none; }
+    table.data-table tbody tr:hover { background-color: var(--surface-raised); }
+    table.data-table th:first-child, table.data-table td:first-child { position: sticky; left: 0; background: var(--surface); z-index: 2; }
+    table.data-table th:first-child { background: var(--surface-raised); }
 
-    /* Gallery */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
-    }
+    .status-dot { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; }
+    .status-pass { color: var(--status-pass-text); }
+    .status-partial { color: var(--status-partial-text); }
+    .status-fail { color: var(--status-fail-text); }
+    .conf-bar-wrap { display: inline-flex; align-items: center; gap: 6px; }
+    .conf-bar { width: 48px; height: 4px; background: var(--border-rule); border-radius: 2px; overflow: hidden; display: inline-block; }
+    .conf-fill { height: 100%; background: var(--accent); }
 
-    .sample-card {
-      background: var(--bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+    @media (max-width: 760px) { .metric-strip { grid-template-columns: 1fr 1fr; } }
 
-    .sample-preview {
-      height: 200px;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 1px solid var(--surface-border);
-      position: relative;
+    .sample-viewer-card { background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px; padding: 24px; }
+    .sample-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border-rule); }
+    .sample-tab-btn {
+      background: transparent; border: 1px solid var(--border-rule); border-radius: 3px;
+      padding: 6px 12px; font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);
+      cursor: pointer; white-space: nowrap; transition: all 150ms ease;
     }
+    .sample-tab-btn:hover { border-color: var(--border-ui); color: var(--text); }
+    .sample-tab-btn.active { background: var(--surface-raised); border-color: var(--border-ui); color: var(--text); font-weight: 600; }
+    .sample-view-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; }
+    .sample-img-container {
+      position: relative; background: var(--code-bg); border: 1px solid var(--border-rule);
+      border-radius: 3px; overflow: hidden; display: flex; align-items: center; justify-content: center; min-height: 280px;
+    }
+    .sample-img-container img { width: 100%; height: auto; max-height: 440px; object-fit: contain; display: block; }
+    .sample-svg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+    .sample-overlay-toggle-bar { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
 
-    .sample-preview img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
+    .sample-details { display: flex; flex-direction: column; gap: 16px; }
+    dl.extracted-fields { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; font-size: 14px; border-bottom: 1px solid var(--border-rule); padding-bottom: 16px; }
+    dl.extracted-fields dt { font-family: var(--font-mono); color: var(--text-muted); font-size: 12px; text-transform: uppercase; }
+    dl.extracted-fields dd { font-weight: 600; color: var(--text); }
+    .json-disclosure { margin-top: 8px; border: 1px solid var(--border-rule); border-radius: 3px; background: var(--surface-raised); }
+    .json-disclosure summary { padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; cursor: pointer; font-weight: 600; }
+    .json-disclosure-content { padding: 12px 14px; border-top: 1px solid var(--border-rule); }
 
-    .sample-tag {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid var(--surface-border);
-    }
+    @media (max-width: 820px) { .sample-view-grid { grid-template-columns: 1fr; } }
 
-    .sample-tag.donut { color: #38bdf8; border-color: #0284c7; }
-    .sample-tag.layout { color: #a855f7; border-color: #7c3aed; }
+    .compare-table th, .compare-table td { padding: 12px 16px; }
+    .steps-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 20px 0; }
+    .step-item { display: flex; gap: 16px; align-items: baseline; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px; }
+    .step-num { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--accent); min-width: 24px; }
+    .step-text { font-size: 15px; }
 
-    .sample-info {
-      padding: 16px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+    .pill-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .pill { background: var(--surface-raised); border: 1px solid var(--border-rule); padding: 4px 12px; border-radius: 3px; font-size: 13px; font-weight: 500; }
 
-    .sample-title {
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 8px;
-      word-break: break-all;
-    }
+    .two-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 16px; }
+    .limit-card { background: var(--surface); border: 1px solid var(--border-rule); border-radius: 4px; padding: 18px 20px; }
+    .limit-card h4 { font-size: 16px; margin-bottom: 6px; }
+    .limit-card p { font-size: 14px; color: var(--text-muted); }
 
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      margin-bottom: 4px;
-    }
+    @media (max-width: 720px) { .two-col-grid { grid-template-columns: 1fr; } }
 
-    .meta-row span { color: var(--text-muted); }
-    .meta-row strong { color: var(--text); }
+    .run-step { margin-bottom: 20px; }
+    .run-step-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .run-step-title { font-size: 14px; font-weight: 600; }
+    .copy-btn {
+      background: transparent; border: 1px solid var(--border-rule); border-radius: 3px;
+      font-family: var(--font-mono); font-size: 11px; padding: 3px 8px; color: var(--text-muted);
+      cursor: pointer; transition: all 150ms ease;
+    }
+    .copy-btn:hover { border-color: var(--border-ui); color: var(--text); }
 
-    .sample-items-summary {
-      margin-top: 10px;
-      padding-top: 8px;
-      border-top: 1px dashed var(--surface-border);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* Tables */
-    .table-responsive {
-      overflow-x: auto;
-      margin-top: 10px;
-    }
-
-    table.data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      text-align: left;
-    }
-
-    table.data-table th, table.data-table td {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--surface-border);
-    }
-
-    table.data-table th {
-      background: rgba(0, 0, 0, 0.15);
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 11px;
-      letter-spacing: 0.5px;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-      font-size: 10px;
-    }
-
-    .status-badge.pass { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .status-badge.partial { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .status-badge.fail { background: rgba(239, 68, 68, 0.2); color: #f87171; }
-
-    /* Comparison Table */
-    .comparison-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-    }
-
-    .comp-col {
-      background: var(--bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 18px;
-    }
-
-    .comp-col h3 {
-      font-size: 15px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--surface-border);
-    }
-
-    .comp-item {
-      margin-bottom: 12px;
-      font-size: 13px;
-    }
-
-    .comp-item strong {
-      display: block;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-      letter-spacing: 0.5px;
-    }
-
-    /* Roadmap */
-    .roadmap-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .roadmap-item {
-      background: var(--bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 14px;
-    }
-
-    .roadmap-item h4 {
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: #818cf8;
-    }
-
-    .roadmap-item p {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    /* Extension Section */
-    .steps-list {
-      list-style-position: inside;
-      margin: 16px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-size: 14px;
-    }
-    .steps-list li {
-      padding: 10px 14px;
-      background: var(--bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-    }
-    .feature-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 16px 0;
-    }
-    .feature-pill {
-      background: var(--bg);
-      border: 1px solid var(--surface-border);
-      padding: 5px 14px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    /* Try It Section */
-    .curl-box {
-      background: var(--code-bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin: 16px 0;
-    }
-    .demo-upload-container {
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px dashed var(--surface-border);
-    }
-    .upload-form {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin: 12px 0;
-    }
-    .demo-result-box {
-      margin-top: 16px;
-      background: var(--bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 16px;
-    }
-    .demo-error {
-      color: var(--danger);
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid var(--danger);
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      margin-top: 12px;
-    }
-
-    /* Code Blocks */
-    pre.code-block {
-      background: var(--code-bg);
-      border: 1px solid var(--surface-border);
-      border-radius: var(--radius);
-      padding: 14px;
-      font-size: 12px;
-      overflow-x: auto;
-      color: #cbd5e1;
-      line-height: 1.5;
-    }
-
-    /* Footer */
     footer.site-footer {
-      border-top: 1px solid var(--surface-border);
-      padding: 24px 0;
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-muted);
+      padding: 48px 0; border-top: 1px solid var(--border-rule);
+      background-color: var(--surface); font-size: 13px; color: var(--text-muted);
     }
-
-    footer.site-footer a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    footer.site-footer a:hover { text-decoration: underline; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; }
+    .footer-inner a { color: var(--text); text-decoration: underline; }
   </style>
 </head>
 <body>
+  <a href="#main" class="skip-link">Skip to content</a>
 
-  <!-- Navigation -->
+  <!-- Header -->
   <header class="site-header">
-    <div class="container nav-row">
-      <a href="#" class="brand-logo">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-        </svg>
-        StackDoc
-        <span class="brand-pill">Layout-Aware AI</span>
+    <div class="container header-inner">
+      <a href="#" class="brand">
+        <span class="brand-name">StackDoc</span>
+        <span class="brand-tag">Layout AI</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="#pipeline">Architecture</a></li>
-        <li><a href="#evaluation">Evaluation</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#extension">Extension</a></li>
-        <li><a href="#try-it">Try It</a></li>
-        <li><a href="#comparison">Donut vs LayoutLMv3</a></li>
-        <li><a href="#quickstart">Run Locally</a></li>
-      </ul>
+
+      <nav class="desktop-nav" aria-label="Main Navigation">
+        <a href="#problem">Problem</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#results">Results</a>
+        <a href="#samples">Samples</a>
+        <a href="#compare">Compare</a>
+        <a href="#extension">Extension</a>
+        <a href="#quickstart">Run it</a>
+      </nav>
+
+      <div class="header-actions">
+        <button id="themeToggle" class="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false" title="Toggle color theme">
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <button id="menuButton" class="menu-button" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobilePanel">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Disclosure Panel -->
+    <div id="mobilePanel" class="mobile-panel" role="region" aria-label="Mobile Navigation">
+      <a href="#problem" class="mobile-link">Problem</a>
+      <a href="#how-it-works" class="mobile-link">How it works</a>
+      <a href="#results" class="mobile-link">Results</a>
+      <a href="#samples" class="mobile-link">Samples</a>
+      <a href="#compare" class="mobile-link">Compare</a>
+      <a href="#extension" class="mobile-link">Extension</a>
+      <a href="#quickstart" class="mobile-link">Run it</a>
     </div>
   </header>
 
-  <main class="container">
-    <!-- Hero -->
-    <section class="hero">
-      <div class="hero-badge">
-        <span>FOSS Forge Hackathon • Sponsored by Build with Stack</span>
-      </div>
-      <h1>Layout-Aware Document Understanding</h1>
-      <p class="problem-statement">
-        Extracts vendor, date, totals and line items from receipts and invoices, with multi-page table support for digital PDFs. Nested modifiers are on the roadmap.
-      </p>
-      <p class="hero-subtext">
-        Built with no OCR step: digital PDFs use the embedded text layer with coordinates, and scans go through a vision-language model.
-      </p>
-      <div class="hero-cta">
-        <a href="#gallery" class="btn btn-primary">Inspect Extraction Gallery</a>
-        <a href="#extension" class="btn btn-outline">Chrome Extension</a>
-        <a href="#try-it" class="btn btn-outline">Try It</a>
-        <a href="#quickstart" class="btn btn-outline">Run Locally</a>
-        <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener" class="btn btn-outline">GitHub Repository</a>
-      </div>
-    </section>
-
-    <!-- Pipeline Architecture -->
-    <section id="pipeline" class="section-card">
-      <h2 class="section-title">Dual-Engine Layout-Aware Architecture</h2>
-      <p class="section-desc">
-        StackDoc dynamically routes inputs: Digital PDFs utilize coordinate-based 2D geometric clustering via PyMuPDF; scanned receipts and images route through the Donut Vision-Language Transformer.
-      </p>
-      <div class="diagram-container">
-        <svg class="diagram-svg" viewBox="0 0 960 280" width="960" height="280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dual-Engine Layout-Aware Pipeline Architecture Diagram">
-          <!-- Input Document -->
-          <rect x="20" y="90" width="160" height="90" rx="8" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
-          <text x="100" y="125" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Input Document</text>
-          <text x="100" y="145" fill="#94a3b8" font-size="11" text-anchor="middle">PDF or Image File</text>
-          <text x="100" y="162" fill="#818cf8" font-size="10" text-anchor="middle">POST /parse-document</text>
-
-          <!-- Branch arrows -->
-          <path d="M 180 120 L 250 65" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
-          <path d="M 180 150 L 250 205" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
-
-          <!-- Top Branch: Layout Engine (Digital PDF) -->
-          <rect x="260" y="20" width="220" height="90" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
-          <text x="370" y="48" fill="#c084fc" font-size="12" font-weight="700" text-anchor="middle">Engine 1: Layout Extractor</text>
-          <text x="370" y="68" fill="#f8fafc" font-size="11" text-anchor="middle">PyMuPDF 2D Coordinate Engine</text>
-          <text x="370" y="86" fill="#94a3b8" font-size="10" text-anchor="middle">Multi-page Tables & Word Bboxes</text>
-
-          <!-- Bottom Branch: Donut VLM (Images/Scans) -->
-          <rect x="260" y="160" width="220" height="90" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-          <text x="370" y="188" fill="#38bdf8" font-size="12" font-weight="700" text-anchor="middle">Engine 2: Donut VLM</text>
-          <text x="370" y="208" fill="#f8fafc" font-size="11" text-anchor="middle">Swin Encoder + mBART Decoder</text>
-          <text x="370" y="226" fill="#94a3b8" font-size="10" text-anchor="middle">Token Probability Confidence</text>
-
-          <!-- Converge arrows -->
-          <path d="M 480 65 L 550 120" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
-          <path d="M 480 205 L 550 150" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
-
-          <!-- Post Processor -->
-          <rect x="560" y="90" width="180" height="90" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
-          <text x="650" y="125" fill="#34d399" font-size="12" font-weight="700" text-anchor="middle">Schema Normalizer</text>
-          <text x="650" y="145" fill="#f8fafc" font-size="11" text-anchor="middle">Post-Processor & Validation</text>
-          <text x="650" y="162" fill="#94a3b8" font-size="10" text-anchor="middle">Vendor, Date, Total, Items</text>
-
-          <path d="M 740 135 L 790 135" stroke="#94a3b8" stroke-width="1.5" fill="none"/>
-
-          <!-- Outputs -->
-          <rect x="800" y="90" width="140" height="90" rx="8" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
-          <text x="870" y="125" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle">Structured Output</text>
-          <text x="870" y="145" fill="#818cf8" font-size="10" text-anchor="middle">Clean JSON & Badges</text>
-          <text x="870" y="162" fill="#a855f7" font-size="10" text-anchor="middle">Canvas Bounding Boxes</text>
-        </svg>
-      </div>
-    </section>
-
-    <!-- Evaluation Benchmark Scorecard -->
-    <section id="evaluation" class="section-card">
-      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
-        <h2 class="section-title" style="margin-bottom: 0;">Real Evaluation Scorecard</h2>
-        <span id="datasetBadge" class="dataset-badge hidden"></span>
-      </div>
-      <p class="section-desc">
-        Metrics computed directly by <code>evaluation/evaluate.py</code>. Warm-up inferences are excluded; confidence values reflect true token transition probabilities; table line items are evaluated via difflib fuzzy matching.
-      </p>
-
-      <div class="table-responsive" style="overflow-x: auto;">
-        <table class="data-table" id="evalScorecardTable">
-          <thead>
-            <tr>
-              <th>Document</th>
-              <th>Engine</th>
-              <th>Vendor Match</th>
-              <th>Date Match</th>
-              <th>Total Match</th>
-              <th>Line Items F1</th>
-              <th>Confidence</th>
-              <th>Latency</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="evalTableBody">
-            <tr><td colspan="9" style="text-align:center; padding: 20px;">Loading evaluation results...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Extraction Gallery -->
-    <section id="gallery" class="section-card">
-      <h2 class="section-title">Document Extraction Gallery</h2>
-      <p class="section-desc">
-        Sample document inputs rendered beside their real extracted key-values and itemized table data.
-      </p>
-      <div class="gallery-grid" id="galleryGrid">
-        <!-- Rendered by client script from embedded JSON -->
-      </div>
-    </section>
-
-    <!-- Chrome Extension -->
-    <section id="extension" class="section-card">
-      <h2 class="section-title">Chrome Extension (Manifest V3)</h2>
-      <p class="section-desc">
-        A client extension for zero-friction document extraction right from your browser side-panel or popup.
-      </p>
-      <div class="feature-pills">
-        <span class="feature-pill">📸 Tab Capture</span>
-        <span class="feature-pill">📂 Drag &amp; Drop</span>
-        <span class="feature-pill">📊 Structured Table</span>
-        <span class="feature-pill">📋 Copy JSON</span>
-        <span class="feature-pill">📐 Canvas 2D Overlay</span>
-      </div>
-      <h3 style="font-size: 15px; margin-top: 16px; margin-bottom: 8px;">Installation Steps</h3>
-      <ol class="steps-list">
-        <li>Open <code>chrome://extensions</code> in your Chrome browser address bar.</li>
-        <li>Enable <strong>Developer mode</strong> using the toggle switch in the top-right corner.</li>
-        <li>Click the <strong>Load unpacked</strong> button in the top-left toolbar.</li>
-        <li>Navigate to this repository and select the <code>extension/</code> folder.</li>
-        <li>Pin the <strong>StackDoc</strong> extension icon to your browser toolbar for instant access.</li>
-      </ol>
-      <div style="margin-top: 16px; text-align: center;">
-        <img src="assets/extension.png" alt="StackDoc Chrome extension showing extracted invoice data" onerror="this.style.display='none';" style="max-width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--surface-border);" />
-      </div>
-    </section>
-
-    <!-- Try It Section -->
-    <section id="try-it" class="section-card">
-      <h2 class="section-title">Try It: Test the Extraction API</h2>
-      <p class="section-desc">
-        Test document extraction against your local StackDoc backend running at <code>http://localhost:8000</code>.
-      </p>
-      <div class="curl-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Run cURL Command:</span>
-          <button id="copyCurlBtn" class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;">Copy cURL</button>
-        </div>
-        <pre class="code-block" style="margin: 0;"><code id="curlCode">curl -X POST "http://localhost:8000/parse-document?mode=auto" \
-  -F "file=@data/eval/invoice_consulting_services.pdf"</code></pre>
-      </div>
-
-      <div id="demoUploadContainer" class="demo-upload-container hidden">
-        <h3 style="font-size: 15px; margin-bottom: 8px;">Interactive Document Parser</h3>
-        <p class="section-desc" style="margin-bottom: 12px;">Upload a receipt image or invoice PDF to inspect parsed results.</p>
-        <form id="demoUploadForm" class="upload-form">
-          <input type="file" id="demoFileInput" accept=".pdf,.png,.jpg,.jpeg" style="font-size: 13px;" required />
-          <button type="submit" id="demoSubmitBtn" class="btn btn-primary" style="padding: 6px 16px;">Parse Document</button>
-        </form>
-        <div id="demoLoading" class="hidden" style="color: var(--primary); font-size: 13px; font-weight: 600; padding: 8px 0;">
-          Processing document with layout-aware pipeline...
-        </div>
-        <div id="demoError" class="demo-error hidden"></div>
-        <div id="demoResultBox" class="demo-result-box hidden">
-          <h4 style="font-size: 14px; margin-bottom: 8px;">Extracted Key-Values</h4>
-          <div class="table-responsive" style="overflow-x: auto; margin-bottom: 12px;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th style="width: 30%;">Field</th>
-                  <th>Extracted Value</th>
-                </tr>
-              </thead>
-              <tbody id="demoTableBody"></tbody>
-            </table>
+  <main id="main">
+    <!-- Hero Section -->
+    <section class="hero" aria-labelledby="heroHeadline">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <h1 id="heroHeadline" class="hero-headline">Turn messy documents into clean, structured data.</h1>
+          <p class="hero-lead">
+            Extracts vendor, date, totals and line items from receipts and invoices, with multi-page table support for digital PDFs. Nested modifiers are on the roadmap.
+          </p>
+          <p class="hero-subtext">
+            Uses where words sit on the page and not just what they say, with no OCR step: digital PDFs use the embedded text layer with coordinates, and scans go through a vision-language model.
+          </p>
+          <div class="hero-actions">
+            <a href="#results" class="btn btn-primary">See real results</a>
+            <a href="#quickstart" class="btn btn-secondary">Run it locally</a>
           </div>
-          <h4 style="font-size: 14px; margin-bottom: 8px;">Raw JSON Response</h4>
-          <pre class="code-block" style="max-height: 250px; overflow-y: auto;"><code id="demoJsonPre"></code></pre>
+          <div class="hero-meta">
+            FOSS Forge Hackathon • Sponsored by <a href="https://buildwithstack.com" target="_blank" rel="noopener">Build with Stack</a>
+          </div>
+        </div>
+
+        <div class="hero-figure">
+          <svg class="hero-figure-svg" viewBox="0 0 340 380" aria-label="Document layout illustration with detected field bounding boxes" role="img">
+            <rect x="15" y="15" width="310" height="350" rx="4" fill="var(--surface-raised)" stroke="var(--border-rule)" stroke-width="1.5"/>
+            <rect x="35" y="35" width="70" height="8" rx="2" fill="var(--text-muted)" opacity="0.4"/>
+
+            <rect class="reveal-box-1" x="35" y="55" width="140" height="26" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="2 2"/>
+            <text x="40" y="72" font-family="var(--font-mono)" font-size="10" fill="var(--accent)" font-weight="600">VENDOR: ACME CLOUD</text>
+
+            <rect class="reveal-box-2" x="200" y="55" width="105" height="26" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="2 2"/>
+            <text x="205" y="72" font-family="var(--font-mono)" font-size="10" fill="var(--accent)" font-weight="600">DATE: 2026-10-14</text>
+
+            <line x1="35" y1="105" x2="305" y2="105" stroke="var(--border-rule)" stroke-width="1"/>
+            <rect x="35" y="112" width="60" height="6" rx="2" fill="var(--text-muted)" opacity="0.3"/>
+            <rect x="170" y="112" width="30" height="6" rx="2" fill="var(--text-muted)" opacity="0.3"/>
+            <rect x="260" y="112" width="45" height="6" rx="2" fill="var(--text-muted)" opacity="0.3"/>
+            <line x1="35" y1="125" x2="305" y2="125" stroke="var(--border-rule)" stroke-width="1"/>
+
+            <rect class="reveal-box-3" x="30" y="132" width="280" height="110" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="35" y="146" font-family="var(--font-mono)" font-size="9" fill="var(--accent)">TABLE ITEMS (3 ROWS DETECTED)</text>
+            <rect x="35" y="156" width="110" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="180" y="156" width="15" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="270" y="156" width="35" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="35" y="180" width="130" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="180" y="180" width="15" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="270" y="180" width="35" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="35" y="204" width="95" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="180" y="204" width="15" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+            <rect x="270" y="204" width="35" height="5" rx="1" fill="var(--text)" opacity="0.7"/>
+
+            <rect class="reveal-box-4" x="180" y="260" width="130" height="28" rx="3" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="2 2"/>
+            <text x="188" y="278" font-family="var(--font-mono)" font-size="10" fill="var(--accent)" font-weight="600">TOTAL: $2,450.00</text>
+          </svg>
+          <div class="hero-figure-caption">Illustration: 2D geometry detects relationships without OCR heuristics</div>
         </div>
       </div>
     </section>
 
-    <!-- Donut vs LayoutLMv3 Comparison -->
-    <section id="comparison" class="section-card">
-      <h2 class="section-title">Architectural Analysis: Donut vs LayoutLMv3</h2>
-      <p class="section-desc">
-        An honest technical breakdown of trade-offs between Vision-Language Transformers and OCR-reliant multi-modal architectures.
-      </p>
-      <div class="comparison-grid">
-        <div class="comp-col">
-          <h3 style="color: #38bdf8;">Donut (Document Understanding Transformer)</h3>
-          <div class="comp-item">
-            <strong>Architecture</strong>
-            End-to-end Vision-Language Model (Swin Transformer + mBART). Takes raw image pixels directly.
+    <!-- 01 Problem -->
+    <section id="problem" aria-labelledby="problemHead">
+      <div class="container">
+        <span class="section-num">01 The problem</span>
+        <h2 id="problemHead" class="section-title">Why basic OCR fails on business documents</h2>
+        <p class="section-intro">
+          Traditional text recognition dumps words into a flat string. It cannot tell whether "$500" is a subtotal, a discount, or the final invoice balance.
+        </p>
+
+        <div class="triad-grid">
+          <div class="triad-card">
+            <h3>Plain OCR reads words but loses structure</h3>
+            <p>Plain text readers strip out 2D coordinates. Column relationships collapse into an unordered sequence of words.</p>
           </div>
-          <div class="comp-item">
-            <strong>OCR Pipeline</strong>
-            <span>Zero OCR dependency. No external binaries (Tesseract/EasyOCR) or bounding-box generators needed.</span>
+          <div class="triad-card">
+            <h3>Layout tells you which number is the total</h3>
+            <p>The total usually sits below the subtotal, to the right of line items. Position on the page is as informative as the text itself.</p>
           </div>
-          <div class="comp-item">
-            <strong>Strengths</strong>
-            Immune to OCR word-splitting bugs; fast single-pass inference on receipts; compact deployment footprint.
-          </div>
-          <div class="comp-item">
-            <strong>Limitations & Hallucination Risk</strong>
-            Autoregressive decoder can hallucinate repeated or fabricated tokens on out-of-distribution layouts; pretrained CORD checkpoint is tailored for receipts rather than full-page complex tax forms.
+          <div class="triad-card">
+            <h3>We combine text, position and image</h3>
+            <p>Digital PDFs read coordinates directly from vector streams. Scanned receipts pass through a vision transformer without an OCR pre-step.</p>
           </div>
         </div>
 
-        <div class="comp-col">
-          <h3 style="color: #a855f7;">LayoutLMv3 (Multi-Modal Transformer)</h3>
-          <div class="comp-item">
-            <strong>Architecture</strong>
-            Multi-modal text + 2D coordinate embeddings + visual patch tokens.
+        <div class="before-after-container">
+          <div class="before-after-header">
+            <span>Illustrative Comparison</span>
+            <span>Unstructured OCR vs. StackDoc Extraction</span>
           </div>
-          <div class="comp-item">
-            <strong>OCR Pipeline</strong>
-            <span>Strict dependency on external OCR pipeline to compute word-level coordinates <code>(x0, y0, x1, y1)</code> prior to forward pass.</span>
-          </div>
-          <div class="comp-item">
-            <strong>Strengths</strong>
-            Grounds extraction directly in OCR word boxes; strong token classification accuracy on complex dense forms.
-          </div>
-          <div class="comp-item">
-            <strong>Limitations & Vulnerability</strong>
-            Pipeline fails catastrophically if OCR produces errors or misses words; heavy environment setup; coordinate preprocessing overhead.
+          <div class="before-after-grid">
+            <div>
+              <div class="code-panel"># 1. Unordered OCR string output
+INVOICE Global Systems Consulting
+Date: 2026-10-14 Qty Rate Amount
+INV-9041 Consulting 2 $450 $900
+Tax $87.60 Subtotal $1,095
+TOTAL AMOUNT DUE $2,450.00
+Payment due upon receipt</div>
+            </div>
+            <div>
+              <div class="code-panel">{
+  "vendor": "Global Systems Consulting",
+  "date": "2026-10-14",
+  "total": "$2,450.00",
+  "line_items": [
+    {"name": "Consulting", "qty": 2, "total": "$900.00"}
+  ],
+  "engine": "layout"
+}</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Limitations & Roadmap -->
-    <section class="section-card">
-      <h2 class="section-title">Known Limitations & Engineering Roadmap</h2>
-      <p class="section-desc">
-        Engineering transparency regarding current scope and upcoming releases.
-      </p>
-      <div class="roadmap-list">
-        <div class="roadmap-item">
-          <h4>Receipt-Trained Weights</h4>
-          <p>The CORD checkpoint specializes in receipt semantics. Digital invoices with complex corporate headers require fine-tuning or the coordinate layout path.</p>
+    <!-- 02 How it works -->
+    <section id="how-it-works" aria-labelledby="howHead">
+      <div class="container">
+        <span class="section-num">02 How it works</span>
+        <h2 id="howHead" class="section-title">A dual-engine pipeline matched to the document format</h2>
+        <p class="section-intro">
+          We route each file based on its extractable text layer. Digital files use native word boxes; camera scans route to a vision-language model.
+        </p>
+
+        <div class="flow-wrapper">
+          <svg class="flow-svg" viewBox="0 0 780 180" aria-label="Pipeline workflow diagram" role="img">
+            <rect x="10" y="60" width="120" height="60" rx="3" fill="var(--surface-raised)" stroke="var(--border-rule)" stroke-width="1.5"/>
+            <text x="70" y="88" font-family="var(--font-mono)" font-size="11" fill="var(--text)" text-anchor="middle" font-weight="600">INPUT FILE</text>
+            <text x="70" y="104" font-family="var(--font-sans)" font-size="10" fill="var(--text-muted)" text-anchor="middle">PDF or Image</text>
+
+            <path d="M 130 90 L 175 90" stroke="var(--border-ui)" stroke-width="1.5" fill="none"/>
+
+            <polygon points="215,60 255,90 215,120 175,90" fill="var(--surface-raised)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="215" y="94" font-family="var(--font-mono)" font-size="9" fill="var(--text)" text-anchor="middle" font-weight="600">&gt;20 WORDS?</text>
+
+            <path d="M 215 60 L 215 35 L 290 35" stroke="var(--border-ui)" stroke-width="1.5" fill="none"/>
+            <text x="235" y="28" font-family="var(--font-mono)" font-size="9" fill="var(--accent)">YES (PDF)</text>
+
+            <rect x="290" y="10" width="230" height="50" rx="3" fill="var(--surface-raised)" stroke="var(--border-rule)" stroke-width="1.5"/>
+            <text x="405" y="32" font-family="var(--font-mono)" font-size="11" fill="var(--text)" text-anchor="middle" font-weight="600">PyMuPDF 2D Layout Engine</text>
+            <text x="405" y="48" font-family="var(--font-sans)" font-size="10" fill="var(--text-muted)" text-anchor="middle">Coordinates + multi-page table stitch</text>
+
+            <path d="M 215 120 L 215 145 L 290 145" stroke="var(--border-ui)" stroke-width="1.5" fill="none"/>
+            <text x="235" y="158" font-family="var(--font-mono)" font-size="9" fill="var(--accent)">NO (SCAN)</text>
+
+            <rect x="290" y="120" width="230" height="50" rx="3" fill="var(--surface-raised)" stroke="var(--border-rule)" stroke-width="1.5"/>
+            <text x="405" y="142" font-family="var(--font-mono)" font-size="11" fill="var(--text)" text-anchor="middle" font-weight="600">Donut Vision Transformer</text>
+            <text x="405" y="158" font-family="var(--font-sans)" font-size="10" fill="var(--text-muted)" text-anchor="middle">Direct pixel-to-JSON autoregression</text>
+
+            <path d="M 520 35 L 565 35 L 565 90 L 600 90" stroke="var(--border-ui)" stroke-width="1.5" fill="none"/>
+            <path d="M 520 145 L 565 145 L 565 90" stroke="var(--border-ui)" stroke-width="1.5" fill="none"/>
+
+            <rect x="600" y="60" width="165" height="60" rx="3" fill="var(--surface-raised)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="682" y="86" font-family="var(--font-mono)" font-size="11" fill="var(--accent)" text-anchor="middle" font-weight="600">STRUCTURED OUTPUT</text>
+            <text x="682" y="104" font-family="var(--font-sans)" font-size="10" fill="var(--text-muted)" text-anchor="middle">JSON, Confidence &amp; Bboxes</text>
+          </svg>
         </div>
-        <div class="roadmap-item">
-          <h4>Multi-Page Tables</h4>
-          <p>Digital PDF tables continuing across pages are supported via coordinate alignment; extending autoregressive VLM attention across multi-page scans is in progress.</p>
-        </div>
-        <div class="roadmap-item">
-          <h4>Nested Item Structures</h4>
-          <p>Modifiers (e.g. customized toppings or nested SKU discounts) are currently flattened into primary item lines.</p>
-        </div>
-        <div class="roadmap-item">
-          <h4>Handwriting Recognition</h4>
-          <p>Faded handwriting and handwritten totals are outside the scope of current digital & receipt models.</p>
+
+        <p>
+          When a PDF contains extractable text, PyMuPDF reads words with exact bounding boxes, groups words into horizontal lines by vertical center distance, and finds columns by header boundaries. When the file is a picture or flat scan, the Donut model processes the image directly into tokens without an external OCR binary.
+        </p>
+
+        <div class="decision-table-wrap">
+          <table class="data-table">
+            <caption class="visually-hidden">When each engine is used</caption>
+            <thead>
+              <tr>
+                <th scope="col">Document format</th>
+                <th scope="col">Engine selected</th>
+                <th scope="col">Latency profile</th>
+                <th scope="col">Key capabilities</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Digital PDF (&gt;20 words)</td>
+                <td><span class="mono">PyMuPDF Layout</span></td>
+                <td>&lt;0.03 seconds</td>
+                <td>Header recognition, column range detection, multi-page continuation</td>
+              </tr>
+              <tr>
+                <td>Scanned photo or flat image</td>
+                <td><span class="mono">Donut VLM</span></td>
+                <td>2.7 – 4.5 seconds (CPU)</td>
+                <td>End-to-end receipt token decoding, token probability confidence</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- Quickstart & Run Locally -->
-    <section id="quickstart" class="section-card">
-      <h2 class="section-title">Run It Locally</h2>
-      <p class="section-desc">
-        Complete reproducible instructions to run the FastAPI backend, evaluation suite, and Chrome extension.
-      </p>
+    <!-- 03 Results -->
+    <section id="results" aria-labelledby="resultsHead">
+      <div class="container">
+        <span class="section-num">03 Evaluation results</span>
+        <h2 id="resultsHead" class="section-title">Measured benchmark performance</h2>
+        <p class="section-intro">
+          All numbers below come directly from test runs recorded in <code class="mono">evaluation/results.json</code>. Warm-up runs are excluded from timing.
+        </p>
 
-      <pre class="code-block"><code># 1. Clone repository and set up virtual environment
-git clone https://github.com/anything14907-byte/Foss.git
+        <div class="metric-strip">
+          <div class="metric-card">
+            <div id="statDocCount" class="metric-val">-</div>
+            <div class="metric-label">Evaluated Documents</div>
+          </div>
+          <div class="metric-card">
+            <div id="statLatency" class="metric-val">-</div>
+            <div class="metric-label">Mean Latency</div>
+          </div>
+          <div class="metric-card">
+            <div id="statConf" class="metric-val">-</div>
+            <div class="metric-label">Mean Confidence</div>
+          </div>
+          <div class="metric-card">
+            <div id="statF1" class="metric-val">-</div>
+            <div class="metric-label">Mean Table F1</div>
+          </div>
+        </div>
+
+        <div class="results-controls">
+          <div class="segmented-control" role="tablist" aria-label="Dataset view">
+            <button id="btnDatasetSynth" class="segment-btn active" role="tab" aria-selected="true">Synthetic (data/eval)</button>
+            <button id="btnDatasetReal" class="segment-btn" role="tab" aria-selected="false">Real Documents (data/eval_real)</button>
+          </div>
+          <span id="datasetBadge" class="dataset-badge">Loading...</span>
+        </div>
+
+        <div class="table-scroll">
+          <table class="data-table" id="evalScorecardTable">
+            <caption class="visually-hidden">Document evaluation results</caption>
+            <thead>
+              <tr>
+                <th scope="col">Document</th>
+                <th scope="col">Engine</th>
+                <th scope="col">Vendor</th>
+                <th scope="col">Date</th>
+                <th scope="col">Total</th>
+                <th scope="col">Items F1</th>
+                <th scope="col">Confidence</th>
+                <th scope="col">Latency</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody id="evalTableBody">
+              <tr>
+                <td colspan="9" style="text-align:center; padding: 24px;">Loading evaluation results...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="font-size: 14px; color: var(--text-muted);">
+          Note on evaluation scope: Digital PDFs achieve 100% field accuracy and table F1 because vector coordinate extraction is deterministic. The receipt VLM fails on out-of-distribution noisy mock receipts without domain fine-tuning, demonstrating the necessity of the layout engine fallback.
+        </p>
+      </div>
+    </section>
+
+    <!-- 04 Samples Interactive Viewer -->
+    <section id="samples" aria-labelledby="samplesHead">
+      <div class="container">
+        <span class="section-num">04 Sample documents</span>
+        <h2 id="samplesHead" class="section-title">Interactive extraction inspector</h2>
+        <p class="section-intro">
+          Select any sample document to inspect its extracted fields, line items table, and layout bounding boxes.
+        </p>
+
+        <div class="sample-viewer-card">
+          <div id="sampleSelectorBar" class="sample-selector-bar" role="tablist" aria-label="Select sample document">
+            <!-- Populated dynamically via JS -->
+          </div>
+
+          <div class="sample-view-grid">
+            <div>
+              <div class="sample-img-container">
+                <img id="samplePreviewImg" src="assets/samples/invoice_consulting_services_preview.png" alt="Document sample preview" loading="lazy" onerror="this.style.display='none';">
+                <svg id="sampleBoxSvg" class="sample-svg-overlay" viewBox="0 0 612 792" preserveAspectRatio="none" aria-hidden="true">
+                  <!-- Bounding boxes drawn here -->
+                </svg>
+              </div>
+              <div class="sample-overlay-toggle-bar">
+                <span id="sampleEngineBadge" class="mono" style="font-size:12px; font-weight:600;">Engine: layout</span>
+                <label id="boxToggleWrap" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                  <input type="checkbox" id="sampleBoxToggle" checked>
+                  <span>Show bounding boxes</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="sample-details">
+              <dl class="extracted-fields">
+                <dt>Vendor</dt>
+                <dd id="sampleVendor">-</dd>
+                <dt>Date</dt>
+                <dd id="sampleDate">-</dd>
+                <dt>Total Amount</dt>
+                <dd id="sampleTotal" style="color:var(--accent);">-</dd>
+                <dt>Subtotal</dt>
+                <dd id="sampleSubtotal">-</dd>
+                <dt>Tax</dt>
+                <dd id="sampleTax">-</dd>
+                <dt>Confidence</dt>
+                <dd id="sampleConfidence">-</dd>
+                <dt>Latency</dt>
+                <dd id="sampleLatency">-</dd>
+              </dl>
+
+              <div>
+                <div style="font-family:var(--font-mono); font-size:12px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px;">
+                  Extracted Line Items (<span id="sampleItemCount">0</span>)
+                </div>
+                <div style="overflow-x:auto; border:1px solid var(--border-rule); border-radius:3px;">
+                  <table class="data-table" style="font-size:12px;">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Item Description</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sampleItemsBody">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <details class="json-disclosure">
+                <summary>Show raw JSON response</summary>
+                <div class="json-disclosure-content">
+                  <div style="text-align:right; margin-bottom:6px;">
+                    <button id="copySampleJsonBtn" class="copy-btn">Copy JSON</button>
+                  </div>
+                  <pre class="code-panel" style="max-height:200px;"><code id="sampleJsonCode"></code></pre>
+                </div>
+              </details>
+            </div>
+          </div>
+        </div>
+
+        <div id="galleryGrid" class="hidden"></div>
+      </div>
+    </section>
+
+    <!-- 05 Donut vs LayoutLMv3 -->
+    <section id="compare" aria-labelledby="compareHead">
+      <div class="container">
+        <span class="section-num">05 Architectural trade-offs</span>
+        <h2 id="compareHead" class="section-title">Donut vs. LayoutLMv3</h2>
+        <p class="section-intro">
+          Why our system implements a dual-engine architecture instead of relying solely on an OCR-dependent multimodal model.
+        </p>
+
+        <div class="table-scroll">
+          <table class="data-table compare-table">
+            <caption class="visually-hidden">Comparison between Donut and LayoutLMv3</caption>
+            <thead>
+              <tr>
+                <th scope="col" style="width:22%;">Dimension</th>
+                <th scope="col" style="width:39%;">Donut (Vision-Language Model)</th>
+                <th scope="col" style="width:39%;">LayoutLMv3 (Multimodal OCR)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">How it reads the page</th>
+                <td>Reads raw image pixels directly via Swin Transformer encoder.</td>
+                <td>Requires external OCR to extract words and coordinates prior to inference.</td>
+              </tr>
+              <tr>
+                <th scope="row">Needs OCR</th>
+                <td>Zero OCR binaries. Self-contained model weights.</td>
+                <td>Strict reliance on Tesseract or system OCR binaries.</td>
+              </tr>
+              <tr>
+                <th scope="row">Strengths</th>
+                <td>Immune to OCR word-splitting errors; fast single-pass inference.</td>
+                <td>Strong grounding in coordinate positions for dense forms.</td>
+              </tr>
+              <tr>
+                <th scope="row">Weaknesses</th>
+                <td>Autoregressive decoder can repeat or hallucinate tokens on unfamiliar layouts.</td>
+                <td>Fails completely when the OCR pre-step misses or misreads words.</td>
+              </tr>
+              <tr>
+                <th scope="row">Best for</th>
+                <td>Camera photos, crumpled receipts, and flattened scans.</td>
+                <td>Clean document scans with standard, pre-installed OCR pipelines.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p style="margin-top:20px;">
+          Architectural takeaway: Donut avoids fragile OCR installation issues in hackathon and edge environments. However, because CORD weights specialize in Indonesian receipts, digital business invoices are best handled by PyMuPDF's exact coordinate geometric clustering, achieving sub-30ms execution.
+        </p>
+      </div>
+    </section>
+
+    <!-- 06 Chrome Extension -->
+    <section id="extension" aria-labelledby="extHead">
+      <div class="container">
+        <span class="section-num">06 Chrome extension</span>
+        <h2 id="extHead" class="section-title">In-browser document parser</h2>
+        <p class="section-intro">
+          A Manifest V3 extension providing one-click extraction from any browser tab or local file.
+        </p>
+
+        <div class="pill-list">
+          <span class="pill">Tab capture</span>
+          <span class="pill">Drag and drop</span>
+          <span class="pill">Structured table</span>
+          <span class="pill">Copy JSON</span>
+          <span class="pill">Canvas overlay</span>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-item">
+            <span class="step-num">01</span>
+            <span class="step-text">Open <code class="mono">chrome://extensions</code> in Google Chrome.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">02</span>
+            <span class="step-text">Enable <strong>Developer mode</strong> using the toggle in the upper-right corner.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">03</span>
+            <span class="step-text">Click the <strong>Load unpacked</strong> button in the top toolbar.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">04</span>
+            <span class="step-text">Select the <code class="mono">extension/</code> directory from this repository.</span>
+          </div>
+          <div class="step-item">
+            <span class="step-num">05</span>
+            <span class="step-text">Pin the StackDoc icon to your browser toolbar for quick access.</span>
+          </div>
+        </div>
+
+        <div style="margin-top:24px; text-align:center;">
+          <img src="assets/extension.png" alt="StackDoc Chrome extension showing extracted invoice data" onerror="this.style.display='none';" style="max-width:100%; height:auto; border:1px solid var(--border-rule); border-radius:4px;">
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 Limits & Roadmap -->
+    <section id="limits" aria-labelledby="limitsHead">
+      <div class="container">
+        <span class="section-num">07 Limitations and roadmap</span>
+        <h2 id="limitsHead" class="section-title">Current boundaries and upcoming engineering</h2>
+        <p class="section-intro">
+          Clear documentation of technical constraints and planned improvements.
+        </p>
+
+        <div class="two-col-grid">
+          <div class="limit-card">
+            <h4>Receipt-trained weights</h4>
+            <p>Donut uses CORD-v2 weights trained on store receipts. Complex multi-column corporate invoices are handled by the layout engine.</p>
+          </div>
+          <div class="limit-card">
+            <h4>Multi-page scans</h4>
+            <p>Digital multi-page PDF tables stitch cleanly across page boundaries. Extending autoregressive visual attention across multi-page photo scans remains in development.</p>
+          </div>
+          <div class="limit-card">
+            <h4>Nested modifiers</h4>
+            <p>Sub-item modifiers (such as custom toppings or SKU discounts) are currently flattened into primary item rows.</p>
+          </div>
+          <div class="limit-card">
+            <h4>Handwriting</h4>
+            <p>Faded handwriting and manual cursive additions are outside current model scope.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:32px; background:var(--surface); border:1px solid var(--border-rule); border-radius:4px; padding:20px;">
+          <h3 style="font-size:18px; margin-bottom:12px;">Next engineering steps</h3>
+          <ul style="padding-left:20px; font-size:15px; color:var(--text-muted); display:flex; flex-direction:column; gap:6px;">
+            <li>Fine-tune Donut decoder on DocVQA and multi-page invoice datasets.</li>
+            <li>Implement hierarchical JSON output for nested line item parent-child groupings.</li>
+            <li>Add WebAssembly packaging to execute the coordinate layout parser client-side.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 Run it locally -->
+    <section id="quickstart" aria-labelledby="runHead">
+      <div class="container">
+        <span class="section-num">08 Run it locally</span>
+        <h2 id="runHead" class="section-title">Setup and local execution</h2>
+        <p class="section-intro">
+          Steps to run the local FastAPI backend, evaluation runner, and test suite.
+        </p>
+
+        <div class="run-step">
+          <div class="run-step-header">
+            <span class="run-step-title">1. Clone repository and initialize environment</span>
+            <button class="copy-btn" data-target="codeBlock1">Copy</button>
+          </div>
+          <pre class="code-panel" id="codeBlock1"><code>git clone https://github.com/anything14907-byte/Foss.git
 cd Foss
 python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt</code></pre>
+        </div>
 
-# 2. Install pinned dependencies (including dev pytest)
-pip install -r requirements.txt
+        <div class="run-step">
+          <div class="run-step-header">
+            <span class="run-step-title">2. Start local FastAPI server (http://localhost:8000)</span>
+            <button class="copy-btn" data-target="codeBlock2">Copy</button>
+          </div>
+          <pre class="code-panel" id="codeBlock2"><code>uvicorn backend.app:app --host 127.0.0.1 --port 8000</code></pre>
+        </div>
 
-# 3. Pre-cache model weights for 100% offline hackathon execution
-python scripts/download_model.py
+        <div class="run-step">
+          <div class="run-step-header">
+            <span class="run-step-title">3. Test extraction with cURL</span>
+            <button id="copyCurlBtn" class="copy-btn" data-target="curlCode">Copy cURL</button>
+          </div>
+          <pre class="code-panel"><code id="curlCode">curl -X POST "http://localhost:8000/parse-document?mode=auto"   -F "file=@data/eval/invoice_consulting_services.pdf"</code></pre>
+        </div>
 
-# 4. Start local FastAPI backend (runs on http://localhost:8000)
-bash scripts/start_server.sh
-
-# 5. Run evaluation benchmark & pytest
-python evaluate.py
+        <div class="run-step">
+          <div class="run-step-header">
+            <span class="run-step-title">4. Run evaluation benchmark and tests</span>
+            <button class="copy-btn" data-target="codeBlock4">Copy</button>
+          </div>
+          <pre class="code-panel" id="codeBlock4"><code>python evaluate.py
 pytest tests/</code></pre>
+        </div>
+
+        <!-- Optional interactive demo upload box if DEMO_API_URL is configured -->
+        <div id="demoUploadContainer" class="hidden" style="margin-top:32px; background:var(--surface); border:1px solid var(--border-rule); border-radius:4px; padding:20px;">
+          <h3 style="font-size:18px; margin-bottom:8px;">Live API Demo</h3>
+          <p style="font-size:14px; color:var(--text-muted); margin-bottom:16px;">Send a document directly to the active endpoint.</p>
+          <form id="demoUploadForm" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="file" id="demoFileInput" accept=".pdf,.png,.jpg,.jpeg" style="font-size:13px;" required>
+            <button type="submit" id="demoSubmitBtn" class="btn btn-primary">Parse Document</button>
+          </form>
+          <div id="demoLoading" class="hidden" style="margin-top:12px; font-size:14px; color:var(--accent);">Processing document...</div>
+          <div id="demoError" class="hidden" style="margin-top:12px; font-size:14px; color:var(--status-fail-text);"></div>
+          <div id="demoResultBox" class="hidden" style="margin-top:16px;">
+            <h4 style="font-size:14px; margin-bottom:8px;">Extracted Summary</h4>
+            <table class="data-table" style="font-size:13px; margin-bottom:12px;">
+              <tbody id="demoTableBody"></tbody>
+            </table>
+            <pre class="code-panel" style="max-height:200px;"><code id="demoJsonPre"></code></pre>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
   <!-- Footer -->
   <footer class="site-footer">
-    <div class="container">
-      <p>
+    <div class="container footer-inner">
+      <div>
         <strong>StackDoc</strong> • Sponsored by <a href="https://buildwithstack.com" target="_blank" rel="noopener">Build with Stack</a> for FOSS Forge.
-      </p>
-      <p style="margin-top: 6px; font-size: 11px; color: var(--text-muted);">
-        Evaluation set composition: 6 synthetic documents (2 digital multi-page PDFs, 4 noisy receipt images) from data/eval, evaluated on CPU.
-      </p>
-      <p style="margin-top: 4px;">
+      </div>
+      <div>
         Repository: <a href="https://github.com/anything14907-byte/Foss" target="_blank" rel="noopener">github.com/anything14907-byte/Foss</a>
-      </p>
+      </div>
+      <div style="width:100%; font-size:12px; color:var(--text-muted); margin-top:4px;">
+        Evaluation set composition: 6 synthetic documents (2 digital multi-page PDFs, 4 noisy receipt images) from data/eval, evaluated on CPU.
+      </div>
     </div>
   </footer>
 
-  <!-- EMBEDDED_DATA_START -->
+  <div aria-live="polite" id="copyNotification" class="visually-hidden"></div>
+
+  <!-- Embedded Data Block -->
   <script id="results-data" type="application/json">
 {
   "timestamp": "2026-10-22T02:53:54Z",
@@ -991,6 +1085,7 @@ pytest tests/</code></pre>
     ]
   },
   "real_summary": {
+    "dataset": "real",
     "directory": "data/eval_real",
     "total_documents": 2,
     "pass_count": 1,
@@ -1679,43 +1774,144 @@ pytest tests/</code></pre>
   ]
 }
   </script>
-  <!-- EMBEDDED_DATA_END -->
 
+  <!-- Client Interaction Script -->
   <script>
     const DEMO_API_URL = "";
+    let globalData = null;
+    let currentDatasetKey = "summary";
+    let selectedSampleIdx = 0;
 
     document.addEventListener("DOMContentLoaded", () => {
+      initTheme();
+      initMobileNav();
+      initScrollspy();
+      initCopyButtons();
       loadResultsData();
-      setupTryItSection();
-      setupCurlCopy();
+      initDemoApi();
     });
 
+    // Theme Toggle Logic
+    function initTheme() {
+      const toggleBtn = document.getElementById("themeToggle");
+      if (!toggleBtn) return;
+
+      function updateAria(theme) {
+        const isDark = theme === "dark";
+        toggleBtn.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+        toggleBtn.setAttribute("aria-pressed", isDark ? "true" : "false");
+      }
+
+      const current = document.documentElement.dataset.theme || "light";
+      updateAria(current);
+
+      toggleBtn.addEventListener("click", () => {
+        const active = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = active;
+        document.documentElement.style.colorScheme = active;
+        updateAria(active);
+        try {
+          localStorage.setItem("stackdoc-theme", active);
+        } catch (_) {}
+      });
+
+      if (window.matchMedia) {
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+          try {
+            if (!localStorage.getItem("stackdoc-theme")) {
+              const next = e.matches ? "dark" : "light";
+              document.documentElement.dataset.theme = next;
+              document.documentElement.style.colorScheme = next;
+              updateAria(next);
+            }
+          } catch (_) {}
+        });
+      }
+    }
+
+    // Mobile Navigation Disclosure
+    function initMobileNav() {
+      const menuBtn = document.getElementById("menuButton");
+      const panel = document.getElementById("mobilePanel");
+      if (!menuBtn || !panel) return;
+
+      function closeMenu() {
+        menuBtn.setAttribute("aria-expanded", "false");
+        panel.classList.remove("open");
+      }
+
+      menuBtn.addEventListener("click", () => {
+        const expanded = menuBtn.getAttribute("aria-expanded") === "true";
+        menuBtn.setAttribute("aria-expanded", !expanded ? "true" : "false");
+        panel.classList.toggle("open", !expanded);
+      });
+
+      panel.querySelectorAll("a").forEach(a => {
+        a.addEventListener("click", () => {
+          closeMenu();
+        });
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && panel.classList.contains("open")) {
+          closeMenu();
+          menuBtn.focus();
+        }
+      });
+    }
+
+    // Scrollspy with IntersectionObserver
+    function initScrollspy() {
+      const navLinks = document.querySelectorAll("nav.desktop-nav a");
+      if (!navLinks.length || !("IntersectionObserver" in window)) return;
+
+      const sectionMap = new Map();
+      navLinks.forEach(link => {
+        const targetId = link.getAttribute("href").replace("#", "");
+        const sec = document.getElementById(targetId);
+        if (sec) sectionMap.set(sec, link);
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLinks.forEach(l => l.classList.remove("active"));
+            const activeLink = sectionMap.get(entry.target);
+            if (activeLink) activeLink.classList.add("active");
+          }
+        });
+      }, { rootMargin: "-20% 0px -70% 0px" });
+
+      sectionMap.forEach((_, sec) => observer.observe(sec));
+    }
+
+    // Data Loading Pipeline
     async function loadResultsData() {
       let data = null;
 
-      // 1. Try fetch('assets/results.json') inside try/catch
+      // 1. Try fetch assets/results.json
       try {
         const res = await fetch("assets/results.json");
         if (res.ok) {
           data = await res.json();
         }
       } catch (err) {
-        console.warn("fetch('assets/results.json') failed, checking embedded script tag:", err);
+        console.warn("fetch('assets/results.json') failed; trying embedded fallback.", err);
       }
 
-      // 2. Fall back to embedded JSON block <script type="application/json" id="results-data">
+      // 2. Fall back to embedded script tag
       if (!data) {
         const embeddedTag = document.getElementById("results-data");
         if (embeddedTag && embeddedTag.textContent.trim()) {
           try {
             data = JSON.parse(embeddedTag.textContent);
-          } catch (err) {
-            console.warn("Failed to parse embedded results-data JSON:", err);
+          } catch (e) {
+            console.warn("Parsing embedded #results-data failed.", e);
           }
         }
       }
 
-      // 3. If both fail, replace 'Loading evaluation results...' with clear error message
+      // 3. Graceful failure state
       if (!data) {
         const evalBody = document.getElementById("evalTableBody");
         if (evalBody) {
@@ -1725,8 +1921,7 @@ pytest tests/</code></pre>
           td.colSpan = 9;
           td.style.textAlign = "center";
           td.style.padding = "24px";
-          td.style.color = "#ef4444";
-          td.style.fontWeight = "600";
+          td.style.color = "var(--status-fail-text)";
           td.textContent = "Results unavailable. Run python evaluate.py then python scripts/export_site_data.py.";
           tr.appendChild(td);
           evalBody.appendChild(tr);
@@ -1734,190 +1929,402 @@ pytest tests/</code></pre>
         return;
       }
 
-      // Render results cleanly using textContent
-      renderResultsPage(data);
+      globalData = data;
+      initDatasetControls();
+      renderResultsSection();
+      renderSamplesViewer();
     }
 
-    function renderResultsPage(data) {
-      if (!data) return;
+    // Dataset Switcher (Synthetic vs Real)
+    function initDatasetControls() {
+      const btnSynth = document.getElementById("btnDatasetSynth");
+      const btnReal = document.getElementById("btnDatasetReal");
+      if (!btnSynth || !btnReal) return;
 
-      // Dataset label next to scorecard
-      const datasetBadge = document.getElementById("datasetBadge");
-      if (datasetBadge) {
-        const dataset = (data.summary && data.summary.dataset) || data.dataset;
-        const count = (data.summary && data.summary.total_documents) || (data.summary && data.summary.items && data.summary.items.length) || 0;
-        if (dataset) {
-          datasetBadge.textContent = `${count} documents, ${dataset}`;
-          datasetBadge.classList.remove("hidden");
-        } else {
-          datasetBadge.textContent = "";
-          datasetBadge.classList.add("hidden");
-        }
+      const hasReal = globalData && globalData.real_summary && globalData.real_summary.items && globalData.real_summary.items.length > 0;
+      if (!hasReal) {
+        btnReal.style.display = "none";
       }
 
-      // Render Evaluation Table
+      btnSynth.addEventListener("click", () => {
+        currentDatasetKey = "summary";
+        btnSynth.classList.add("active");
+        btnSynth.setAttribute("aria-selected", "true");
+        btnReal.classList.remove("active");
+        btnReal.setAttribute("aria-selected", "false");
+        renderResultsSection();
+      });
+
+      btnReal.addEventListener("click", () => {
+        currentDatasetKey = "real_summary";
+        btnReal.classList.add("active");
+        btnReal.setAttribute("aria-selected", "true");
+        btnSynth.classList.remove("active");
+        btnSynth.setAttribute("aria-selected", "false");
+        renderResultsSection();
+      });
+    }
+
+    function renderResultsSection() {
+      if (!globalData) return;
+      const summary = globalData[currentDatasetKey] || globalData.summary;
+      if (!summary) return;
+
+      // Update stat cards
+      const countEl = document.getElementById("statDocCount");
+      const latEl = document.getElementById("statLatency");
+      const confEl = document.getElementById("statConf");
+      const f1El = document.getElementById("statF1");
+      const badgeEl = document.getElementById("datasetBadge");
+
+      if (countEl) countEl.textContent = summary.total_documents !== undefined ? String(summary.total_documents) : "-";
+      if (latEl) latEl.textContent = summary.mean_latency_seconds !== undefined ? `${summary.mean_latency_seconds.toFixed(2)}s` : "-";
+      if (confEl) confEl.textContent = summary.mean_confidence !== undefined ? `${Math.round(summary.mean_confidence * 100)}%` : "-";
+      if (f1El) f1El.textContent = summary.mean_f1 !== undefined ? summary.mean_f1.toFixed(2) : "-";
+
+      if (badgeEl) {
+        const label = summary.dataset || (currentDatasetKey === "real_summary" ? "real" : "synthetic");
+        badgeEl.textContent = `${summary.total_documents || 0} documents, ${label}`;
+      }
+
+      // Render Scorecard Table
       const evalBody = document.getElementById("evalTableBody");
-      const evalItems = (data.summary && data.summary.items) || [];
-      if (evalBody && evalItems.length > 0) {
-        while (evalBody.firstChild) evalBody.removeChild(evalBody.firstChild);
+      const items = summary.items || [];
+      if (!evalBody) return;
 
-        evalItems.forEach(item => {
-          const tr = document.createElement("tr");
+      while (evalBody.firstChild) evalBody.removeChild(evalBody.firstChild);
 
-          // Document
-          const tdDoc = document.createElement("td");
-          const codeDoc = document.createElement("code");
-          codeDoc.textContent = item.filename || "-";
-          tdDoc.appendChild(codeDoc);
-          tr.appendChild(tdDoc);
-
-          // Engine
-          const tdEngine = document.createElement("td");
-          const spanEngine = document.createElement("span");
-          spanEngine.className = `sample-tag ${item.engine || 'donut'}`;
-          spanEngine.textContent = item.engine || "donut";
-          tdEngine.appendChild(spanEngine);
-          tr.appendChild(tdEngine);
-
-          // Vendor Match
-          tr.appendChild(createMatchCell(item.vendor_correct));
-
-          // Date Match
-          tr.appendChild(createMatchCell(item.date_correct));
-
-          // Total Match
-          tr.appendChild(createMatchCell(item.total_correct));
-
-          // Line Items F1
-          const tdF1 = document.createElement("td");
-          const strongF1 = document.createElement("strong");
-          strongF1.textContent = (item.line_items_f1 !== null && item.line_items_f1 !== undefined)
-            ? item.line_items_f1.toFixed(2)
-            : "-";
-          tdF1.appendChild(strongF1);
-          tr.appendChild(tdF1);
-
-          // Confidence
-          const tdConf = document.createElement("td");
-          tdConf.textContent = (item.confidence !== null && item.confidence !== undefined)
-            ? Math.round(item.confidence * 100) + "%"
-            : "null";
-          tr.appendChild(tdConf);
-
-          // Latency
-          const tdLat = document.createElement("td");
-          tdLat.textContent = item.latency_seconds ? item.latency_seconds.toFixed(4) + "s" : "-";
-          tr.appendChild(tdLat);
-
-          // Status Badge
-          const tdStatus = document.createElement("td");
-          const spanStatus = document.createElement("span");
-          let statusClass = "fail";
-          if (item.status === "PASS") statusClass = "pass";
-          else if (item.status === "PARTIAL") statusClass = "partial";
-          spanStatus.className = `status-badge ${statusClass}`;
-          spanStatus.textContent = item.status || "FAIL";
-          tdStatus.appendChild(spanStatus);
-          tr.appendChild(tdStatus);
-
-          evalBody.appendChild(tr);
-        });
+      if (items.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 9;
+        td.textContent = "No documents found in dataset.";
+        tr.appendChild(td);
+        evalBody.appendChild(tr);
+        return;
       }
 
-      // Render Sample Gallery using pure DOM and textContent
-      const galleryGrid = document.getElementById("galleryGrid");
-      const samples = data.samples || [];
-      if (galleryGrid && samples.length > 0) {
-        while (galleryGrid.firstChild) galleryGrid.removeChild(galleryGrid.firstChild);
+      items.forEach(item => {
+        const tr = document.createElement("tr");
 
-        samples.forEach(s => {
-          const card = document.createElement("div");
-          card.className = "sample-card";
+        // Document
+        const tdDoc = document.createElement("td");
+        const codeDoc = document.createElement("code");
+        codeDoc.textContent = item.filename || "-";
+        tdDoc.appendChild(codeDoc);
+        tr.appendChild(tdDoc);
 
-          // Preview
-          const preview = document.createElement("div");
-          preview.className = "sample-preview";
+        // Engine
+        const tdEngine = document.createElement("td");
+        const spanEngine = document.createElement("span");
+        spanEngine.className = "mono";
+        spanEngine.textContent = item.engine || "donut";
+        tdEngine.appendChild(spanEngine);
+        tr.appendChild(tdEngine);
 
-          const img = document.createElement("img");
-          img.src = s.preview_url || "";
-          img.alt = s.filename ? `Preview of ${s.filename}` : "Sample document preview";
-          img.loading = "lazy";
-          img.onerror = function() { this.style.display = 'none'; };
-          preview.appendChild(img);
+        // Vendor / Date / Total
+        tr.appendChild(createBoolCell(item.vendor_correct));
+        tr.appendChild(createBoolCell(item.date_correct));
+        tr.appendChild(createBoolCell(item.total_correct));
 
-          const tag = document.createElement("span");
-          tag.className = `sample-tag ${s.engine || 'donut'}`;
-          tag.textContent = (s.engine || "donut").toUpperCase();
-          preview.appendChild(tag);
-          card.appendChild(preview);
+        // Line Items F1
+        const tdF1 = document.createElement("td");
+        tdF1.className = "mono";
+        tdF1.textContent = (item.line_items_f1 !== null && item.line_items_f1 !== undefined) ? item.line_items_f1.toFixed(2) : "-";
+        tr.appendChild(tdF1);
 
-          // Info
-          const info = document.createElement("div");
-          info.className = "sample-info";
+        // Confidence with thin bar
+        const tdConf = document.createElement("td");
+        if (item.confidence !== null && item.confidence !== undefined) {
+          const confVal = Math.round(item.confidence * 100);
+          const barWrap = document.createElement("div");
+          barWrap.className = "conf-bar-wrap";
+          const bar = document.createElement("span");
+          bar.className = "conf-bar";
+          const fill = document.createElement("span");
+          fill.className = "conf-fill";
+          fill.style.width = `${confVal}%`;
+          bar.appendChild(fill);
+          const txt = document.createElement("span");
+          txt.className = "mono";
+          txt.textContent = `${confVal}%`;
+          barWrap.appendChild(bar);
+          barWrap.appendChild(txt);
+          tdConf.appendChild(barWrap);
+        } else {
+          tdConf.textContent = "-";
+        }
+        tr.appendChild(tdConf);
 
-          const title = document.createElement("div");
-          title.className = "sample-title";
-          title.textContent = s.filename || "Document";
-          info.appendChild(title);
+        // Latency
+        const tdLat = document.createElement("td");
+        tdLat.className = "mono";
+        tdLat.textContent = item.latency_seconds !== undefined ? `${item.latency_seconds.toFixed(4)}s` : "-";
+        tr.appendChild(tdLat);
 
-          function addMetaRow(label, value, valueColor) {
-            const row = document.createElement("div");
-            row.className = "meta-row";
+        // Status (dot + word)
+        const tdStatus = document.createElement("td");
+        const spanStatus = document.createElement("span");
+        let cls = "status-fail";
+        let symbol = "■ ";
+        if (item.status === "PASS") { cls = "status-pass"; symbol = "● "; }
+        else if (item.status === "PARTIAL") { cls = "status-partial"; symbol = "▲ "; }
+        spanStatus.className = `status-dot ${cls}`;
+        spanStatus.textContent = symbol + (item.status || "FAIL");
+        tdStatus.appendChild(spanStatus);
+        tr.appendChild(tdStatus);
 
-            const lblSpan = document.createElement("span");
-            lblSpan.textContent = label;
-            row.appendChild(lblSpan);
-
-            const valStrong = document.createElement("strong");
-            valStrong.textContent = value;
-            if (valueColor) valStrong.style.color = valueColor;
-            row.appendChild(valStrong);
-
-            info.appendChild(row);
-          }
-
-          const totalDisplay = s.total_amount
-            ? (s.total_amount.startsWith("$") || s.total_amount.startsWith("€") || s.total_amount.startsWith("£") ? s.total_amount : "$" + s.total_amount)
-            : "$0.00";
-          const confDisplay = (s.confidence !== null && s.confidence !== undefined)
-            ? Math.round(s.confidence * 100) + "%"
-            : "N/A";
-          const latDisplay = s.latency_seconds ? s.latency_seconds.toFixed(4) + "s" : "-";
-
-          addMetaRow("Vendor:", s.vendor_name || "Unknown");
-          addMetaRow("Date:", s.date || "N/A");
-          addMetaRow("Total:", totalDisplay, "#10b981");
-          addMetaRow("Confidence:", confDisplay);
-          addMetaRow("Latency:", latDisplay);
-
-          const summary = document.createElement("div");
-          summary.className = "sample-items-summary";
-          const count = s.line_items_count !== undefined ? s.line_items_count : (s.line_items ? s.line_items.length : 0);
-          summary.textContent = `${count} line item${count === 1 ? '' : 's'} parsed`;
-          info.appendChild(summary);
-
-          card.appendChild(info);
-          galleryGrid.appendChild(card);
-        });
-      }
+        evalBody.appendChild(tr);
+      });
     }
 
-    function createMatchCell(isCorrect) {
+    function createBoolCell(val) {
       const td = document.createElement("td");
       const span = document.createElement("span");
-      span.style.fontWeight = "600";
-      if (isCorrect) {
-        span.style.color = "#10b981";
-        span.textContent = "YES";
-      } else {
-        span.style.color = "#ef4444";
-        span.textContent = "NO";
-      }
+      span.className = val ? "status-dot status-pass" : "status-dot status-fail";
+      span.textContent = val ? "YES" : "NO";
       td.appendChild(span);
       return td;
     }
 
-    function setupTryItSection() {
+    // Samples Interactive Viewer
+    function renderSamplesViewer() {
+      if (!globalData || !globalData.samples || !globalData.samples.length) return;
+      const samples = globalData.samples;
+      const bar = document.getElementById("sampleSelectorBar");
+      if (!bar) return;
+
+      while (bar.firstChild) bar.removeChild(bar.firstChild);
+
+      samples.forEach((s, idx) => {
+        const btn = document.createElement("button");
+        btn.className = `sample-tab-btn ${idx === selectedSampleIdx ? 'active' : ''}`;
+        btn.textContent = s.filename || `Sample ${idx + 1}`;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", idx === selectedSampleIdx ? "true" : "false");
+        btn.addEventListener("click", () => {
+          selectedSampleIdx = idx;
+          bar.querySelectorAll(".sample-tab-btn").forEach((b, bIdx) => {
+            b.classList.toggle("active", bIdx === idx);
+            b.setAttribute("aria-selected", bIdx === idx ? "true" : "false");
+          });
+          displaySampleDetail(samples[idx]);
+        });
+        bar.appendChild(btn);
+      });
+
+      displaySampleDetail(samples[selectedSampleIdx]);
+    }
+
+    function displaySampleDetail(sample) {
+      if (!sample) return;
+
+      const img = document.getElementById("samplePreviewImg");
+      if (img) {
+        img.src = sample.preview_url || "";
+        img.alt = `Preview image for ${sample.filename}`;
+        img.style.display = "block";
+      }
+
+      const engineEl = document.getElementById("sampleEngineBadge");
+      if (engineEl) {
+        engineEl.textContent = `Engine: ${sample.engine || 'donut'} (${sample.status || 'PASS'})`;
+      }
+
+      const vEl = document.getElementById("sampleVendor");
+      const dEl = document.getElementById("sampleDate");
+      const tEl = document.getElementById("sampleTotal");
+      const subEl = document.getElementById("sampleSubtotal");
+      const taxEl = document.getElementById("sampleTax");
+      const confEl = document.getElementById("sampleConfidence");
+      const latEl = document.getElementById("sampleLatency");
+      const countEl = document.getElementById("sampleItemCount");
+
+      if (vEl) vEl.textContent = sample.vendor_name || "Unknown";
+      if (dEl) dEl.textContent = sample.date || "N/A";
+      if (tEl) {
+        const tot = sample.total_amount || "0.00";
+        tEl.textContent = tot.startsWith("$") ? tot : `$${tot}`;
+      }
+      if (subEl) subEl.textContent = sample.subtotal || "-";
+      if (taxEl) taxEl.textContent = sample.tax_amount || "-";
+      if (confEl) confEl.textContent = (sample.confidence !== null && sample.confidence !== undefined) ? `${Math.round(sample.confidence * 100)}%` : "N/A";
+      if (latEl) latEl.textContent = sample.latency_seconds !== undefined ? `${sample.latency_seconds.toFixed(4)}s` : "-";
+
+      const itemsBody = document.getElementById("sampleItemsBody");
+      const items = sample.line_items || [];
+      if (countEl) countEl.textContent = String(items.length);
+
+      if (itemsBody) {
+        while (itemsBody.firstChild) itemsBody.removeChild(itemsBody.firstChild);
+        if (items.length === 0) {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.colSpan = 5;
+          td.style.color = "var(--text-muted)";
+          td.style.textAlign = "center";
+          td.style.padding = "14px";
+          td.textContent = "No separate line items itemized.";
+          tr.appendChild(td);
+          itemsBody.appendChild(tr);
+        } else {
+          items.forEach((item, i) => {
+            const tr = document.createElement("tr");
+
+            const tdNum = document.createElement("td");
+            tdNum.className = "mono";
+            tdNum.textContent = String(item.line_number || i + 1);
+            tr.appendChild(tdNum);
+
+            const tdName = document.createElement("td");
+            tdName.textContent = item.name || item.description || "Item";
+            tr.appendChild(tdName);
+
+            const tdQty = document.createElement("td");
+            tdQty.className = "mono";
+            tdQty.textContent = String(item.quantity || "1");
+            tr.appendChild(tdQty);
+
+            const tdPrice = document.createElement("td");
+            tdPrice.className = "mono";
+            tdPrice.textContent = String(item.unit_price || "-");
+            tr.appendChild(tdPrice);
+
+            const tdTot = document.createElement("td");
+            tdTot.className = "mono";
+            tdTot.style.fontWeight = "600";
+            tdTot.textContent = String(item.line_total || item.total_price || "-");
+            tr.appendChild(tdTot);
+
+            itemsBody.appendChild(tr);
+          });
+        }
+      }
+
+      const svg = document.getElementById("sampleBoxSvg");
+      const toggleWrap = document.getElementById("boxToggleWrap");
+      const toggle = document.getElementById("sampleBoxToggle");
+      const rawBoxes = sample.boxes || (sample.raw_output && sample.raw_output.boxes);
+
+      if (svg) while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+      if (rawBoxes && Object.keys(rawBoxes).length > 0) {
+        if (toggleWrap) toggleWrap.style.display = "inline-flex";
+        drawSvgBoxes(svg, rawBoxes);
+      } else {
+        if (toggleWrap) toggleWrap.style.display = "none";
+      }
+
+      if (toggle && svg) {
+        toggle.onchange = () => {
+          svg.style.display = toggle.checked ? "block" : "none";
+        };
+      }
+
+      const jsonCode = document.getElementById("sampleJsonCode");
+      if (jsonCode) {
+        jsonCode.textContent = JSON.stringify(sample, null, 2);
+      }
+
+      const copyBtn = document.getElementById("copySampleJsonBtn");
+      if (copyBtn) {
+        copyBtn.onclick = () => {
+          copyTextToClipboard(JSON.stringify(sample, null, 2), copyBtn);
+        };
+      }
+    }
+
+    function drawSvgBoxes(svg, boxes) {
+      if (!svg || !boxes) return;
+      function createBox(bbox, label) {
+        if (!bbox || bbox.length < 4) return;
+        const x = bbox[0];
+        const y = bbox[1];
+        const w = Math.max(10, bbox[2] - bbox[0]);
+        const h = Math.max(6, bbox[3] - bbox[1]);
+
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("x", x);
+        rect.setAttribute("y", y);
+        rect.setAttribute("width", w);
+        rect.setAttribute("height", h);
+        rect.setAttribute("fill", "none");
+        rect.setAttribute("stroke", "var(--accent)");
+        rect.setAttribute("stroke-width", "2");
+        rect.setAttribute("stroke-dasharray", "3 2");
+        svg.appendChild(rect);
+
+        if (label) {
+          const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          txt.setAttribute("x", x + 3);
+          txt.setAttribute("y", Math.max(14, y - 3));
+          txt.setAttribute("font-family", "ui-monospace, monospace");
+          txt.setAttribute("font-size", "11");
+          txt.setAttribute("fill", "var(--accent)");
+          txt.setAttribute("font-weight", "600");
+          txt.textContent = label;
+          svg.appendChild(txt);
+        }
+      }
+
+      if (boxes.vendor && boxes.vendor.bbox) createBox(boxes.vendor.bbox, "VENDOR");
+      if (boxes.date && boxes.date.bbox) createBox(boxes.date.bbox, "DATE");
+      if (boxes.total && boxes.total.bbox) createBox(boxes.total.bbox, "TOTAL");
+      if (boxes.line_items && Array.isArray(boxes.line_items)) {
+        boxes.line_items.forEach((it, idx) => {
+          if (it.bbox) createBox(it.bbox, `ITEM ${idx + 1}`);
+        });
+      }
+    }
+
+    function initCopyButtons() {
+      document.querySelectorAll(".copy-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.getAttribute("data-target");
+          if (!targetId) return;
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            copyTextToClipboard(targetEl.textContent, btn);
+          }
+        });
+      });
+    }
+
+    function copyTextToClipboard(text, btnElement) {
+      const notify = document.getElementById("copyNotification");
+      function onCopied() {
+        if (btnElement) {
+          const orig = btnElement.textContent;
+          btnElement.textContent = "Copied";
+          setTimeout(() => { btnElement.textContent = orig; }, 1500);
+        }
+        if (notify) notify.textContent = "Copied to clipboard";
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onCopied).catch(() => {
+          fallbackCopy(text, onCopied);
+        });
+      } else {
+        fallbackCopy(text, onCopied);
+      }
+    }
+
+    function fallbackCopy(text, callback) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        if (callback) callback();
+      } catch (_) {}
+      document.body.removeChild(ta);
+    }
+
+    function initDemoApi() {
       const container = document.getElementById("demoUploadContainer");
       if (!DEMO_API_URL || DEMO_API_URL.trim() === "") {
         if (container) container.classList.add("hidden");
@@ -1939,65 +2346,55 @@ pytest tests/</code></pre>
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        if (!fileInput.files || !fileInput.files[0]) {
-          if (errorBox) {
-            errorBox.textContent = "Please select a file to parse.";
-            errorBox.classList.remove("hidden");
-          }
-          return;
-        }
+        if (!fileInput.files || !fileInput.files[0]) return;
 
         if (errorBox) errorBox.classList.add("hidden");
         if (resultBox) resultBox.classList.add("hidden");
         if (loading) loading.classList.remove("hidden");
         if (submitBtn) submitBtn.disabled = true;
 
-        const file = fileInput.files[0];
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", fileInput.files[0]);
 
         try {
-          const response = await fetch(`${DEMO_API_URL}/parse-document`, {
+          const res = await fetch(`${DEMO_API_URL}/parse-document`, {
             method: "POST",
             body: formData
           });
 
-          if (!response.ok) {
-            let msg = `HTTP ${response.status}`;
+          if (!res.ok) {
+            let errText = `HTTP ${res.status}`;
             try {
-              const errData = await response.json();
-              if (errData.detail) msg = errData.detail;
+              const errJson = await res.json();
+              if (errJson.detail) errText = errJson.detail;
             } catch (_) {}
-            throw new Error(msg);
+            throw new Error(errText);
           }
 
-          const resJson = await response.json();
+          const data = await res.json();
           if (loading) loading.classList.add("hidden");
           if (resultBox) resultBox.classList.remove("hidden");
+          if (jsonPre) jsonPre.textContent = JSON.stringify(data, null, 2);
 
-          // Render JSON
-          if (jsonPre) jsonPre.textContent = JSON.stringify(resJson, null, 2);
-
-          // Render summary table
           if (tableBody) {
             while (tableBody.firstChild) tableBody.removeChild(tableBody.firstChild);
             const rows = [
-              ["Vendor", resJson.vendor_name || "Unknown"],
-              ["Date", resJson.date || "N/A"],
-              ["Total Amount", resJson.total_amount || "0.00"],
-              ["Engine", resJson.engine || "-"],
-              ["Confidence", (resJson.confidence !== null && resJson.confidence !== undefined) ? Math.round(resJson.confidence * 100) + "%" : "null"],
-              ["Latency", (resJson.latency_seconds !== undefined) ? resJson.latency_seconds + "s" : "-"]
+              ["Vendor", data.vendor_name || "Unknown"],
+              ["Date", data.date || "N/A"],
+              ["Total Amount", data.total_amount || "0.00"],
+              ["Engine", data.engine || "-"],
+              ["Confidence", (data.confidence !== null && data.confidence !== undefined) ? `${Math.round(data.confidence * 100)}%` : "N/A"],
+              ["Latency", data.latency_seconds !== undefined ? `${data.latency_seconds}s` : "-"]
             ];
-            rows.forEach(([field, val]) => {
+            rows.forEach(([label, val]) => {
               const tr = document.createElement("tr");
-              const tdF = document.createElement("td");
-              tdF.style.fontWeight = "600";
-              tdF.textContent = field;
-              const tdV = document.createElement("td");
-              tdV.textContent = val;
-              tr.appendChild(tdF);
-              tr.appendChild(tdV);
+              const th = document.createElement("th");
+              th.scope = "row";
+              th.textContent = label;
+              const td = document.createElement("td");
+              td.textContent = val;
+              tr.appendChild(th);
+              tr.appendChild(td);
               tableBody.appendChild(tr);
             });
           }
@@ -2011,21 +2408,6 @@ pytest tests/</code></pre>
           if (submitBtn) submitBtn.disabled = false;
         }
       });
-    }
-
-    function setupCurlCopy() {
-      const btn = document.getElementById("copyCurlBtn");
-      const code = document.getElementById("curlCode");
-      if (btn && code) {
-        btn.addEventListener("click", () => {
-          const text = code.textContent;
-          navigator.clipboard.writeText(text).then(() => {
-            const orig = btn.textContent;
-            btn.textContent = "Copied!";
-            setTimeout(() => { btn.textContent = orig; }, 2000);
-          });
-        });
-      }
     }
   </script>
 </body>

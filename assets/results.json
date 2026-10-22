@@ -123,6 +123,7 @@
     ]
   },
   "real_summary": {
+    "dataset": "real",
     "directory": "data/eval_real",
     "total_documents": 2,
     "pass_count": 1,
